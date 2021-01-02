@@ -20,18 +20,18 @@
     var CONFIG = {"hostname":"www.klutzoder.com","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
   </script>
 
-  <meta name="description" content="I&apos;m no body!">
+  <meta name="description" content="Trie字典树（前缀树）能够查找字，通过将 n 个单词构建成一颗树的结构，如此方便查询对应的字是否在该结构中。 1234567891011121314151617181920212223242526272829303132333435363738394041#include &amp;lt;iostream&amp;gt;#include &amp;lt;string&amp;gt;#include &amp;lt;vector&amp;gt;">
 <meta name="keywords" content="Trie">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Trie">
+<meta property="og:title" content="trie">
 <meta property="og:url" content="http://www.klutzoder.com/Algorithm/algorithm/trie/index.html">
 <meta property="og:site_name" content="Klutzoder&#39;Blog">
-<meta property="og:description" content="I&apos;m no body!">
+<meta property="og:description" content="Trie字典树（前缀树）能够查找字，通过将 n 个单词构建成一颗树的结构，如此方便查询对应的字是否在该结构中。 1234567891011121314151617181920212223242526272829303132333435363738394041#include &amp;lt;iostream&amp;gt;#include &amp;lt;string&amp;gt;#include &amp;lt;vector&amp;gt;">
 <meta property="og:locale" content="chinese">
-<meta property="og:updated_time" content="2021-01-02T02:59:58.608Z">
+<meta property="og:updated_time" content="2021-01-02T05:14:33.558Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Trie">
-<meta name="twitter:description" content="I&apos;m no body!">
+<meta name="twitter:title" content="trie">
+<meta name="twitter:description" content="Trie字典树（前缀树）能够查找字，通过将 n 个单词构建成一颗树的结构，如此方便查询对应的字是否在该结构中。 1234567891011121314151617181920212223242526272829303132333435363738394041#include &amp;lt;iostream&amp;gt;#include &amp;lt;string&amp;gt;#include &amp;lt;vector&amp;gt;">
 
 <link rel="canonical" href="http://www.klutzoder.com/Algorithm/algorithm/trie/">
 
@@ -46,7 +46,7 @@
   };
 </script>
 
-  <title>Trie | Klutzoder'Blog</title>
+  <title>trie | Klutzoder'Blog</title>
   
 
 
@@ -219,7 +219,7 @@
     </span>
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
-          Trie
+          trie
         </h1>
 
         <div class="post-meta">
@@ -228,16 +228,10 @@
                 <i class="far fa-calendar"></i>
               </span>
               <span class="post-meta-item-text">Posted on</span>
+              
 
-              <time title="Created: 2019-12-14 10:36:54" itemprop="dateCreated datePublished" datetime="2019-12-14T10:36:54+08:00">2019-12-14</time>
+              <time title="Created: 2021-01-02 12:49:00 / Modified: 13:14:33" itemprop="dateCreated datePublished" datetime="2021-01-02T12:49:00+08:00">2021-01-02</time>
             </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2021-01-02 10:59:58" itemprop="dateModified" datetime="2021-01-02T10:59:58+08:00">2021-01-02</time>
-              </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
                 <i class="far fa-folder"></i>
@@ -254,7 +248,7 @@
                 <i class="far fa-file-word"></i>
               </span>
                 <span class="post-meta-item-text">Symbols count in article: </span>
-              <span>0</span>
+              <span>979</span>
             </span>
             <span class="post-meta-item" title="Reading time">
               <span class="post-meta-item-icon">
@@ -273,7 +267,10 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        
+        <h1 id="Trie"><a href="#Trie" class="headerlink" title="Trie"></a>Trie</h1><p>字典树（前缀树）能够查找字，通过将 n 个单词构建成一颗树的结构，如此方便查询对应的字是否在该结构中。</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;iostream&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;string&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;vector&gt;</span></span></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> <span class="built_in">std</span>;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">TrieNode</span> &#123;</span></span><br><span class="line"> <span class="keyword">public</span>:</span><br><span class="line">  <span class="built_in">vector</span>&lt;TrieNode*&gt; next;</span><br><span class="line">  <span class="keyword">bool</span> isWord;</span><br><span class="line">  TrieNode() &#123;</span><br><span class="line">    <span class="keyword">this</span>-&gt;next = <span class="built_in">vector</span>&lt;TrieNode*&gt;(<span class="number">26</span>, <span class="literal">nullptr</span>);</span><br><span class="line">    <span class="keyword">this</span>-&gt;isWord = <span class="literal">false</span>;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Trie</span> &#123;</span></span><br><span class="line"> <span class="keyword">private</span>:</span><br><span class="line">  TrieNode* root;</span><br><span class="line"></span><br><span class="line"> <span class="keyword">public</span>:</span><br><span class="line">  Trie() &#123; <span class="keyword">this</span>-&gt;root = <span class="keyword">new</span> TrieNode(); &#125;</span><br><span class="line">  <span class="function"><span class="keyword">void</span> <span class="title">add</span><span class="params">(<span class="built_in">string</span> word)</span> </span>&#123;</span><br><span class="line">    TrieNode* cur = root;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">auto</span> w : word) &#123;</span><br><span class="line">      <span class="keyword">int</span> idx = w - <span class="string">'a'</span>;</span><br><span class="line">      <span class="keyword">if</span> (cur-&gt;next[idx] == <span class="literal">nullptr</span>) cur-&gt;next[idx] = <span class="keyword">new</span> TrieNode();</span><br><span class="line">      cur = cur-&gt;next[idx];</span><br><span class="line">    &#125;</span><br><span class="line">    cur-&gt;isWord = <span class="literal">true</span>;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="function"><span class="keyword">bool</span> <span class="title">find</span><span class="params">(<span class="built_in">string</span> word)</span> </span>&#123;</span><br><span class="line">    TrieNode* cur = root;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">auto</span> w : word) &#123;</span><br><span class="line">      <span class="keyword">int</span> idx = w - <span class="string">'a'</span>;</span><br><span class="line">      <span class="keyword">if</span> (cur-&gt;next[idx] == <span class="literal">nullptr</span>) <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">      cur = cur-&gt;next[idx];</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> cur-&gt;isWord;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<p><a href="https://leetcode.com/tag/trie/" target="_blank" rel="noopener">https://leetcode.com/tag/trie/</a></p>
+
     </div>
 
     
@@ -291,13 +288,10 @@
         
     <div class="post-nav">
       <div class="post-nav-item">
-    <a href="/Linux/linux/running-linux-primer/" rel="prev" title="奔跑吧 Linux 内核(入门篇)学习笔记">
-      <i class="fa fa-chevron-left"></i> 奔跑吧 Linux 内核(入门篇)学习笔记
+    <a href="/RocketMQ/middleware/rocketmq-03/" rel="prev" title="RocketMQ 03 - 源码分析">
+      <i class="fa fa-chevron-left"></i> RocketMQ 03 - 源码分析
     </a></div>
-      <div class="post-nav-item">
-    <a href="/uncategorized/linux/spinlock/" rel="next" title="spinlock">
-      spinlock <i class="fa fa-chevron-right"></i>
-    </a></div>
+      <div class="post-nav-item"></div>
     </div>
       </footer>
     
@@ -361,6 +355,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Trie"><span class="nav-number">1.</span> <span class="nav-text">Trie</span></a></li></ol></div>
       </div>
       <!--/noindex-->
 
@@ -424,12 +419,12 @@
     <span class="post-meta-item-icon">
       <i class="fa fa-chart-area"></i>
     </span>
-    <span title="Symbols count total">342k</span>
+    <span title="Symbols count total">343k</span>
     <span class="post-meta-divider">|</span>
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
-    <span title="Reading time total">5:11</span>
+    <span title="Reading time total">5:12</span>
 </div>
   <div class="powered-by">Powered by <a href="https://hexo.io" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a>
   </div>
