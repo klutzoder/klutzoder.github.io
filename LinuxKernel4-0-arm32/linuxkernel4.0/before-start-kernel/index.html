@@ -1,87 +1,26 @@
 <!DOCTYPE html>
-
-
-
-  
-
-
-<html class="theme-next muse use-motion" lang="chinese">
-<head><meta name="generator" content="Hexo 3.8.0">
+<html lang="chinese">
+<head>
   <meta charset="UTF-8">
-<meta http-equiv="X-UA-Compatible" content="IE=edge">
-<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
 <meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 3.8.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
 
 
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
 
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"www.klutzoder.com","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
 
-
-
-
-
-
-<meta http-equiv="Cache-Control" content="no-transform">
-<meta http-equiv="Cache-Control" content="no-siteapp">
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-  
-  
-  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
-
-
-
-
-
-
-
-<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
-
-<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css">
-
-
-  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
-
-
-  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
-
-
-  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
-
-
-  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
-
-
-
-
-
-  <meta name="keywords" content="LinuxKernel4.0-arm32,">
-
-
-
-
-
-  <link rel="alternate" href="/atom.xml" title="Klutzoder'Blog" type="application/atom+xml">
-
-
-
-
-
-
-<meta name="description" content="Qemu 调试 详见 《奔跑吧 Linux内核》，有详细的 Qemu 调试内核的过程。  Qemu 调试配置123456789101112131415161718192021222324# 准备环境$ sudo apt-get install qemu libncurses5-dev gcc-arm-linux-gnueabi build-essential git gdb-arm-none-ea">
+  <meta name="description" content="Qemu 调试 详见 《奔跑吧 Linux内核》，有详细的 Qemu 调试内核的过程。  Qemu 调试配置123456789101112131415161718192021222324# 准备环境$ sudo apt-get install qemu libncurses5-dev gcc-arm-linux-gnueabi build-essential git gdb-arm-none-ea">
 <meta name="keywords" content="LinuxKernel4.0-arm32">
 <meta property="og:type" content="article">
 <meta property="og:title" content="一 Before start kernel">
@@ -96,232 +35,245 @@
 <meta property="og:image" content="https://klutzoder-blog.oss-cn-beijing.aliyuncs.com/2020/02/15811429476484.jpg?x-oss-process=image/auto-orient,1/quality,q_90/watermark,text_a2x1dHpvZGVy,color_0c0c0c,size_20,g_se,x_10,y_10">
 <meta property="og:image" content="https://klutzoder-blog.oss-cn-beijing.aliyuncs.com/2020/02/15811474554381.jpg?x-oss-process=image/auto-orient,1/quality,q_90/watermark,text_a2x1dHpvZGVy,color_0c0c0c,size_20,g_se,x_10,y_10">
 <meta property="og:image" content="https://klutzoder-blog.oss-cn-beijing.aliyuncs.com/2020/02/15811475656613.jpg?x-oss-process=image/auto-orient,1/quality,q_90/watermark,text_a2x1dHpvZGVy,color_0c0c0c,size_20,g_se,x_10,y_10">
-<meta property="og:updated_time" content="2020-12-31T08:44:36.525Z">
+<meta property="og:updated_time" content="2021-01-02T03:37:23.773Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="一 Before start kernel">
 <meta name="twitter:description" content="Qemu 调试 详见 《奔跑吧 Linux内核》，有详细的 Qemu 调试内核的过程。  Qemu 调试配置123456789101112131415161718192021222324# 准备环境$ sudo apt-get install qemu libncurses5-dev gcc-arm-linux-gnueabi build-essential git gdb-arm-none-ea">
 <meta name="twitter:image" content="https://klutzoder-blog.oss-cn-beijing.aliyuncs.com/2020/02/15808044320368.jpg?x-oss-process=image/auto-orient,1/quality,q_90/watermark,text_a2x1dHpvZGVy,color_0c0c0c,size_20,g_se,x_10,y_10">
 
+<link rel="canonical" href="http://www.klutzoder.com/LinuxKernel4-0-arm32/linuxkernel4.0/before-start-kernel/">
 
 
-<script type="text/javascript" id="hexo.configurations">
-  var NexT = window.NexT || {};
-  var CONFIG = {
-    root: '/',
-    scheme: 'Muse',
-    version: '5.1.4',
-    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
-    fancybox: true,
-    tabs: true,
-    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
-    duoshuo: {
-      userId: '0',
-      author: 'Author'
-    },
-    algolia: {
-      applicationID: '',
-      apiKey: '',
-      indexName: '',
-      hits: {"per_page":10},
-      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
-    }
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'chinese'
   };
 </script>
-
-
-
-  <link rel="canonical" href="http://www.klutzoder.com/LinuxKernel4-0-arm32/linuxkernel4.0/before-start-kernel/">
-
-
-
-
 
   <title>一 Before start kernel | Klutzoder'Blog</title>
   
 
 
+  <script>
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?f9da22b88ec7dbab09a41dacfefb5043";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
 
 
 
 
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
 
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
 
 </head>
 
-<body itemscope itemtype="http://schema.org/WebPage" lang="chinese">
-
-  
-  
-    
-  
-
-  <div class="container sidebar-position-left page-post-detail">
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
     <div class="headband"></div>
 
-    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
-      <div class="header-inner"><div class="site-brand-wrapper">
-  <div class="site-meta ">
-    
-
-    <div class="custom-logo-site-title">
-      <a href="/" class="brand" rel="start">
-        <span class="logo-line-before"><i></i></span>
-        <span class="site-title">Klutzoder'Blog</span>
-        <span class="logo-line-after"><i></i></span>
-      </a>
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
     </div>
-      
-        <p class="site-subtitle"></p>
-      
   </div>
 
-  <div class="site-nav-toggle">
-    <button>
-      <span class="btn-bar"></span>
-      <span class="btn-bar"></span>
-      <span class="btn-bar"></span>
-    </button>
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Klutzoder'Blog</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
   </div>
 </div>
 
+
+
+
 <nav class="site-nav">
-  
-
-  
-    <ul id="menu" class="menu">
-      
-        
+  <ul id="menu" class="main-menu menu">
         <li class="menu-item menu-item-home">
-          <a href="/" rel="section">
-            
-              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
-            
-            Home
-          </a>
-        </li>
-      
-        
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>About</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>Tags</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>Categories</a>
+
+  </li>
         <li class="menu-item menu-item-archives">
-          <a href="/archives/" rel="section">
-            
-              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
-            
-            Archives
-          </a>
-        </li>
-      
 
-      
-    </ul>
-  
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a>
 
-  
+  </li>
+        <li class="menu-item menu-item-schedule">
+
+    <a href="/schedule/" rel="section"><i class="fa fa-calendar fa-fw"></i>Schedule</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>Search
+        </a>
+      </li>
+  </ul>
 </nav>
 
 
 
- </div>
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off" placeholder="Searching..." spellcheck="false" type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
     </header>
 
-    <main id="main" class="main">
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
       <div class="main-inner">
         <div class="content-wrap">
-          <div id="content" class="content">
+          
+
+          <div class="content post posts-expand">
             
 
-  <div id="posts" class="posts-expand">
     
-
-  
-
   
   
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="chinese">
     <link itemprop="mainEntityOfPage" href="http://www.klutzoder.com/LinuxKernel4-0-arm32/linuxkernel4.0/before-start-kernel/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpg">
       <meta itemprop="name" content="klutzoder">
-      <meta itemprop="description" content>
-      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="description" content="I'm no body!">
     </span>
 
     <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
       <meta itemprop="name" content="Klutzoder'Blog">
     </span>
-
-    
       <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">一 Before start kernel</h1>
-        
+        <h1 class="post-title" itemprop="name headline">
+          一 Before start kernel
+        </h1>
 
         <div class="post-meta">
-          <span class="post-time">
-            
+            <span class="post-meta-item">
               <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
+                <i class="far fa-calendar"></i>
               </span>
-              
-                <span class="post-meta-item-text">Posted on</span>
-              
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2020-02-03T19:40:11+08:00">
-                2020-02-03
-              </time>
-            
+              <span class="post-meta-item-text">Posted on</span>
 
-            
-
-            
-          </span>
-
-          
-            <span class="post-category">
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">In</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/LinuxKernel4-0-arm32/" itemprop="url" rel="index">
-                    <span itemprop="name">LinuxKernel4.0-arm32</span>
-                  </a>
-                </span>
-
-                
-                
-              
+              <time title="Created: 2020-02-03 19:40:11" itemprop="dateCreated datePublished" datetime="2020-02-03T19:40:11+08:00">2020-02-03</time>
             </span>
-          
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2021-01-02 11:37:23" itemprop="dateModified" datetime="2021-01-02T11:37:23+08:00">2021-01-02</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/LinuxKernel4-0-arm32/" itemprop="url" rel="index"><span itemprop="name">LinuxKernel4.0-arm32</span></a>
+                </span>
+            </span>
 
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
+          <br>
+            <span class="post-meta-item" title="Symbols count in article">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+                <span class="post-meta-item-text">Symbols count in article: </span>
+              <span>16k</span>
+            </span>
+            <span class="post-meta-item" title="Reading time">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+                <span class="post-meta-item-text">Reading time &asymp;</span>
+              <span>14 mins.</span>
+            </span>
 
         </div>
       </header>
-    
 
     
     
@@ -329,13 +281,11 @@
     <div class="post-body" itemprop="articleBody">
 
       
-      
-
-      
         <h1 id="Qemu-调试"><a href="#Qemu-调试" class="headerlink" title="Qemu 调试"></a>Qemu 调试</h1><blockquote>
 <p>详见 《奔跑吧 Linux内核》，有详细的 Qemu 调试内核的过程。</p>
 </blockquote>
 <h2 id="Qemu-调试配置"><a href="#Qemu-调试配置" class="headerlink" title="Qemu 调试配置"></a>Qemu 调试配置</h2><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"># 准备环境</span><br><span class="line">$ sudo apt-get install qemu libncurses5-dev gcc-arm-linux-gnueabi build-essential git gdb-arm-none-eabi</span><br><span class="line"># 下载仓库</span><br><span class="line">$ git clone git@github.com:figozhang/runninglinuxkernel_4<span class="number">.0</span>.git</span><br><span class="line">$ git checkout rlk_basic</span><br><span class="line"># 编译内核</span><br><span class="line">$ cd runninglinuxkernel<span class="number">-4.0</span></span><br><span class="line">$ <span class="keyword">export</span> ARCH=arm</span><br><span class="line">$ <span class="keyword">export</span> CROSS_COMPILE=arm-linux-gnueabi-</span><br><span class="line">$ make vexpress_defconfig</span><br><span class="line">$ make menuconfig</span><br><span class="line"># 在 _install_arm32/dev 下创建设备节点</span><br><span class="line">$ cd _install_arm32</span><br><span class="line">$ mkdir dev</span><br><span class="line">$ cd dev</span><br><span class="line">$ sudo mknod console c <span class="number">5</span> <span class="number">1</span></span><br><span class="line"># 开始编译</span><br><span class="line">$ make bzImage -j4</span><br><span class="line">$ make dtbs</span><br><span class="line"></span><br><span class="line"># 一个 session 打开 ， 退出 ctrl+a+x, killall qemu-system-arm</span><br><span class="line">$ ./run.sh arm32 debug </span><br><span class="line"></span><br><span class="line"># 另一个 session 调试</span><br></pre></td></tr></table></figure>
+<a id="more"></a>
 <h2 id="Qemu-调试-mmu-之前"><a href="#Qemu-调试-mmu-之前" class="headerlink" title="Qemu 调试 mmu 之前"></a>Qemu 调试 mmu 之前</h2><p>在 Qemu 调试过程中分为两个阶段: mmu 启动前; mmu启动后。因此，必须要了解<strong>链接地址</strong>与<strong>装载地址</strong>之间的差别。<br>对于<code>vexpress</code>板子而言，其dts文件在<code>arch/arm/boot/dts/vexpress-v2p-ca9.dts</code>，其物理内存从0x6000_0000开始。</p>
 <p>因此，为了能够调试 mmu 启动前的代码，需要将符号表加载到能够访问的物理地址。</p>
 <figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// arm-none-eabi-gdb --tui 启动调试</span></span><br><span class="line">$ target remote localhost:<span class="number">1234</span></span><br><span class="line">$ load vmlinux <span class="number">-0x60000000</span></span><br><span class="line">$ add-symbol-file vmlinux <span class="number">0x60008280</span> -s .head.text <span class="number">0x60008000</span> -s .rodata <span class="number">0x60b18000</span> </span><br><span class="line"><span class="comment">// 通过 arm-none-eabi-readelf -S vmlinux 查看对应的 .text off: 008280; .head.text off: 008000; .rodata off: b18000。</span></span><br><span class="line">$ <span class="built_in">set</span> $pc=<span class="number">0x60008000</span></span><br><span class="line">$ <span class="built_in">set</span> $r2=<span class="number">0x63200000</span>  <span class="comment">// 调试 dtb 时使用</span></span><br><span class="line">$ b stext</span><br><span class="line">$ c</span><br></pre></td></tr></table></figure>
@@ -513,260 +463,200 @@
 <h1 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h1><p>本文在大量参考已有知识，并通过自己调试总结后完成。</p>
 <p><a href="https://static.docs.arm.com/ddi0406/c/DDI0406C_C_arm_architecture_reference_manual.pdf" target="_blank" rel="noopener">ARMv7 手册</a><br><a href="https://item.jd.com/12152745.html" target="_blank" rel="noopener">奔跑吧 Linux 内核</a><br><a href="https://blog.csdn.net/ooonebook/article/details/52690132" target="_blank" rel="noopener">[kernel 启动流程] 前篇——vmlinux.lds分析</a><br><a href="https://blog.csdn.net/ooonebook/article/details/52710290" target="_blank" rel="noopener">[kernel 启动流程] （第一章）概述</a><br><a href="https://blog.csdn.net/ooonebook/article/details/52779230" target="_blank" rel="noopener">[kernel 启动流程] （第二章）第一阶段之——设置SVC、关闭中断</a><br><a href="https://blog.csdn.net/ooonebook/article/details/52791202" target="_blank" rel="noopener">[kernel 启动流程] （第三章）第一阶段之——proc info的获取</a><br><a href="https://blog.csdn.net/ooonebook/article/details/52797211" target="_blank" rel="noopener">[kernel 启动流程] （第四章）第一阶段之——dtb的验证</a><br><a href="https://blog.csdn.net/ooonebook/article/details/52850433" target="_blank" rel="noopener">[kernel 启动流程] （第五章）第一阶段之——临时内核页表的创建</a><br><a href="https://blog.csdn.net/ooonebook/article/details/52860186" target="_blank" rel="noopener">[kernel 启动流程] （第六章）第一阶段之——打开MMU</a><br><a href="https://blog.csdn.net/ooonebook/article/details/52861681" target="_blank" rel="noopener">[kernel 启动流程] （第七章）第一阶段之——跳转到start_kernel</a></p>
 
-      
     </div>
+
     
     
     
 
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-        <div class="post-tags">
-          
-            <a href="/tags/LinuxKernel4-0-arm32/" rel="tag"># LinuxKernel4.0-arm32</a>
-          
-        </div>
-      
-
-      
-      
-      
-
-      
-        <div class="post-nav">
-          <div class="post-nav-next post-nav-item">
-            
-              <a href="/Linux/linux/cpu-info/" rel="next" title="深入浅出计算机组成原理">
-                <i class="fa fa-chevron-left"></i> 深入浅出计算机组成原理
-              </a>
-            
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/LinuxKernel4-0-arm32/" rel="tag"># LinuxKernel4.0-arm32</a>
           </div>
 
-          <span class="post-nav-divider"></span>
+        
 
-          <div class="post-nav-prev post-nav-item">
-            
-              <a href="/RocketMQ/middleware/rocketmq-01/" rel="prev" title="RocketMQ 01 - 基础介绍">
-                RocketMQ 01 - 基础介绍 <i class="fa fa-chevron-right"></i>
-              </a>
-            
-          </div>
-        </div>
-      
 
-      
-      
-    </footer>
-  </div>
-  
-  
-  
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/Linux/linux/cpu-info/" rel="prev" title="深入浅出计算机组成原理">
+      <i class="fa fa-chevron-left"></i> 深入浅出计算机组成原理
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/RocketMQ/middleware/rocketmq-01/" rel="next" title="RocketMQ 01 - 基础介绍">
+      RocketMQ 01 - 基础介绍 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
   </article>
+  
+  
+  
 
-
-
-    <div class="post-spread">
-      
-    </div>
-  </div>
 
 
           </div>
           
-
-
-          
-
-  
-
-
-
-        </div>
-        
-          
-  
-  <div class="sidebar-toggle">
-    <div class="sidebar-toggle-line-wrap">
-      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
-      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
-      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
-    </div>
+    
+  <div class="comments">
+    <div id="lv-container" data-id="city" data-uid="MTAyMC80NDc4Ni8yMTMwNw=="></div>
   </div>
-
-  <aside id="sidebar" class="sidebar">
-    
-    <div class="sidebar-inner">
-
-      
-
-      
-        <ul class="sidebar-nav motion-element">
-          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
-            Table of Contents
-          </li>
-          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
-            Overview
-          </li>
-        </ul>
-      
-
-      <section class="site-overview-wrap sidebar-panel">
-        <div class="site-overview">
-          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
-            
-              <p class="site-author-name" itemprop="name">klutzoder</p>
-              <p class="site-description motion-element" itemprop="description">I'm no body!</p>
-          </div>
-
-          <nav class="site-state motion-element">
-
-            
-              <div class="site-state-item site-state-posts">
-              
-                <a href="/archives/">
-              
-                  <span class="site-state-item-count">27</span>
-                  <span class="site-state-item-name">posts</span>
-                </a>
-              </div>
-            
-
-            
-              
-              
-              <div class="site-state-item site-state-categories">
-                <a href="/categories/index.html">
-                  <span class="site-state-item-count">5</span>
-                  <span class="site-state-item-name">categories</span>
-                </a>
-              </div>
-            
-
-            
-              
-              
-              <div class="site-state-item site-state-tags">
-                <a href="/tags/index.html">
-                  <span class="site-state-item-count">21</span>
-                  <span class="site-state-item-name">tags</span>
-                </a>
-              </div>
-            
-
-          </nav>
-
-          
-            <div class="feed-link motion-element">
-              <a href="/atom.xml" rel="alternate">
-                <i class="fa fa-rss"></i>
-                RSS
-              </a>
-            </div>
-          
-
-          
-
-          
-          
-
-          
-          
-
-          
-
-        </div>
-      </section>
-
-      
-      <!--noindex-->
-        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
-          <div class="post-toc">
-
-            
-              
-            
-
-            
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Qemu-调试"><span class="nav-number">1.</span> <span class="nav-text">Qemu 调试</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Qemu-调试配置"><span class="nav-number">1.1.</span> <span class="nav-text">Qemu 调试配置</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Qemu-调试-mmu-之前"><span class="nav-number">1.2.</span> <span class="nav-text">Qemu 调试 mmu 之前</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#概述"><span class="nav-number">2.</span> <span class="nav-text">概述</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#开启-SVC-关闭中断"><span class="nav-number">3.</span> <span class="nav-text">开启 SVC 关闭中断</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#hyp-stub-install"><span class="nav-number">3.1.</span> <span class="nav-text">__hyp_stub_install</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#safe-svcmode-maskall"><span class="nav-number">3.2.</span> <span class="nav-text">safe_svcmode_maskall</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#总结"><span class="nav-number">3.3.</span> <span class="nav-text">总结</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#获取-proc-info"><span class="nav-number">4.</span> <span class="nav-text">获取 proc info</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#procinfo-前提知识"><span class="nav-number">4.1.</span> <span class="nav-text">procinfo 前提知识</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#获取-CPU-ID"><span class="nav-number">4.2.</span> <span class="nav-text">获取 CPU ID</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#获取procinfo"><span class="nav-number">4.3.</span> <span class="nav-text">获取procinfo</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#总结-1"><span class="nav-number">4.4.</span> <span class="nav-text">总结</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#DTB-校验-以及-fixup"><span class="nav-number">5.</span> <span class="nav-text">DTB 校验 以及 fixup</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#DTB-校验"><span class="nav-number">5.1.</span> <span class="nav-text">DTB 校验</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#fixup"><span class="nav-number">5.2.</span> <span class="nav-text">fixup</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#创建页表"><span class="nav-number">6.</span> <span class="nav-text">创建页表</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#MMU-介绍"><span class="nav-number">6.1.</span> <span class="nav-text">MMU 介绍</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Arm32-MMU-一级描述符的格式"><span class="nav-number">6.1.1.</span> <span class="nav-text">Arm32 MMU 一级描述符的格式</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Section-段管理"><span class="nav-number">6.1.2.</span> <span class="nav-text">Section 段管理</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#MMU-如何工作"><span class="nav-number">6.1.3.</span> <span class="nav-text">MMU 如何工作</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#代码解读"><span class="nav-number">6.2.</span> <span class="nav-text">代码解读</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#运行完成后内存结构"><span class="nav-number">6.3.</span> <span class="nav-text">运行完成后内存结构</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#重点"><span class="nav-number">6.4.</span> <span class="nav-text">重点</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#ARM-汇编指令说明"><span class="nav-number">7.</span> <span class="nav-text">ARM 汇编指令说明</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#参考"><span class="nav-number">8.</span> <span class="nav-text">参考</span></a></li></ol></div>
-            
-
-          </div>
-        </section>
-      <!--/noindex-->
-      
-
-      
-
-    </div>
-  </aside>
-
-
-        
-      </div>
-    </main>
-
-    <footer id="footer" class="footer">
-      <div class="footer-inner">
-        <div class="copyright">&copy; <span itemprop="copyrightYear">2021</span>
-  <span class="with-love">
-    <i class="fa fa-user"></i>
-  </span>
-  <span class="author" itemprop="copyrightHolder">klutzoder</span>
-
-  
-</div>
-
-
-  <div class="powered-by">Powered by <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a></div>
-
-
-
-  <span class="post-meta-divider">|</span>
-
-
-
-  <div class="theme-info">Theme &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Muse</a> v5.1.4</div>
-
-
-
-
-        
-
-
-
-
-
-
-
-        
-      </div>
-    </footer>
-
-    
-      <div class="back-to-top">
-        <i class="fa fa-arrow-up"></i>
-        
-      </div>
-    
-
-    
-
-  </div>
-
   
 
-<script type="text/javascript">
-  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
-    window.Promise = null;
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
   }
 </script>
 
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Qemu-调试"><span class="nav-number">1.</span> <span class="nav-text">Qemu 调试</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Qemu-调试配置"><span class="nav-number">1.1.</span> <span class="nav-text">Qemu 调试配置</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Qemu-调试-mmu-之前"><span class="nav-number">1.2.</span> <span class="nav-text">Qemu 调试 mmu 之前</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#概述"><span class="nav-number">2.</span> <span class="nav-text">概述</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#开启-SVC-关闭中断"><span class="nav-number">3.</span> <span class="nav-text">开启 SVC 关闭中断</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#hyp-stub-install"><span class="nav-number">3.1.</span> <span class="nav-text">__hyp_stub_install</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#safe-svcmode-maskall"><span class="nav-number">3.2.</span> <span class="nav-text">safe_svcmode_maskall</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#总结"><span class="nav-number">3.3.</span> <span class="nav-text">总结</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#获取-proc-info"><span class="nav-number">4.</span> <span class="nav-text">获取 proc info</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#procinfo-前提知识"><span class="nav-number">4.1.</span> <span class="nav-text">procinfo 前提知识</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#获取-CPU-ID"><span class="nav-number">4.2.</span> <span class="nav-text">获取 CPU ID</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#获取procinfo"><span class="nav-number">4.3.</span> <span class="nav-text">获取procinfo</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#总结-1"><span class="nav-number">4.4.</span> <span class="nav-text">总结</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#DTB-校验-以及-fixup"><span class="nav-number">5.</span> <span class="nav-text">DTB 校验 以及 fixup</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#DTB-校验"><span class="nav-number">5.1.</span> <span class="nav-text">DTB 校验</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#fixup"><span class="nav-number">5.2.</span> <span class="nav-text">fixup</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#创建页表"><span class="nav-number">6.</span> <span class="nav-text">创建页表</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#MMU-介绍"><span class="nav-number">6.1.</span> <span class="nav-text">MMU 介绍</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Arm32-MMU-一级描述符的格式"><span class="nav-number">6.1.1.</span> <span class="nav-text">Arm32 MMU 一级描述符的格式</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Section-段管理"><span class="nav-number">6.1.2.</span> <span class="nav-text">Section 段管理</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#MMU-如何工作"><span class="nav-number">6.1.3.</span> <span class="nav-text">MMU 如何工作</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#代码解读"><span class="nav-number">6.2.</span> <span class="nav-text">代码解读</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#运行完成后内存结构"><span class="nav-number">6.3.</span> <span class="nav-text">运行完成后内存结构</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#重点"><span class="nav-number">6.4.</span> <span class="nav-text">重点</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#ARM-汇编指令说明"><span class="nav-number">7.</span> <span class="nav-text">ARM 汇编指令说明</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#参考"><span class="nav-number">8.</span> <span class="nav-text">参考</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="klutzoder" src="/images/avatar.jpg">
+  <p class="site-author-name" itemprop="name">klutzoder</p>
+  <div class="site-description" itemprop="description">I'm no body!</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">27</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">5</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">21</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">klutzoder</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-area"></i>
+    </span>
+    <span title="Symbols count total">342k</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="Reading time total">5:11</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a>
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+<script src="/js/utils.js"></script><script src="/js/motion.js"></script>
+<script src="/js/schemes/pisces.js"></script>
+<script src="/js/next-boot.js"></script>
+
+
+
+  
+
+
+
+
+  <script src="/js/local-search.js"></script>
+
+
+
+
 
 
 
@@ -777,126 +667,23 @@
 
   
 
-
-
-
-
-
-
-
-
-
-
-
-  
-  
-    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
   
 
-  
-  
-    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
-  
-
-  
-  
-    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
-  
-
-  
-  
-    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
-  
-
-  
-  
-    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
-  
-
-  
-  
-    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
-  
-
-
-  
-
-
-  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
-
-  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
-
-
-
-  
-  
-
-  
-  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
-<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
-
-
-
-  
-
-
-  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
-
-
-
-  
-
-
-  
-
-
-
-
-	
-
-
-
-
-
-  
-
-
-
-
-
-  
-
-
-
-
-
-
-
-
-
-
-
-
-  
-
-
-
-
-
-  
-
-  
-
-  
-
-  
-  
-
-  
-
-  
-
-  
+<script>
+NexT.utils.loadComments(document.querySelector('#lv-container'), () => {
+  window.livereOptions = {
+    refer: location.pathname.replace(CONFIG.root, '').replace('index.html', '')
+  };
+  (function(d, s) {
+    var j, e = d.getElementsByTagName(s)[0];
+    if (typeof LivereTower === 'function') { return; }
+    j = d.createElement(s);
+    j.src = 'https://cdn-city.livere.com/js/embed.dist.js';
+    j.async = true;
+    e.parentNode.insertBefore(j, e);
+  })(document, 'script');
+});
+</script>
 
 </body>
 </html>

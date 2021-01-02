@@ -1,87 +1,26 @@
 <!DOCTYPE html>
-
-
-
-  
-
-
-<html class="theme-next muse use-motion" lang="chinese">
-<head><meta name="generator" content="Hexo 3.8.0">
+<html lang="chinese">
+<head>
   <meta charset="UTF-8">
-<meta http-equiv="X-UA-Compatible" content="IE=edge">
-<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
 <meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 3.8.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
 
 
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
 
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"www.klutzoder.com","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
 
-
-
-
-
-
-<meta http-equiv="Cache-Control" content="no-transform">
-<meta http-equiv="Cache-Control" content="no-siteapp">
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-  
-  
-  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
-
-
-
-
-
-
-
-<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
-
-<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css">
-
-
-  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
-
-
-  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
-
-
-  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
-
-
-  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
-
-
-
-
-
-  <meta name="keywords" content="Linux,Memory,">
-
-
-
-
-
-  <link rel="alternate" href="/atom.xml" title="Klutzoder'Blog" type="application/atom+xml">
-
-
-
-
-
-
-<meta name="description" content="计算机体系结构中，内存资源相对于 CPU 而言是十分稀有的，存储技术的发展相对 CPU 而言也是非常缓慢的，当 CPU 在 Moore 定律基础上以指数级增长时，存储技术还在线性缓慢增长，因此为使存储技术能够适应 CPU 如此快速的发展，在现代计算机中都会存在一级、二级、三级缓存，使得CPU能够快速的获取指令与数据。本人在学习内存管理、并发与同步过程中，一直在思考，何为原子操作、内存屏障解决了何">
+  <meta name="description" content="计算机体系结构中，内存资源相对于 CPU 而言是十分稀有的，存储技术的发展相对 CPU 而言也是非常缓慢的，当 CPU 在 Moore 定律基础上以指数级增长时，存储技术还在线性缓慢增长，因此为使存储技术能够适应 CPU 如此快速的发展，在现代计算机中都会存在一级、二级、三级缓存，使得CPU能够快速的获取指令与数据。本人在学习内存管理、并发与同步过程中，一直在思考，何为原子操作、内存屏障解决了何">
 <meta name="keywords" content="Linux,Memory">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Computer Cache">
@@ -123,240 +62,250 @@
 <meta property="og:image" content="https://klutzoder-blog.oss-cn-beijing.aliyuncs.com/blog/linux/media-cache/15727007447223.jpg">
 <meta property="og:image" content="https://klutzoder-blog.oss-cn-beijing.aliyuncs.com/blog/linux/media-cache/15727007800762.jpg">
 <meta property="og:image" content="https://klutzoder-blog.oss-cn-beijing.aliyuncs.com/blog/linux/media-cache/15727008118796.jpg">
-<meta property="og:updated_time" content="2020-12-31T08:44:36.375Z">
+<meta property="og:updated_time" content="2021-01-02T03:39:08.341Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Computer Cache">
 <meta name="twitter:description" content="计算机体系结构中，内存资源相对于 CPU 而言是十分稀有的，存储技术的发展相对 CPU 而言也是非常缓慢的，当 CPU 在 Moore 定律基础上以指数级增长时，存储技术还在线性缓慢增长，因此为使存储技术能够适应 CPU 如此快速的发展，在现代计算机中都会存在一级、二级、三级缓存，使得CPU能够快速的获取指令与数据。本人在学习内存管理、并发与同步过程中，一直在思考，何为原子操作、内存屏障解决了何">
 <meta name="twitter:image" content="https://klutzoder-blog.oss-cn-beijing.aliyuncs.com/blog/linux/media-cache/15726990357597.jpg">
 
+<link rel="canonical" href="http://www.klutzoder.com/Linux/linux/computer-cache/">
 
 
-<script type="text/javascript" id="hexo.configurations">
-  var NexT = window.NexT || {};
-  var CONFIG = {
-    root: '/',
-    scheme: 'Muse',
-    version: '5.1.4',
-    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
-    fancybox: true,
-    tabs: true,
-    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
-    duoshuo: {
-      userId: '0',
-      author: 'Author'
-    },
-    algolia: {
-      applicationID: '',
-      apiKey: '',
-      indexName: '',
-      hits: {"per_page":10},
-      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
-    }
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'chinese'
   };
 </script>
-
-
-
-  <link rel="canonical" href="http://www.klutzoder.com/Linux/linux/computer-cache/">
-
-
-
-
 
   <title>Computer Cache | Klutzoder'Blog</title>
   
 
 
+  <script>
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?f9da22b88ec7dbab09a41dacfefb5043";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
 
 
 
 
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
 
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
 
 </head>
 
-<body itemscope itemtype="http://schema.org/WebPage" lang="chinese">
-
-  
-  
-    
-  
-
-  <div class="container sidebar-position-left page-post-detail">
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
     <div class="headband"></div>
 
-    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
-      <div class="header-inner"><div class="site-brand-wrapper">
-  <div class="site-meta ">
-    
-
-    <div class="custom-logo-site-title">
-      <a href="/" class="brand" rel="start">
-        <span class="logo-line-before"><i></i></span>
-        <span class="site-title">Klutzoder'Blog</span>
-        <span class="logo-line-after"><i></i></span>
-      </a>
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
     </div>
-      
-        <p class="site-subtitle"></p>
-      
   </div>
 
-  <div class="site-nav-toggle">
-    <button>
-      <span class="btn-bar"></span>
-      <span class="btn-bar"></span>
-      <span class="btn-bar"></span>
-    </button>
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Klutzoder'Blog</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
   </div>
 </div>
 
+
+
+
 <nav class="site-nav">
-  
-
-  
-    <ul id="menu" class="menu">
-      
-        
+  <ul id="menu" class="main-menu menu">
         <li class="menu-item menu-item-home">
-          <a href="/" rel="section">
-            
-              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
-            
-            Home
-          </a>
-        </li>
-      
-        
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>About</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>Tags</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>Categories</a>
+
+  </li>
         <li class="menu-item menu-item-archives">
-          <a href="/archives/" rel="section">
-            
-              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
-            
-            Archives
-          </a>
-        </li>
-      
 
-      
-    </ul>
-  
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a>
 
-  
+  </li>
+        <li class="menu-item menu-item-schedule">
+
+    <a href="/schedule/" rel="section"><i class="fa fa-calendar fa-fw"></i>Schedule</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>Search
+        </a>
+      </li>
+  </ul>
 </nav>
 
 
 
- </div>
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off" placeholder="Searching..." spellcheck="false" type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
     </header>
 
-    <main id="main" class="main">
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
       <div class="main-inner">
         <div class="content-wrap">
-          <div id="content" class="content">
+          
+
+          <div class="content post posts-expand">
             
 
-  <div id="posts" class="posts-expand">
     
-
-  
-
   
   
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="chinese">
     <link itemprop="mainEntityOfPage" href="http://www.klutzoder.com/Linux/linux/computer-cache/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpg">
       <meta itemprop="name" content="klutzoder">
-      <meta itemprop="description" content>
-      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="description" content="I'm no body!">
     </span>
 
     <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
       <meta itemprop="name" content="Klutzoder'Blog">
     </span>
-
-    
       <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">Computer Cache</h1>
-        
+        <h1 class="post-title" itemprop="name headline">
+          Computer Cache
+        </h1>
 
         <div class="post-meta">
-          <span class="post-time">
-            
+            <span class="post-meta-item">
               <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
+                <i class="far fa-calendar"></i>
               </span>
-              
-                <span class="post-meta-item-text">Posted on</span>
-              
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2019-06-22T15:58:21+08:00">
-                2019-06-22
-              </time>
-            
+              <span class="post-meta-item-text">Posted on</span>
 
-            
-
-            
-          </span>
-
-          
-            <span class="post-category">
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">In</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Linux/" itemprop="url" rel="index">
-                    <span itemprop="name">Linux</span>
-                  </a>
-                </span>
-
-                
-                
-              
+              <time title="Created: 2019-06-22 15:58:21" itemprop="dateCreated datePublished" datetime="2019-06-22T15:58:21+08:00">2019-06-22</time>
             </span>
-          
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2021-01-02 11:39:08" itemprop="dateModified" datetime="2021-01-02T11:39:08+08:00">2021-01-02</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Linux/" itemprop="url" rel="index"><span itemprop="name">Linux</span></a>
+                </span>
+            </span>
 
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
+          <br>
+            <span class="post-meta-item" title="Symbols count in article">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+                <span class="post-meta-item-text">Symbols count in article: </span>
+              <span>14k</span>
+            </span>
+            <span class="post-meta-item" title="Reading time">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+                <span class="post-meta-item-text">Reading time &asymp;</span>
+              <span>12 mins.</span>
+            </span>
 
         </div>
       </header>
-    
 
     
     
     
     <div class="post-body" itemprop="articleBody">
-
-      
-      
 
       
         <blockquote>
@@ -370,6 +319,7 @@
 <blockquote>
 <p><code>volatile</code>为了防止gcc优化代码。<br><code>lock</code>添加内存屏障，早期也采用<code>锁总线</code>技术。<br>这边的话先给出回答，后面会详细解释。</p>
 </blockquote>
+<a id="more"></a>
 <h2 id="spinlock"><a href="#spinlock" class="headerlink" title="spinlock"></a>spinlock</h2><p>自旋锁Spinlock是内核中保证原子操作的常用手段，高性能的Spinlock能够极大提高内核效率，因此有大量对于Spinlock的研究，相关知识大家可以通过搜索<a href="https://xurongyang.github.io/2017/01/17/SpinLock%E5%AE%9E%E7%8E%B0/" target="_blank" rel="noopener">SpinLock实现</a>等关键词获得。所有对于Spinlock的优化都是为了解决<code>CPU cacheline bouncing</code>这一问题。<br>同时，为了更高效的使用Spinlock都会采用<code>Cache line 对齐</code>，使得Spinlock能够独占<code>Cache line</code>，如内存管理中<a href="https://elixir.bootlin.com/linux/v4.0/source/include/linux/mmzone.h#L476" target="_blank" rel="noopener">Zone</a>添加<code>ZONE_PADDING</code>以做对齐使用。</p>
 <figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">zone</span> &#123;</span></span><br><span class="line">    ZONE_PADDING(_pad1_)</span><br><span class="line">    <span class="keyword">spinlock_t</span>		lock;</span><br><span class="line">    ZONE_PADDING(_pad2_)</span><br><span class="line">    <span class="keyword">spinlock_t</span>		lru_lock;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <blockquote>
@@ -654,262 +604,201 @@
 <p>内存屏障解决了多个问题：<code>1.编译器优化</code>，<code>2.cpu优化</code>，<code>3.缓存相关优化</code>，以此保证<code>内存一致性</code>。</p>
 </blockquote>
 
-      
     </div>
+
     
     
     
 
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-        <div class="post-tags">
-          
-            <a href="/tags/Linux/" rel="tag"># Linux</a>
-          
-            <a href="/tags/Memory/" rel="tag"># Memory</a>
-          
-        </div>
-      
-
-      
-      
-      
-
-      
-        <div class="post-nav">
-          <div class="post-nav-next post-nav-item">
-            
-              <a href="/Leetcode/leetcode/leetcode-516/" rel="next" title="leetcode 516">
-                <i class="fa fa-chevron-left"></i> leetcode 516
-              </a>
-            
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Linux/" rel="tag"># Linux</a>
+              <a href="/tags/Memory/" rel="tag"># Memory</a>
           </div>
 
-          <span class="post-nav-divider"></span>
+        
 
-          <div class="post-nav-prev post-nav-item">
-            
-              <a href="/Algorithm/algorithm/dfs-bfs/" rel="prev" title="BFS(Breadth First Search) 与 DFS (Depth First Search)">
-                BFS(Breadth First Search) 与 DFS (Depth First Search) <i class="fa fa-chevron-right"></i>
-              </a>
-            
-          </div>
-        </div>
-      
 
-      
-      
-    </footer>
-  </div>
-  
-  
-  
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/Leetcode/leetcode/leetcode-516/" rel="prev" title="leetcode 516">
+      <i class="fa fa-chevron-left"></i> leetcode 516
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/Algorithm/algorithm/dfs-bfs/" rel="next" title="BFS(Breadth First Search) 与 DFS (Depth First Search)">
+      BFS(Breadth First Search) 与 DFS (Depth First Search) <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
   </article>
+  
+  
+  
 
-
-
-    <div class="post-spread">
-      
-    </div>
-  </div>
 
 
           </div>
           
-
-
-          
-
-  
-
-
-
-        </div>
-        
-          
-  
-  <div class="sidebar-toggle">
-    <div class="sidebar-toggle-line-wrap">
-      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
-      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
-      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
-    </div>
+    
+  <div class="comments">
+    <div id="lv-container" data-id="city" data-uid="MTAyMC80NDc4Ni8yMTMwNw=="></div>
   </div>
-
-  <aside id="sidebar" class="sidebar">
-    
-    <div class="sidebar-inner">
-
-      
-
-      
-        <ul class="sidebar-nav motion-element">
-          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
-            Table of Contents
-          </li>
-          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
-            Overview
-          </li>
-        </ul>
-      
-
-      <section class="site-overview-wrap sidebar-panel">
-        <div class="site-overview">
-          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
-            
-              <p class="site-author-name" itemprop="name">klutzoder</p>
-              <p class="site-description motion-element" itemprop="description">I'm no body!</p>
-          </div>
-
-          <nav class="site-state motion-element">
-
-            
-              <div class="site-state-item site-state-posts">
-              
-                <a href="/archives/">
-              
-                  <span class="site-state-item-count">27</span>
-                  <span class="site-state-item-name">posts</span>
-                </a>
-              </div>
-            
-
-            
-              
-              
-              <div class="site-state-item site-state-categories">
-                <a href="/categories/index.html">
-                  <span class="site-state-item-count">5</span>
-                  <span class="site-state-item-name">categories</span>
-                </a>
-              </div>
-            
-
-            
-              
-              
-              <div class="site-state-item site-state-tags">
-                <a href="/tags/index.html">
-                  <span class="site-state-item-count">21</span>
-                  <span class="site-state-item-name">tags</span>
-                </a>
-              </div>
-            
-
-          </nav>
-
-          
-            <div class="feed-link motion-element">
-              <a href="/atom.xml" rel="alternate">
-                <i class="fa fa-rss"></i>
-                RSS
-              </a>
-            </div>
-          
-
-          
-
-          
-          
-
-          
-          
-
-          
-
-        </div>
-      </section>
-
-      
-      <!--noindex-->
-        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
-          <div class="post-toc">
-
-            
-              
-            
-
-            
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#问题来源"><span class="nav-number">1.</span> <span class="nav-text">问题来源</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#lock"><span class="nav-number">1.1.</span> <span class="nav-text">lock</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#spinlock"><span class="nav-number">1.2.</span> <span class="nav-text">spinlock</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#行遍历与列遍历"><span class="nav-number">1.3.</span> <span class="nav-text">行遍历与列遍历</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#多线程执行时的低效"><span class="nav-number">1.4.</span> <span class="nav-text">多线程执行时的低效</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#内存屏障"><span class="nav-number">1.5.</span> <span class="nav-text">内存屏障</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#cache-对齐"><span class="nav-number">1.6.</span> <span class="nav-text">cache 对齐</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#CPU架构图"><span class="nav-number">2.</span> <span class="nav-text">CPU架构图</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#x86微处理器经典架构"><span class="nav-number">2.1.</span> <span class="nav-text">x86微处理器经典架构</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#CPU存储架构"><span class="nav-number">2.2.</span> <span class="nav-text">CPU存储架构</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Cache-line-相关"><span class="nav-number">3.</span> <span class="nav-text">Cache line 相关</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#全关联-full-associative"><span class="nav-number">3.1.</span> <span class="nav-text">全关联(full-associative)</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#直接映射-direct-mapping"><span class="nav-number">3.2.</span> <span class="nav-text">直接映射(direct-mapping)</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#多路组相联-set-associative"><span class="nav-number">3.3.</span> <span class="nav-text">多路组相联(set-associative)</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#实例"><span class="nav-number">3.4.</span> <span class="nav-text">实例</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#为什么Set段设置在低位"><span class="nav-number">3.5.</span> <span class="nav-text">为什么Set段设置在低位</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Cache-coherence"><span class="nav-number">4.</span> <span class="nav-text">Cache coherence</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#snoopy-cache-amp-snooping-based-coherence"><span class="nav-number">4.1.</span> <span class="nav-text">snoopy cache &amp; snooping based coherence</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#A-Simple-Protocol-Valid-InValid-VI"><span class="nav-number">4.2.</span> <span class="nav-text">A Simple Protocol: Valid/InValid(VI)</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#MSI-Modified-Shared-Invalid"><span class="nav-number">4.3.</span> <span class="nav-text">MSI(Modified-Shared-Invalid)</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#MESI-Modified-Exclusive-Shared-Invalid"><span class="nav-number">4.4.</span> <span class="nav-text">MESI(Modified-Exclusive-Shared-Invalid)</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#MOESI-MESIF"><span class="nav-number">4.5.</span> <span class="nav-text">MOESI, MESIF</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Cache-line-回写与替换"><span class="nav-number">5.</span> <span class="nav-text">Cache line 回写与替换</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#cache-line-回写"><span class="nav-number">5.1.</span> <span class="nav-text">cache line 回写</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#cache-line-替换"><span class="nav-number">5.2.</span> <span class="nav-text">cache line 替换</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#memory-consistency"><span class="nav-number">6.</span> <span class="nav-text">memory consistency</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#内存一致性模型的概念"><span class="nav-number">6.1.</span> <span class="nav-text">内存一致性模型的概念</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#缓存一致性的优化"><span class="nav-number">6.2.</span> <span class="nav-text">缓存一致性的优化</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#store-buffer"><span class="nav-number">6.3.</span> <span class="nav-text">store buffer</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#store-buffer引入"><span class="nav-number">6.3.1.</span> <span class="nav-text">store buffer引入</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#store-buffer-改进"><span class="nav-number">6.3.2.</span> <span class="nav-text">store buffer 改进</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#sotre-buffer-在多cpu中的问题"><span class="nav-number">6.3.3.</span> <span class="nav-text">sotre buffer 在多cpu中的问题</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#写屏障-smp-wmb"><span class="nav-number">6.3.4.</span> <span class="nav-text">写屏障 smp_wmb</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Invalidate-Queue"><span class="nav-number">6.4.</span> <span class="nav-text">Invalidate Queue</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Invalidate-Queue引入"><span class="nav-number">6.4.1.</span> <span class="nav-text">Invalidate Queue引入</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Invalidate-Queue-在多cpu中的问题"><span class="nav-number">6.4.2.</span> <span class="nav-text">Invalidate Queue 在多cpu中的问题</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#读屏障-smp-rmb"><span class="nav-number">6.4.3.</span> <span class="nav-text">读屏障 smp_rmb</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#lock与屏障相关"><span class="nav-number">6.5.</span> <span class="nav-text">lock与屏障相关</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Java-voliate相关"><span class="nav-number">6.6.</span> <span class="nav-text">Java voliate相关</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#voliate-汇编代码"><span class="nav-number">6.6.1.</span> <span class="nav-text">voliate 汇编代码</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#voliate-原理"><span class="nav-number">6.6.2.</span> <span class="nav-text">voliate 原理</span></a></li></ol></li></ol></li></ol></div>
-            
-
-          </div>
-        </section>
-      <!--/noindex-->
-      
-
-      
-
-    </div>
-  </aside>
-
-
-        
-      </div>
-    </main>
-
-    <footer id="footer" class="footer">
-      <div class="footer-inner">
-        <div class="copyright">&copy; <span itemprop="copyrightYear">2021</span>
-  <span class="with-love">
-    <i class="fa fa-user"></i>
-  </span>
-  <span class="author" itemprop="copyrightHolder">klutzoder</span>
-
-  
-</div>
-
-
-  <div class="powered-by">Powered by <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a></div>
-
-
-
-  <span class="post-meta-divider">|</span>
-
-
-
-  <div class="theme-info">Theme &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Muse</a> v5.1.4</div>
-
-
-
-
-        
-
-
-
-
-
-
-
-        
-      </div>
-    </footer>
-
-    
-      <div class="back-to-top">
-        <i class="fa fa-arrow-up"></i>
-        
-      </div>
-    
-
-    
-
-  </div>
-
   
 
-<script type="text/javascript">
-  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
-    window.Promise = null;
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
   }
 </script>
 
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#问题来源"><span class="nav-number">1.</span> <span class="nav-text">问题来源</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#lock"><span class="nav-number">1.1.</span> <span class="nav-text">lock</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#spinlock"><span class="nav-number">1.2.</span> <span class="nav-text">spinlock</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#行遍历与列遍历"><span class="nav-number">1.3.</span> <span class="nav-text">行遍历与列遍历</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#多线程执行时的低效"><span class="nav-number">1.4.</span> <span class="nav-text">多线程执行时的低效</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#内存屏障"><span class="nav-number">1.5.</span> <span class="nav-text">内存屏障</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#cache-对齐"><span class="nav-number">1.6.</span> <span class="nav-text">cache 对齐</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#CPU架构图"><span class="nav-number">2.</span> <span class="nav-text">CPU架构图</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#x86微处理器经典架构"><span class="nav-number">2.1.</span> <span class="nav-text">x86微处理器经典架构</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#CPU存储架构"><span class="nav-number">2.2.</span> <span class="nav-text">CPU存储架构</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Cache-line-相关"><span class="nav-number">3.</span> <span class="nav-text">Cache line 相关</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#全关联-full-associative"><span class="nav-number">3.1.</span> <span class="nav-text">全关联(full-associative)</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#直接映射-direct-mapping"><span class="nav-number">3.2.</span> <span class="nav-text">直接映射(direct-mapping)</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#多路组相联-set-associative"><span class="nav-number">3.3.</span> <span class="nav-text">多路组相联(set-associative)</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#实例"><span class="nav-number">3.4.</span> <span class="nav-text">实例</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#为什么Set段设置在低位"><span class="nav-number">3.5.</span> <span class="nav-text">为什么Set段设置在低位</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Cache-coherence"><span class="nav-number">4.</span> <span class="nav-text">Cache coherence</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#snoopy-cache-amp-snooping-based-coherence"><span class="nav-number">4.1.</span> <span class="nav-text">snoopy cache &amp; snooping based coherence</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#A-Simple-Protocol-Valid-InValid-VI"><span class="nav-number">4.2.</span> <span class="nav-text">A Simple Protocol: Valid/InValid(VI)</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#MSI-Modified-Shared-Invalid"><span class="nav-number">4.3.</span> <span class="nav-text">MSI(Modified-Shared-Invalid)</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#MESI-Modified-Exclusive-Shared-Invalid"><span class="nav-number">4.4.</span> <span class="nav-text">MESI(Modified-Exclusive-Shared-Invalid)</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#MOESI-MESIF"><span class="nav-number">4.5.</span> <span class="nav-text">MOESI, MESIF</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Cache-line-回写与替换"><span class="nav-number">5.</span> <span class="nav-text">Cache line 回写与替换</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#cache-line-回写"><span class="nav-number">5.1.</span> <span class="nav-text">cache line 回写</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#cache-line-替换"><span class="nav-number">5.2.</span> <span class="nav-text">cache line 替换</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#memory-consistency"><span class="nav-number">6.</span> <span class="nav-text">memory consistency</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#内存一致性模型的概念"><span class="nav-number">6.1.</span> <span class="nav-text">内存一致性模型的概念</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#缓存一致性的优化"><span class="nav-number">6.2.</span> <span class="nav-text">缓存一致性的优化</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#store-buffer"><span class="nav-number">6.3.</span> <span class="nav-text">store buffer</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#store-buffer引入"><span class="nav-number">6.3.1.</span> <span class="nav-text">store buffer引入</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#store-buffer-改进"><span class="nav-number">6.3.2.</span> <span class="nav-text">store buffer 改进</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#sotre-buffer-在多cpu中的问题"><span class="nav-number">6.3.3.</span> <span class="nav-text">sotre buffer 在多cpu中的问题</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#写屏障-smp-wmb"><span class="nav-number">6.3.4.</span> <span class="nav-text">写屏障 smp_wmb</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Invalidate-Queue"><span class="nav-number">6.4.</span> <span class="nav-text">Invalidate Queue</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Invalidate-Queue引入"><span class="nav-number">6.4.1.</span> <span class="nav-text">Invalidate Queue引入</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Invalidate-Queue-在多cpu中的问题"><span class="nav-number">6.4.2.</span> <span class="nav-text">Invalidate Queue 在多cpu中的问题</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#读屏障-smp-rmb"><span class="nav-number">6.4.3.</span> <span class="nav-text">读屏障 smp_rmb</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#lock与屏障相关"><span class="nav-number">6.5.</span> <span class="nav-text">lock与屏障相关</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Java-voliate相关"><span class="nav-number">6.6.</span> <span class="nav-text">Java voliate相关</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#voliate-汇编代码"><span class="nav-number">6.6.1.</span> <span class="nav-text">voliate 汇编代码</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#voliate-原理"><span class="nav-number">6.6.2.</span> <span class="nav-text">voliate 原理</span></a></li></ol></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="klutzoder" src="/images/avatar.jpg">
+  <p class="site-author-name" itemprop="name">klutzoder</p>
+  <div class="site-description" itemprop="description">I'm no body!</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">27</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">5</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">21</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">klutzoder</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-area"></i>
+    </span>
+    <span title="Symbols count total">342k</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="Reading time total">5:11</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a>
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+<script src="/js/utils.js"></script><script src="/js/motion.js"></script>
+<script src="/js/schemes/pisces.js"></script>
+<script src="/js/next-boot.js"></script>
+
+
+
+  
+
+
+
+
+  <script src="/js/local-search.js"></script>
+
+
+
+
 
 
 
@@ -920,126 +809,23 @@
 
   
 
-
-
-
-
-
-
-
-
-
-
-
-  
-  
-    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
   
 
-  
-  
-    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
-  
-
-  
-  
-    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
-  
-
-  
-  
-    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
-  
-
-  
-  
-    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
-  
-
-  
-  
-    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
-  
-
-
-  
-
-
-  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
-
-  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
-
-
-
-  
-  
-
-  
-  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
-<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
-
-
-
-  
-
-
-  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
-
-
-
-  
-
-
-  
-
-
-
-
-	
-
-
-
-
-
-  
-
-
-
-
-
-  
-
-
-
-
-
-
-
-
-
-
-
-
-  
-
-
-
-
-
-  
-
-  
-
-  
-
-  
-  
-
-  
-
-  
-
-  
+<script>
+NexT.utils.loadComments(document.querySelector('#lv-container'), () => {
+  window.livereOptions = {
+    refer: location.pathname.replace(CONFIG.root, '').replace('index.html', '')
+  };
+  (function(d, s) {
+    var j, e = d.getElementsByTagName(s)[0];
+    if (typeof LivereTower === 'function') { return; }
+    j = d.createElement(s);
+    j.src = 'https://cdn-city.livere.com/js/embed.dist.js';
+    j.async = true;
+    e.parentNode.insertBefore(j, e);
+  })(document, 'script');
+});
+</script>
 
 </body>
 </html>

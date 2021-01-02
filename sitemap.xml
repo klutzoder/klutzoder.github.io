@@ -2,9 +2,170 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
+    <loc>http://www.klutzoder.com/Algorithm/algorithm/segment-tree-and-fenwick-tree/</loc>
+    
+    <lastmod>2021-01-02T03:39:08.404Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://www.klutzoder.com/Leetcode/leetcode/leetcode-001-005/</loc>
+    
+    <lastmod>2021-01-02T03:39:08.369Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://www.klutzoder.com/Leetcode/leetcode/leetcode-516/</loc>
+    
+    <lastmod>2021-01-02T03:39:08.358Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://www.klutzoder.com/Leetcode/leetcode/leetcode-Minimax/</loc>
+    
+    <lastmod>2021-01-02T03:39:08.353Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://www.klutzoder.com/Leetcode/leetcode/leetcode-The-Skyline-Problem-218/</loc>
+    
+    <lastmod>2021-01-02T03:39:08.348Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://www.klutzoder.com/Linux/linux/computer-cache/</loc>
+    
+    <lastmod>2021-01-02T03:39:08.341Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://www.klutzoder.com/Leetcode/leetcode/leetcode-best-time-to-buy-and-sell-stock-121-122-123-188/</loc>
+    
+    <lastmod>2021-01-02T03:39:08.334Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://www.klutzoder.com/Linux/linux/computer-cpu/</loc>
+    
+    <lastmod>2021-01-02T03:39:08.316Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://www.klutzoder.com/Linux/linux/cpu-info/</loc>
+    
+    <lastmod>2021-01-02T03:39:08.308Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://www.klutzoder.com/Linux/linux/running-linux-primer/</loc>
+    
+    <lastmod>2021-01-02T03:39:08.302Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://www.klutzoder.com/Linux/linux/stack-and-pc/</loc>
+    
+    <lastmod>2021-01-02T03:39:08.295Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://www.klutzoder.com/RocketMQ/middleware/rocketmq-01/</loc>
+    
+    <lastmod>2021-01-02T03:39:08.288Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://www.klutzoder.com/RocketMQ/middleware/rocketmq-02/</loc>
+    
+    <lastmod>2021-01-02T03:39:08.276Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://www.klutzoder.com/Algorithm/algorithm/union-find/</loc>
+    
+    <lastmod>2021-01-02T03:39:08.266Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://www.klutzoder.com/Algorithm/algorithm/topological-sort/</loc>
+    
+    <lastmod>2021-01-02T03:39:08.258Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://www.klutzoder.com/Algorithm/algorithm/kmp/</loc>
+    
+    <lastmod>2021-01-02T03:39:08.253Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://www.klutzoder.com/Algorithm/algorithm/dfs-bfs/</loc>
+    
+    <lastmod>2021-01-02T03:39:08.247Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://www.klutzoder.com/Algorithm/algorithm/divid-and-conquer/</loc>
+    
+    <lastmod>2021-01-02T03:39:08.241Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://www.klutzoder.com/Algorithm/algorithm/heap/</loc>
+    
+    <lastmod>2021-01-02T03:39:08.235Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://www.klutzoder.com/Leetcode/leetcode/leetcode-house-rob-198-213-337/</loc>
+    
+    <lastmod>2021-01-02T03:39:08.220Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://www.klutzoder.com/Algorithm/algorithm/dijkstra/</loc>
+    
+    <lastmod>2021-01-02T03:39:08.209Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://www.klutzoder.com/Algorithm/algorithm/binary-search-template/</loc>
+    
+    <lastmod>2021-01-02T03:39:07.435Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://www.klutzoder.com/LinuxKernel4-0-arm32/linuxkernel4.0/before-start-kernel/</loc>
+    
+    <lastmod>2021-01-02T03:37:23.773Z</lastmod>
+    
+  </url>
+  
+  <url>
     <loc>http://www.klutzoder.com/RocketMQ/middleware/rocketmq-03/</loc>
     
-    <lastmod>2021-01-02T02:59:58.610Z</lastmod>
+    <lastmod>2021-01-02T03:35:57.067Z</lastmod>
     
   </url>
   
@@ -51,27 +212,6 @@
   </url>
   
   <url>
-    <loc>http://www.klutzoder.com/RocketMQ/middleware/rocketmq-01/</loc>
-    
-    <lastmod>2020-12-31T08:44:36.578Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>http://www.klutzoder.com/RocketMQ/middleware/rocketmq-02/</loc>
-    
-    <lastmod>2020-12-31T08:44:36.578Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>http://www.klutzoder.com/LinuxKernel4-0-arm32/linuxkernel4.0/before-start-kernel/</loc>
-    
-    <lastmod>2020-12-31T08:44:36.525Z</lastmod>
-    
-  </url>
-  
-  <url>
     <loc>http://www.klutzoder.com/uncategorized/linux/spinlock/</loc>
     
     <lastmod>2020-12-31T08:44:36.525Z</lastmod>
@@ -79,149 +219,9 @@
   </url>
   
   <url>
-    <loc>http://www.klutzoder.com/Linux/linux/stack-and-pc/</loc>
-    
-    <lastmod>2020-12-31T08:44:36.525Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>http://www.klutzoder.com/Linux/linux/running-linux-primer/</loc>
-    
-    <lastmod>2020-12-31T08:44:36.520Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>http://www.klutzoder.com/Linux/linux/computer-cache/</loc>
-    
-    <lastmod>2020-12-31T08:44:36.375Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>http://www.klutzoder.com/Linux/linux/computer-cpu/</loc>
-    
-    <lastmod>2020-12-31T08:44:36.375Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>http://www.klutzoder.com/Linux/linux/cpu-info/</loc>
-    
-    <lastmod>2020-12-31T08:44:36.375Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>http://www.klutzoder.com/Leetcode/leetcode/leetcode-Minimax/</loc>
-    
-    <lastmod>2020-12-31T08:44:36.364Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>http://www.klutzoder.com/Leetcode/leetcode/leetcode-The-Skyline-Problem-218/</loc>
-    
-    <lastmod>2020-12-31T08:44:36.364Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>http://www.klutzoder.com/Leetcode/leetcode/leetcode-best-time-to-buy-and-sell-stock-121-122-123-188/</loc>
-    
-    <lastmod>2020-12-31T08:44:36.364Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>http://www.klutzoder.com/Leetcode/leetcode/leetcode-house-rob-198-213-337/</loc>
-    
-    <lastmod>2020-12-31T08:44:36.364Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>http://www.klutzoder.com/Algorithm/algorithm/topological-sort/</loc>
-    
-    <lastmod>2020-12-31T08:44:36.363Z</lastmod>
-    
-  </url>
-  
-  <url>
     <loc>http://www.klutzoder.com/Algorithm/algorithm/travelling-salesman-problem/</loc>
     
     <lastmod>2020-12-31T08:44:36.363Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>http://www.klutzoder.com/Leetcode/leetcode/leetcode-001-005/</loc>
-    
-    <lastmod>2020-12-31T08:44:36.363Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>http://www.klutzoder.com/Leetcode/leetcode/leetcode-516/</loc>
-    
-    <lastmod>2020-12-31T08:44:36.363Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>http://www.klutzoder.com/Algorithm/algorithm/union-find/</loc>
-    
-    <lastmod>2020-12-31T08:44:36.363Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>http://www.klutzoder.com/Algorithm/algorithm/segment-tree-and-fenwick-tree/</loc>
-    
-    <lastmod>2020-12-31T08:44:36.362Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>http://www.klutzoder.com/Algorithm/algorithm/dijkstra/</loc>
-    
-    <lastmod>2020-12-31T08:44:36.338Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>http://www.klutzoder.com/Algorithm/algorithm/divid-and-conquer/</loc>
-    
-    <lastmod>2020-12-31T08:44:36.338Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>http://www.klutzoder.com/Algorithm/algorithm/kmp/</loc>
-    
-    <lastmod>2020-12-31T08:44:36.338Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>http://www.klutzoder.com/Algorithm/algorithm/heap/</loc>
-    
-    <lastmod>2020-12-31T08:44:36.338Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>http://www.klutzoder.com/Algorithm/algorithm/binary-search-template/</loc>
-    
-    <lastmod>2020-12-31T08:44:36.337Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>http://www.klutzoder.com/Algorithm/algorithm/dfs-bfs/</loc>
-    
-    <lastmod>2020-12-31T08:44:36.337Z</lastmod>
     
   </url>
   
