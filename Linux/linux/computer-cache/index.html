@@ -1,0 +1,1045 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="chinese">
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Linux,Memory,">
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="Klutzoder'Blog" type="application/atom+xml">
+
+
+
+
+
+
+<meta name="description" content="计算机体系结构中，内存资源相对于 CPU 而言是十分稀有的，存储技术的发展相对 CPU 而言也是非常缓慢的，当 CPU 在 Moore 定律基础上以指数级增长时，存储技术还在线性缓慢增长，因此为使存储技术能够适应 CPU 如此快速的发展，在现代计算机中都会存在一级、二级、三级缓存，使得CPU能够快速的获取指令与数据。本人在学习内存管理、并发与同步过程中，一直在思考，何为原子操作、内存屏障解决了何">
+<meta name="keywords" content="Linux,Memory">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Computer Cache">
+<meta property="og:url" content="http://www.klutzoder.com/Linux/linux/computer-cache/index.html">
+<meta property="og:site_name" content="Klutzoder&#39;Blog">
+<meta property="og:description" content="计算机体系结构中，内存资源相对于 CPU 而言是十分稀有的，存储技术的发展相对 CPU 而言也是非常缓慢的，当 CPU 在 Moore 定律基础上以指数级增长时，存储技术还在线性缓慢增长，因此为使存储技术能够适应 CPU 如此快速的发展，在现代计算机中都会存在一级、二级、三级缓存，使得CPU能够快速的获取指令与数据。本人在学习内存管理、并发与同步过程中，一直在思考，何为原子操作、内存屏障解决了何">
+<meta property="og:locale" content="chinese">
+<meta property="og:image" content="https://klutzoder-blog.oss-cn-beijing.aliyuncs.com/blog/linux/media-cache/15726990357597.jpg">
+<meta property="og:image" content="https://klutzoder-blog.oss-cn-beijing.aliyuncs.com/blog/linux/media-cache/15726992590858.jpg">
+<meta property="og:image" content="https://klutzoder-blog.oss-cn-beijing.aliyuncs.com/blog/linux/media-cache/15726993283119.jpg">
+<meta property="og:image" content="https://klutzoder-blog.oss-cn-beijing.aliyuncs.com/blog/linux/media-cache/15726994394105.jpg">
+<meta property="og:image" content="https://klutzoder-blog.oss-cn-beijing.aliyuncs.com/blog/linux/media-cache/15726995196414.jpg">
+<meta property="og:image" content="https://klutzoder-blog.oss-cn-beijing.aliyuncs.com/blog/linux/media-cache/15726995813548.jpg">
+<meta property="og:image" content="https://klutzoder-blog.oss-cn-beijing.aliyuncs.com/blog/linux/media-cache/15726995902129.jpg">
+<meta property="og:image" content="https://klutzoder-blog.oss-cn-beijing.aliyuncs.com/blog/linux/media-cache/15726996491542.jpg">
+<meta property="og:image" content="https://klutzoder-blog.oss-cn-beijing.aliyuncs.com/blog/linux/media-cache/15726996733629.jpg">
+<meta property="og:image" content="https://klutzoder-blog.oss-cn-beijing.aliyuncs.com/blog/linux/media-cache/15726997015652.jpg">
+<meta property="og:image" content="https://klutzoder-blog.oss-cn-beijing.aliyuncs.com/blog/linux/media-cache/15726997248751.jpg">
+<meta property="og:image" content="https://klutzoder-blog.oss-cn-beijing.aliyuncs.com/blog/linux/media-cache/15726997336478.jpg">
+<meta property="og:image" content="https://klutzoder-blog.oss-cn-beijing.aliyuncs.com/blog/linux/media-cache/15726997569022.jpg">
+<meta property="og:image" content="https://klutzoder-blog.oss-cn-beijing.aliyuncs.com/blog/linux/media-cache/15726997794543.jpg">
+<meta property="og:image" content="https://klutzoder-blog.oss-cn-beijing.aliyuncs.com/blog/linux/media-cache/15726998087556.jpg">
+<meta property="og:image" content="https://klutzoder-blog.oss-cn-beijing.aliyuncs.com/blog/linux/media-cache/15726998561757.jpg">
+<meta property="og:image" content="https://klutzoder-blog.oss-cn-beijing.aliyuncs.com/blog/linux/media-cache/15726998943077.jpg">
+<meta property="og:image" content="https://klutzoder-blog.oss-cn-beijing.aliyuncs.com/blog/linux/media-cache/15726999313709.jpg">
+<meta property="og:image" content="https://klutzoder-blog.oss-cn-beijing.aliyuncs.com/blog/linux/media-cache/15726999599089.jpg">
+<meta property="og:image" content="https://klutzoder-blog.oss-cn-beijing.aliyuncs.com/blog/linux/media-cache/15727001282154.jpg">
+<meta property="og:image" content="https://klutzoder-blog.oss-cn-beijing.aliyuncs.com/blog/linux/media-cache/15727001632025.jpg">
+<meta property="og:image" content="https://klutzoder-blog.oss-cn-beijing.aliyuncs.com/blog/linux/media-cache/15727002117003.jpg">
+<meta property="og:image" content="https://klutzoder-blog.oss-cn-beijing.aliyuncs.com/blog/linux/media-cache/15727002430322.jpg">
+<meta property="og:image" content="https://klutzoder-blog.oss-cn-beijing.aliyuncs.com/blog/linux/media-cache/15727003690920.jpg">
+<meta property="og:image" content="https://klutzoder-blog.oss-cn-beijing.aliyuncs.com/blog/linux/media-cache/15727003886349.jpg">
+<meta property="og:image" content="https://klutzoder-blog.oss-cn-beijing.aliyuncs.com/blog/linux/media-cache/15727004212201.jpg">
+<meta property="og:image" content="https://klutzoder-blog.oss-cn-beijing.aliyuncs.com/blog/linux/media-cache/15727004560821.jpg">
+<meta property="og:image" content="https://klutzoder-blog.oss-cn-beijing.aliyuncs.com/blog/linux/media-cache/15727005038294.jpg">
+<meta property="og:image" content="https://klutzoder-blog.oss-cn-beijing.aliyuncs.com/blog/linux/media-cache/15727005338677.jpg">
+<meta property="og:image" content="https://klutzoder-blog.oss-cn-beijing.aliyuncs.com/blog/linux/media-cache/15727005667008.jpg">
+<meta property="og:image" content="https://klutzoder-blog.oss-cn-beijing.aliyuncs.com/blog/linux/media-cache/15727005909427.jpg">
+<meta property="og:image" content="https://klutzoder-blog.oss-cn-beijing.aliyuncs.com/blog/linux/media-cache/15727007447223.jpg">
+<meta property="og:image" content="https://klutzoder-blog.oss-cn-beijing.aliyuncs.com/blog/linux/media-cache/15727007800762.jpg">
+<meta property="og:image" content="https://klutzoder-blog.oss-cn-beijing.aliyuncs.com/blog/linux/media-cache/15727008118796.jpg">
+<meta property="og:updated_time" content="2020-12-31T08:44:36.375Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Computer Cache">
+<meta name="twitter:description" content="计算机体系结构中，内存资源相对于 CPU 而言是十分稀有的，存储技术的发展相对 CPU 而言也是非常缓慢的，当 CPU 在 Moore 定律基础上以指数级增长时，存储技术还在线性缓慢增长，因此为使存储技术能够适应 CPU 如此快速的发展，在现代计算机中都会存在一级、二级、三级缓存，使得CPU能够快速的获取指令与数据。本人在学习内存管理、并发与同步过程中，一直在思考，何为原子操作、内存屏障解决了何">
+<meta name="twitter:image" content="https://klutzoder-blog.oss-cn-beijing.aliyuncs.com/blog/linux/media-cache/15726990357597.jpg">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: 'Author'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://www.klutzoder.com/Linux/linux/computer-cache/">
+
+
+
+
+
+  <title>Computer Cache | Klutzoder'Blog</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="chinese">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Klutzoder'Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            Home
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            Archives
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://www.klutzoder.com/Linux/linux/computer-cache/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="klutzoder">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Klutzoder'Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">Computer Cache</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2019-06-22T15:58:21+08:00">
+                2019-06-22
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Linux/" itemprop="url" rel="index">
+                    <span itemprop="name">Linux</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <blockquote>
+<p>计算机体系结构中，内存资源相对于 CPU 而言是十分稀有的，存储技术的发展相对 CPU 而言也是非常缓慢的，当 CPU 在 Moore 定律基础上以指数级增长时，存储技术还在线性缓慢增长，因此为使存储技术能够适应 CPU 如此快速的发展，在现代计算机中都会存在一级、二级、三级缓存，使得CPU能够快速的获取指令与数据。<br>本人在学习<code>内存管理、并发与同步</code>过程中，一直在思考，何为<code>原子操作、内存屏障</code>解决了何问题？以及<code>缓存一致性</code>、<code>内存一致性</code>都是什么？<br>因此，不才经过搜索网上大量资料，学习后整理以下文章，以作分享。</p>
+</blockquote>
+<h1 id="问题来源"><a href="#问题来源" class="headerlink" title="问题来源"></a>问题来源</h1><blockquote>
+<p>首先，希望通过几个例子，与大家分享一下有哪些地方出现了与计算机缓存相关的的知识点。</p>
+</blockquote>
+<h2 id="lock"><a href="#lock" class="headerlink" title="lock"></a>lock</h2><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">asm</span> <span class="title">volatile</span><span class="params">(lock <span class="string">"cmpxchgb %2,%1"</span></span></span></span><br><span class="line"><span class="function"><span class="params">            : <span class="string">"=a"</span> (__ret), <span class="string">"+m"</span> (*__ptr) <span class="comment">// output</span></span></span></span><br><span class="line"><span class="function"><span class="params">            : <span class="string">"q"</span> (__new), <span class="string">"0"</span> (__old)    <span class="comment">// input</span></span></span></span><br><span class="line"><span class="function"><span class="params">            : <span class="string">"memory"</span>)</span></span>;                  <span class="comment">// clobbered</span></span><br></pre></td></tr></table></figure>
+<p>如果大家看过内核有关<a href="https://elixir.bootlin.com/linux/v5.0/source/tools/arch/x86/include/asm/cmpxchg.h#L41" target="_blank" rel="noopener">lock</a>代码的话就会看到上面这一条汇编指令。在这条简单的汇编代码中，包含了关键词<code>volatile</code>, <code>lock</code>, <code>cmpxchgb</code>。<br>其中<code>cmpxchgb</code>很简单就是用<code>__old</code>与<code>__ptr</code>内存中的数据做比较，如果相同则将<code>__new</code>赋给<code>__ptr</code>，返回<code>__new</code>；否则保持<code>__ptr</code>值不变，返回<code>__ptr</code>指向内容。<br>让我想不通的一点是为何需要<code>volatile</code>, <code>lock</code>以及这两个关键词所起到的作用是什么？</p>
+<blockquote>
+<p><code>volatile</code>为了防止gcc优化代码。<br><code>lock</code>添加内存屏障，早期也采用<code>锁总线</code>技术。<br>这边的话先给出回答，后面会详细解释。</p>
+</blockquote>
+<h2 id="spinlock"><a href="#spinlock" class="headerlink" title="spinlock"></a>spinlock</h2><p>自旋锁Spinlock是内核中保证原子操作的常用手段，高性能的Spinlock能够极大提高内核效率，因此有大量对于Spinlock的研究，相关知识大家可以通过搜索<a href="https://xurongyang.github.io/2017/01/17/SpinLock%E5%AE%9E%E7%8E%B0/" target="_blank" rel="noopener">SpinLock实现</a>等关键词获得。所有对于Spinlock的优化都是为了解决<code>CPU cacheline bouncing</code>这一问题。<br>同时，为了更高效的使用Spinlock都会采用<code>Cache line 对齐</code>，使得Spinlock能够独占<code>Cache line</code>，如内存管理中<a href="https://elixir.bootlin.com/linux/v4.0/source/include/linux/mmzone.h#L476" target="_blank" rel="noopener">Zone</a>添加<code>ZONE_PADDING</code>以做对齐使用。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">zone</span> &#123;</span></span><br><span class="line">    ZONE_PADDING(_pad1_)</span><br><span class="line">    <span class="keyword">spinlock_t</span>		lock;</span><br><span class="line">    ZONE_PADDING(_pad2_)</span><br><span class="line">    <span class="keyword">spinlock_t</span>		lru_lock;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p><code>Cache line</code>是缓存最小的单位。<br><code>CPU cacheline bouncing</code>产生原因是不同Core访问同一内存地址数据时，实际都是从自身L1 Cache获取，此时需要由<code>cache coherence protocol</code> 来保证每一Core从各自Cache看到正确的数据，当竞争严重时，将产生大量的<code>cache coherence message</code>，从而产生大量的<code>cache traffic</code>，降低锁的伸缩性。</p>
+</blockquote>
+<h2 id="行遍历与列遍历"><a href="#行遍历与列遍历" class="headerlink" title="行遍历与列遍历"></a>行遍历与列遍历</h2><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 行遍历</span></span><br><span class="line"><span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; m; i++) &#123;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> j = <span class="number">0</span>; j &lt; n; j++) &#123;</span><br><span class="line">        sum += num[i][j]</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 列遍历</span></span><br><span class="line"><span class="keyword">for</span> (<span class="keyword">int</span> j = <span class="number">0</span>; j &lt; n; j++) &#123;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; m; i++) &#123;</span><br><span class="line">        sum += num[i][j]</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>在我们学习计算机原理，或者其他相关课程时，老师一再强调行遍历要比列遍历高效，在没必要的情况下请使用行遍历。<br>这是由于，数据在内存中，需要以页的形式缓存到L3，再到L2，在缓存到L1的 Cache Line，如果二维数组一行数据特别大，进行遍历的时候，需要频繁的从缓存中换出当前行数据，再读取下一行。如果采用行遍历会处理掉读入的整行数据；而采用列遍历时只会处理读入的整行数据中的某一个数据后缓存则无效。</p>
+<h2 id="多线程执行时的低效"><a href="#多线程执行时的低效" class="headerlink" title="多线程执行时的低效"></a>多线程执行时的低效</h2><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">int</span> result[P];</span><br><span class="line"></span><br><span class="line"><span class="keyword">for</span> (<span class="keyword">int</span> p = <span class="number">0</span>; p &lt; P; p++) &#123;</span><br><span class="line">    pool.run([&amp;,p]) &#123;</span><br><span class="line">        result[p] = <span class="number">0</span>;</span><br><span class="line">        <span class="keyword">int</span> chunkSize = DIM/P + <span class="number">1</span>;</span><br><span class="line">        <span class="keyword">int</span> start = p * chunkSize;</span><br><span class="line">        <span class="keyword">int</span> end = min(start+chunkSize, DIM);</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> i = start; i &lt; end; i++) &#123;</span><br><span class="line">            ++result[p];</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">pool.join(); <span class="comment">// wait all task</span></span><br><span class="line"><span class="keyword">int</span> sum = <span class="number">0</span>;</span><br><span class="line"><span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; P; i++) sum+= result[i];</span><br></pre></td></tr></table></figure>
+<p>上面是一个典型的低效使用多线程的写法，<code>result</code>数组被多个线程所持有，在每个Core对<code>result[i]</code>进行操作的时候，都需要与其他所有Core同步这一变化，从而导致<code>CPU cacheline bouncing</code>，解决方式而很简单，每个线程持有自己的私有变量，等对当前私有变量处理完成后再赋给<code>result[i]</code>，此时缓存同步便极大降低。</p>
+<blockquote>
+<p>相关知识可以看：<a href="https://www.youtube.com/watch?v=WDIkqP4JbkE&amp;list=PLqeV3qe6DIFbHWuY5-jo6_AoTAeIM99g0&amp;index=6&amp;t=522s" target="_blank" rel="noopener">Scott Meyers: Cpu Caches and Why You Care</a></p>
+</blockquote>
+<h2 id="内存屏障"><a href="#内存屏障" class="headerlink" title="内存屏障"></a>内存屏障</h2><blockquote>
+<p>内存屏障主要分三类：编译器优化 / 缓存优化 / CPU乱序执行</p>
+</blockquote>
+<p><a href="https://blog.csdn.net/GugeMichael/article/details/8207519" target="_blank" rel="noopener">C/C++ — 编程中的内存屏障(Memory Barriers)</a></p>
+<p><a href="https://blog.csdn.net/ctthuangcheng/article/details/8893579" target="_blank" rel="noopener">优化屏障和内存屏障</a></p>
+<h2 id="cache-对齐"><a href="#cache-对齐" class="headerlink" title="cache 对齐"></a>cache 对齐</h2><p><a href="http://blog.kongfy.com/2017/01/%E5%A4%9A%E6%A0%B8%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B%E4%B8%AD%E7%9A%84cache-line%E5%AF%B9%E9%BD%90%E9%97%AE%E9%A2%98/" target="_blank" rel="noopener">多核并发编程中的cache line对齐问题</a></p>
+<p><a href="https://blog.csdn.net/zhang_shuai_2011/article/details/38119657" target="_blank" rel="noopener">Cpu cache 与内存对齐</a></p>
+<blockquote>
+<p>数据跨越两个 cache line，就意味着两次 load 或者两次 store。如果数据结构是 cache line 对齐的，就有可能减少一次读写。数据结构的首地址cache line对齐，意味着可能有内存浪费（特别是数组这样连续分配的数据结构），所以需要在空间和时间两方面权衡。</p>
+</blockquote>
+<p>比如现在有个变量 int x; 占用4个字节,它的起始地址是 0x1234567F，那么它占用的内存范围就在 0x1234567F-0x12345682 之间。如果现在Cache Line长度为32个字节，那么每次内存同 Cache 进行数据交换时，都必须取起始地址时32(0x20)倍数的内存位置开始的一段长度为32的内存同 Cache Line 进行交换.<br>比如 0x1234567F 落在范围 0x12345660~0x1234567F 上，但是 0x12345680~0x12345682 落在范围 0x12345680~0x1234569F上，也就是说，为了将4个字节的整数变量 0x1234567F~0x12345682 装入 Cache ,我们必须调入两条 Cache Line 的数据。<br>但是如果 int x 的起始地址按4的倍数对齐，比如是 0x1234567C~0x1234567F ,那么必然会落在一条Cache Line 上，所以每次访问变量x就最多只需要装入一条 Cache Line 的数据了。比如现在一般的 malloc() 函数，返回的内存地址会已经是<code>8字节对齐</code>的，这个就是为了能够让大部分程序有更好的性能。</p>
+<h1 id="CPU架构图"><a href="#CPU架构图" class="headerlink" title="CPU架构图"></a>CPU架构图</h1><h2 id="x86微处理器经典架构"><a href="#x86微处理器经典架构" class="headerlink" title="x86微处理器经典架构"></a>x86微处理器经典架构</h2><p><img src="https://klutzoder-blog.oss-cn-beijing.aliyuncs.com/blog/linux/media-cache/15726990357597.jpg" width="600" alt="x86微处理器经典架构" title="x86微处理器经典架构"></p>
+<p>附: <a href="https://blog.csdn.net/zdy0_2004/article/details/78998810" target="_blank" rel="noopener">首发：Meltdown漏洞分析与实践</a></p>
+<ol>
+<li>经典处理器架构的流水线是5级流水线：取值(IF),译码(ID),执行(EX),数据内存访问(MEM),写会(WB)</li>
+<li><p>现在处理器在设计上都采用了<code>超标量体系结构(Superscalar Architecture)</code>和<code>乱序执行(Out-of-Order, OOO)</code>技术，极大提高了处理器计算能力。</p>
+<p> <code>超标量技术</code>能够在一个时钟周期内执行多个指令。<br> ALU: Arithmetic-logic unit, 算法逻辑单元<br> AGU: Address generation unit, 地址生成单元</p>
+</li>
+<li>CPU执行过程，采用<code>顺序提交指令</code>, <code>乱序执行</code>, <code>最后顺序提交结果</code>的过程。</li>
+</ol>
+<blockquote>
+<p>不进行乱序优化时，处理器的指令执行过程如下：</p>
+<ul>
+<li>指令获取。</li>
+<li>如果输入的运算对象是可以获取的（比如已经存在于寄存器中），这条指令会被发送到合适的功能单元。如果一个或者更多的运算对象在当前的时钟周期中是不可获取的（通常需要从主内存获取），处理器会开始等待直到它们是可以获取的。</li>
+<li>指令在合适的功能单元中被执行。</li>
+<li>功能单元将运算结果写回寄存器。</li>
+</ul>
+<p>乱序优化下的执行过程如下：</p>
+<ul>
+<li>指令获取。</li>
+<li>指令被发送到一个指令序列（也称执行缓冲区或者保留站）中。</li>
+<li><code>指令将在序列中等待，直到它的数据运算对象是可以获取的。然后，指令被允许在先进入的、旧的指令之前离开序列缓冲区。（此处表现为乱序）</code></li>
+<li>指令被分配给一个合适的功能单元并由之执行。</li>
+<li>结果被放到一个序列中。</li>
+<li><code>仅当所有在该指令之前的指令都将他们的结果写入寄存器后，这条指令的结果才会被写入寄存器中。（重整乱序结果）</code></li>
+</ul>
+<p>当然，为了实现乱序优化，还需要很多技术的支持，如寄存器重命名、分枝预测等，但大致了解到这里就足够。后文的注释中会据此给出内存屏障的实现方案</p>
+</blockquote>
+<h2 id="CPU存储架构"><a href="#CPU存储架构" class="headerlink" title="CPU存储架构"></a>CPU存储架构</h2><p><img src="https://klutzoder-blog.oss-cn-beijing.aliyuncs.com/blog/linux/media-cache/15726992590858.jpg" width="400" alt="CPU 与 Cache 比较" title></p>
+<p>附:<a href="https://www.extremetech.com/extreme/188776-how-l1-and-l2-cpu-caches-work-and-why-theyre-an-essential-part-of-modern-chips" target="_blank" rel="noopener">How L1 and L2 CPU Caches Work, and Why They’re an Essential Part of Modern Chips</a></p>
+<blockquote>
+<p>CPU速度与内存速度差距越来越大，若CPU需要等待内存响应极大地降低了CPU效率，因此引入了缓存机制。</p>
+</blockquote>
+<p><img src="https://klutzoder-blog.oss-cn-beijing.aliyuncs.com/blog/linux/media-cache/15726993283119.jpg" width="400" alt title></p>
+<p>附:<a href="https://blog.csdn.net/huayushuangfei/article/details/80718111" target="_blank" rel="noopener">从CPU缓存看volatile为什么不能保证原子性</a></p>
+<blockquote>
+<p>有了CPU高速缓存虽然解决了效率问题，但是它会带来一个新的问题：数据一致性。<br>一般方案有两种：<code>缓存一致性协议</code> or <code>总线锁机制</code><br>由于总线锁在一个CPU锁住总线后，其他CPU会阻塞等待，效率较低，因此现在的体系结构中一般采用<code>缓存一致性协议</code>保证数据一致性。</p>
+</blockquote>
+<p><img src="https://klutzoder-blog.oss-cn-beijing.aliyuncs.com/blog/linux/media-cache/15726994394105.jpg" width="600" alt title></p>
+<blockquote>
+<p>现有的CPU主要有3级缓存，以i7为例，包含16个寄存器，32KB一级缓存（L1指令缓存，L1数据缓存），256KB二级缓存，2-20MB三级缓存</p>
+<p>Linux查看缓存命令：cat /sys/devices/system/cpu/cpu0/cache/index0/size<br>以线上机器为例，32K，256K，20M<br>L1: 8way, 64sets, 64bytes cacheline<br>L2: 8way, 512sets, 64bytes cacheline<br>L3: 20way, 16384sets, 64bytes cacheline<br>附: <a href="https://blog.csdn.net/u013920085/article/details/50010925" target="_blank" rel="noopener">linux查看CPU高速缓存(cache)信息</a></p>
+</blockquote>
+<p><img src="https://klutzoder-blog.oss-cn-beijing.aliyuncs.com/blog/linux/media-cache/15726995196414.jpg" width="600" alt title></p>
+<p>附:<a href="https://www.jianshu.com/p/cfe8456aa43a" target="_blank" rel="noopener">CPU Cache 缓存学习笔记</a></p>
+<blockquote>
+<p>不同的缓存执行效率不一样，L1大概在4ns，L2大概在11ns，L3大概在14ns</p>
+</blockquote>
+<h1 id="Cache-line-相关"><a href="#Cache-line-相关" class="headerlink" title="Cache line 相关"></a>Cache line 相关</h1><p>以上知道了Cache的存在，那么Cache是如何进行分布的呢？</p>
+<p><a href="https://zhuanlan.zhihu.com/p/37132953" target="_blank" rel="noopener">冬瓜哥彪悍图解Cache组关联</a><br><a href="https://my.oschina.net/fileoptions/blog/1630855" target="_blank" rel="noopener">Cache直接映射、组相连映射以及全相连映射</a><br><a href="https://blog.csdn.net/Xlong_Du/article/details/6394166" target="_blank" rel="noopener">Arm核920T性能优化之Cache</a><br><a href="http://cenalulu.github.io/linux/all-about-cpu-cache/" target="_blank" rel="noopener">关于CPU Cache — 程序猿需要知道的那些事</a></p>
+<p>假设：主存容量1MB，每块512Byte，分成2048块。Cache容量8KB，每块512B，分成16块。</p>
+<h2 id="全关联-full-associative"><a href="#全关联-full-associative" class="headerlink" title="全关联(full-associative)"></a>全关联(full-associative)</h2><p><img src="https://klutzoder-blog.oss-cn-beijing.aliyuncs.com/blog/linux/media-cache/15726995813548.jpg" alt title></p>
+<p><img src="https://klutzoder-blog.oss-cn-beijing.aliyuncs.com/blog/linux/media-cache/15726995902129.jpg" width="600" alt title></p>
+<blockquote>
+<p>全关联的架构，主存中每一块都可以映射到Cache中的任意一块。Cache利用率高，但是需要一大堆的<code>比较器</code>，硬件设计、实现困难，因此只存在于小容量Cache中。</p>
+</blockquote>
+<h2 id="直接映射-direct-mapping"><a href="#直接映射-direct-mapping" class="headerlink" title="直接映射(direct-mapping)"></a>直接映射(direct-mapping)</h2><p><img src="https://klutzoder-blog.oss-cn-beijing.aliyuncs.com/blog/linux/media-cache/15726996491542.jpg" alt title></p>
+<blockquote>
+<p>直接映射的架构，N%16 即为对应的Cache块。<br>这种架构硬件设计简单，成本低转化快，但是不够灵活，每个主存块只能对应一个固有的位置，容易产生<code>冲突</code>。<br>例如一个程序需要重复使用内存0块和16块数据，即使其他缓存1-15块空闲，也只能使用0块缓存进行切换。降低命中率。</p>
+</blockquote>
+<p><img src="https://klutzoder-blog.oss-cn-beijing.aliyuncs.com/blog/linux/media-cache/15726996733629.jpg" alt width="600" title></p>
+<h2 id="多路组相联-set-associative"><a href="#多路组相联-set-associative" class="headerlink" title="多路组相联(set-associative)"></a>多路组相联(set-associative)</h2><p><img src="https://klutzoder-blog.oss-cn-beijing.aliyuncs.com/blog/linux/media-cache/15726997015652.jpg" alt title><br><img src="https://klutzoder-blog.oss-cn-beijing.aliyuncs.com/blog/linux/media-cache/15726997248751.jpg" width="600" alt title><br><img src="https://klutzoder-blog.oss-cn-beijing.aliyuncs.com/blog/linux/media-cache/15726997336478.jpg" width="600" alt title></p>
+<blockquote>
+<p>直接映射相当于一路组相联。<br>主存中的各块与Cache的组号之间有固定的映射关系，但可自由映射到对应组中的任意一块。<br>多路组关联，缓存控制器每收到一个请求就会并行去所有Way中，将同一行号Tag都读出来然后与请求比较，2路组关联会浪费50%能耗。因为需要将所有Way 中对应行数据读出。为减少功耗，将Tag与Data 分离。</p>
+</blockquote>
+<p><img src="https://klutzoder-blog.oss-cn-beijing.aliyuncs.com/blog/linux/media-cache/15726997569022.jpg" width="600" alt title></p>
+<p><img src="https://klutzoder-blog.oss-cn-beijing.aliyuncs.com/blog/linux/media-cache/15726997794543.jpg" width="600" alt title></p>
+<h2 id="实例"><a href="#实例" class="headerlink" title="实例"></a>实例</h2><p><img src="https://klutzoder-blog.oss-cn-beijing.aliyuncs.com/blog/linux/media-cache/15726998087556.jpg" width="600" alt title></p>
+<p>8way, 64set, 64byte = 32KB<br>由于该处理器处理64G内存，分页为4k，总共有$64G/4k=2^{24}$个页面，需要24位进行标记(12-35位进行4KB对齐)<br>4k/64Byte=64(6-11位表示选中set)</p>
+<blockquote>
+<p>以物理地址0x800010a0为例，<code>1000 0000 0000 0000 0001 | 0000 10|10 0000</code><br>0x800010a0必定在第二组中，至于在哪一路，则需要通过tag标签进行查找。</p>
+</blockquote>
+<p><img src="https://klutzoder-blog.oss-cn-beijing.aliyuncs.com/blog/linux/media-cache/15726998561757.jpg" width="600" alt title></p>
+<blockquote>
+<p>由于我们只需要去查看某一组中的8路，所以查找匹配标记是非常迅速的；事实上，从电学角度讲，所有的标记是同时进行比对的，我用箭头来表示这一点。如果此时正好有一条具有匹配标签的有效缓存线，我们就获得一次缓存命中（cache hit）</p>
+</blockquote>
+<h2 id="为什么Set段设置在低位"><a href="#为什么Set段设置在低位" class="headerlink" title="为什么Set段设置在低位"></a>为什么Set段设置在低位</h2><p><img src="https://klutzoder-blog.oss-cn-beijing.aliyuncs.com/blog/linux/media-cache/15726998943077.jpg" width="600" alt title></p>
+<p><a href="http://cenalulu.github.io/linux/all-about-cpu-cache/" target="_blank" rel="noopener">关于CPU Cache — 程序猿需要知道的那些事</a></p>
+<h1 id="Cache-coherence"><a href="#Cache-coherence" class="headerlink" title="Cache coherence"></a>Cache coherence</h1><p><a href="https://www.youtube.com/watch?v=OLGEtXV4U3I&amp;list=PLqeV3qe6DIFbHWuY5-jo6_AoTAeIM99g0&amp;index=3&amp;t=1983s" target="_blank" rel="noopener">MIT 6.004 L21: Cache Coherence</a></p>
+<p><a href="https://zhuanlan.zhihu.com/p/25876351" target="_blank" rel="noopener">缓存/内存Coherence模型</a></p>
+<p>以上介绍的主要是在单个CPU中的Cache结构，那么在多CPU体系下，Cache是如何分布的呢？</p>
+<p><img src="https://klutzoder-blog.oss-cn-beijing.aliyuncs.com/blog/linux/media-cache/15726999313709.jpg" width="400" alt title></p>
+<blockquote>
+<p>在I7中，每个CPU拥有自己独立的32KB一级缓存（L1指令缓存，L1数据缓存），256KB二级缓存，2-20MB三级缓存。</p>
+</blockquote>
+<p><img src="https://klutzoder-blog.oss-cn-beijing.aliyuncs.com/blog/linux/media-cache/15726999599089.jpg" width="300" alt title></p>
+<blockquote>
+<p>那么在多CPU中是如何保证数据一致性的？即cache coherence 协议是什么。</p>
+</blockquote>
+<h2 id="snoopy-cache-amp-snooping-based-coherence"><a href="#snoopy-cache-amp-snooping-based-coherence" class="headerlink" title="snoopy cache &amp; snooping based coherence"></a>snoopy cache &amp; snooping based coherence</h2><p><a href="https://en.wikipedia.org/wiki/Snoopy_cache" target="_blank" rel="noopener">Wiki-Snoopy cache</a></p>
+<blockquote>
+<p>In computing a snoopy cache is a type of memory cache that performs bus sniffing. The technique was introduced by Ravishankar and Goodman in 1983.[1]</p>
+<p>Such caches are used in systems where many processors or computers share the same memory and each has its own cache. In such systems processor ‘A’ may read a value from memory, then processor ‘B’ does the same. If either of the processors now change the value by writing back to memory they will invalidate the other processor’s cached value.</p>
+<p>In order to prevent this and maintain cache coherence, snoopy caches monitor (‘snoop on’) the memory bus to detect any writes to values that they are holding, including changes coming from other processors or distributed computers.</p>
+<p>However, this approach can only work in computer architectures like SGI Challenge and SGI Onyx where a single memory bus is shared between all processors</p>
+<p>翻译一下大概意思是：<br>snoopy cache 能够监控总线，这类缓存用于多处理器在自己的cache中分享相同的内存，如果A从内存中读取数据，然后B也读取了相同的数据，如果此时任何一个处理器修改了当前数据，并回写到内存，将会无效化其他的处理器。<br>为保证缓存一致性，snoopy cache会监控所有自己已有数据的回写信号，包括其他处理器甚至分布式系统。<br><code>然而这种设计只有在所有处理器共享同一总线下才能使用。</code></p>
+</blockquote>
+<p><code>相关的硬件设计无法找到...</code></p>
+<p><a href="http://www.cs.ucr.edu/~ravi/Papers/NWConf/ravishankar_83.pdf" target="_blank" rel="noopener">Ravishankar, Chinya; Goodman, James (February 28, 1983)</a></p>
+<p><img src="https://klutzoder-blog.oss-cn-beijing.aliyuncs.com/blog/linux/media-cache/15727001282154.jpg" width="400" alt title></p>
+<h2 id="A-Simple-Protocol-Valid-InValid-VI"><a href="#A-Simple-Protocol-Valid-InValid-VI" class="headerlink" title="A Simple Protocol: Valid/InValid(VI)"></a>A Simple Protocol: Valid/InValid(VI)</h2><p><img src="https://klutzoder-blog.oss-cn-beijing.aliyuncs.com/blog/linux/media-cache/15727001632025.jpg" width="600" alt title></p>
+<blockquote>
+<p><code>Every Write updates main memory</code><br><code>Every Write requires broadcast &amp; snoop</code> </p>
+</blockquote>
+<h2 id="MSI-Modified-Shared-Invalid"><a href="#MSI-Modified-Shared-Invalid" class="headerlink" title="MSI(Modified-Shared-Invalid)"></a>MSI(Modified-Shared-Invalid)</h2><p><img src="https://klutzoder-blog.oss-cn-beijing.aliyuncs.com/blog/linux/media-cache/15727002117003.jpg" width="600" alt title></p>
+<blockquote>
+<p>顺序写内存。<br>优势：使用回写的方式，每次Write不需要立即写到main memory<br><a href="https://baike.baidu.com/item/MSI%E5%8D%8F%E8%AE%AE/22688302?fr=aladdin" target="_blank" rel="noopener">MSI协议</a><br>问题：1. 当多个私有缓存中都含有同一个共享数据块时，采用写无效策略的MSI 协议会进行<code>多次的写作废操作</code>，增加流量负载;<br>2.其次，总线作为互斥资源其带宽有限，即总线的扩展性差；<br>3.MSI 协议是通过广播的方式发送一致性消息，存在于总线上的消息对于一些处理器核来说是不需要的，即<code>总线的有效利用率</code>受到影响.</p>
+</blockquote>
+<h2 id="MESI-Modified-Exclusive-Shared-Invalid"><a href="#MESI-Modified-Exclusive-Shared-Invalid" class="headerlink" title="MESI(Modified-Exclusive-Shared-Invalid)"></a>MESI(Modified-Exclusive-Shared-Invalid)</h2><p><a href="https://en.wikipedia.org/wiki/MESI_protocol" target="_blank" rel="noopener">MESI protocol</a></p>
+<p><img src="https://klutzoder-blog.oss-cn-beijing.aliyuncs.com/blog/linux/media-cache/15727002430322.jpg" width="600" alt title></p>
+<h2 id="MOESI-MESIF"><a href="#MOESI-MESIF" class="headerlink" title="MOESI, MESIF"></a>MOESI, MESIF</h2><p><a href="https://www.ydaobo.com/wenzhang/12847.html" target="_blank" rel="noopener">Cache一致性：MOESI/MESIF协议</a></p>
+<blockquote>
+<p>MESI一致性协议中，一个CPU核先在L1 Cache中写入一个数据，然后另一个CPU请求读写此数据。则共享数据需要先写回L2 Cache，然后再发送给另一个CPU，需要两次操作。并且，在另一个CPU中更改后，最终还需要再次写回L2 Cache。这段操作中，完全可以减少一次数据传输和L2 Cache的写入。为此，需要加入一个Owner状态。<br>不对这两个协议进行具体分析。</p>
+</blockquote>
+<h1 id="Cache-line-回写与替换"><a href="#Cache-line-回写与替换" class="headerlink" title="Cache line 回写与替换"></a>Cache line 回写与替换</h1><blockquote>
+<p><code>首先需要明确一点，由于cache的最小单位是cache line(cache block)，因此无论是读取回写还是替换都是以cache line 作为单位的。</code></p>
+<ol>
+<li>多个CPU中如何保证数据一致？是由cache1回写到cache2在回写到cache3再到主存？还是cache1直接回写到主存？什么时候回写？</li>
+<li>cache line 什么时候进行替换，按什么替换.</li>
+</ol>
+</blockquote>
+<h2 id="cache-line-回写"><a href="#cache-line-回写" class="headerlink" title="cache line 回写"></a>cache line 回写</h2><p><a href="https://www.hpl.hp.com/techreports/Compaq-DEC/WRL-91-12.pdf" target="_blank" rel="noopener">Cache Write Policies and Performance</a></p>
+<ol>
+<li><p>Cache hit<br>1.1 直写策略 (VI, MSI)<br>1.2 回写 (MESI, cache line 换出回写到内存)</p>
+</li>
+<li><p>Cache miss<br>2.1 write allocate policy(先调入chache)<br>2.2 no write allocate policy(直接写到main memory)</p>
+</li>
+</ol>
+<p>直写策略，设计简单，但需要频繁的占用总线。<br>回写，设计困难，极大减少总线占用。</p>
+<h2 id="cache-line-替换"><a href="#cache-line-替换" class="headerlink" title="cache line 替换"></a>cache line 替换</h2><p><a href="https://blog.csdn.net/xinanzhung/article/details/21984635" target="_blank" rel="noopener">Cache 替换策略</a></p>
+<ol>
+<li><p>最不经常使用（LFU）算法<br>LFU（Least Frequently Used，最不经常使用）算法将一段时间内被访问次数最少的那个块替换出去。每块设置一个计数器，从0开始计数，每访问一次，被访块的计数器就增1。当需要替换时，将计数值最小的块换出，同时将<code>所有块的计数器</code>都清零。</p>
+</li>
+<li><p>近期最少使用（LRU）算法<br>LRU（Least Recently Used，近期最少使用）算法是把CPU近期最少使用的块替换出去。这种替换方法需要随时记录Cache中各块的使用情况，以便确定哪个块是近期最少使用的块。每块也设置一个计数器，<code>Cache每命中一次，命中块计数器清零</code>，其他各块计数器增1。当需要替换时，将<code>计数值最大的块换出</code>。<br>需要复杂算法维护，Cache的命中率高。</p>
+</li>
+<li><p>随机替换<br>效率高，不需要复杂算法，Cache命中率低。</p>
+</li>
+</ol>
+<h1 id="memory-consistency"><a href="#memory-consistency" class="headerlink" title="memory consistency"></a>memory consistency</h1><p><a href="http://www.puppetmastertrading.com/images/hwViewForSwHackers.pdf" target="_blank" rel="noopener">Memory Barriers: a Hardware View for Software Hackers</a></p>
+<p><a href="http://www2.in.tum.de/hp/file?fid=1276" target="_blank" rel="noopener">Introducing Caches: The MESI Protocol</a></p>
+<p><a href="https://blog.csdn.net/linpeng123l/article/details/52461680" target="_blank" rel="noopener">Memory Barriers（内存屏障）: a Hardware View for Software Hackers 阅读笔记</a></p>
+<p><a href="http://wudaijun.com/2018/09/distributed-consistency/" target="_blank" rel="noopener">一致性杂谈</a></p>
+<p>Memory Consistency的概念，与Cache Coherence不同的是，<code>Memory Consistency关注的是多个变量</code>，而非单个变量；Memory Model是多处理器和编译器优化导致存储器操作被多个处理器观察到的顺序不一致的问题，而Cache Coherence对程序员来说是透明的。</p>
+<h2 id="内存一致性模型的概念"><a href="#内存一致性模型的概念" class="headerlink" title="内存一致性模型的概念"></a>内存一致性模型的概念</h2><p><a href="https://blog.csdn.net/force_eagle/article/details/7743063" target="_blank" rel="noopener">内存一致性模型(Memory Consistency Models)</a></p>
+<p><a href="https://www.hpl.hp.com/techreports/Compaq-DEC/WRL-95-7.pdf" target="_blank" rel="noopener">Shared MemoryConsistency Models:A Tutorial</a></p>
+<p><a href="https://zhuanlan.zhihu.com/p/35386457" target="_blank" rel="noopener">多处理器编程：从缓存一致性到内存模型</a></p>
+<p><a href="https://en.wikipedia.org/wiki/Consistency_model" target="_blank" rel="noopener">Consistency model</a></p>
+<ol>
+<li><p>严格一致性内存模型 / 内存严格一致性模型 (Strict Consistency)<br>在严格的内存一致性模型下，任何对内存的读取，都会返回最近一次对该内存的修改，在没有缓存的情况下，所有操作通过总线直接与内存相连，这种形式的内存模型便是<code>严格一致性内存模型</code></p>
+<blockquote>
+<p>该模型只存在于理论中，实际中不使用。</p>
+</blockquote>
+</li>
+<li><p>顺序一致性 / 内存顺序一致性模型 / 顺序一致性内存模型（Sequential Consistency）<br>对于Memory Order来说，最重要的是Sequential Consistency。它的意思是，每个线程按照程序次序执行，多个线程的执行结果，和将所有操作顺序执行的结果一样。换句话说，将所有线程的操作按照某一个顺序依次执行，结果和原来一样，但这个顺序未必是时间顺序。</p>
+</li>
+<li><p>缓存一致性（Cache Coherence）<br>许多研究者几乎将缓存一致性(Cache Coherence)看作是顺序一致性的同义词；但是它们不是的，这也许让人感到惊讶。顺序一致性要求一个从<code>全局（也就是所以内存）一致性</code>的角度看待内存操作，缓存一致性仅仅要求一个<code>局部的（也就是单个cache）一致性</code>。这里有一个例子，它给出的场景符合缓存一致性，但是不符合顺序一致性：</p>
+</li>
+</ol>
+<h2 id="缓存一致性的优化"><a href="#缓存一致性的优化" class="headerlink" title="缓存一致性的优化"></a>缓存一致性的优化</h2><p>上面介绍了<code>Cache</code>, <code>Cache line</code>, <code>Cache coherence</code>, 这些都由硬件工程师为我们实现了，如果按上面模型的话，我们在开发过程中最需要关注的其实只有Cache line频繁miss这一问题。 <code>0.2 spinlock，0.3 行遍历比列遍历高效，0.4 多线程执行时的低效</code>这三个问题都可以找到对应的答案以及解决方案。<br>内存屏障，至此只解决两个问题<code>1.编译器优化，2.CPU优化</code></p>
+<blockquote>
+<p><code>#define barrier() __asm__ __volatile__(&quot;&quot; ::: &quot;memory&quot;)</code><br>以上内存屏障就是为了解决<code>1.编译器优化，2.CPU优化</code>问题</p>
+<p>但实际硬件工程师在设计CPU的时候不仅仅局限于以上的设计，以上模型有一个问题<code>同步</code>执行。CPU将数据写入到cache line同时需要发送Invalidate给其他CPU，并且等待其他CPU置位返回acknowledgement消息后，本次写才完成。</p>
+</blockquote>
+<p><img src="https://klutzoder-blog.oss-cn-beijing.aliyuncs.com/blog/linux/media-cache/15727003690920.jpg" width="600" alt title></p>
+<p><img src="https://klutzoder-blog.oss-cn-beijing.aliyuncs.com/blog/linux/media-cache/15727003886349.jpg" width="300" alt title></p>
+<h2 id="store-buffer"><a href="#store-buffer" class="headerlink" title="store buffer"></a>store buffer</h2><h3 id="store-buffer引入"><a href="#store-buffer引入" class="headerlink" title="store buffer引入"></a>store buffer引入</h3><p><img src="https://klutzoder-blog.oss-cn-beijing.aliyuncs.com/blog/linux/media-cache/15727004212201.jpg" width="300" alt title></p>
+<blockquote>
+<p>在这种模型中，CPU0将数据写入store buffer后立即发送一个Invalidate给CPU1,等CPU1无效化cache line返回ack后即完成操作。</p>
+</blockquote>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">CPU0        </span><br><span class="line">a = 1</span><br><span class="line">b = a+1</span><br><span class="line">assert b==2</span><br></pre></td></tr></table></figure>
+<ol>
+<li>cpu0 执行 a = 1</li>
+<li>cpu0 发现 a 不在 cache line, 因此发送Read Invalidate , 同时将a=1写入Store Buffer</li>
+<li>cpu1 接收 Read Invalidate, 并响应</li>
+<li>cpu0 执行 b = a+1</li>
+<li>cpu0 收到 cpu1返回数据a=0，放入cache line</li>
+<li><code>cpu0 load a from cache line，为0</code></li>
+<li>cpu0 执行 b = 0+1</li>
+<li>assert fails</li>
+</ol>
+<h3 id="store-buffer-改进"><a href="#store-buffer-改进" class="headerlink" title="store buffer 改进"></a>store buffer 改进</h3><p><img src="https://klutzoder-blog.oss-cn-beijing.aliyuncs.com/blog/linux/media-cache/15727004560821.jpg" width="300" alt title></p>
+<blockquote>
+<p>之前主要问题是cpu0只从cache line 中获取数据，未感知store buffer，因此添加一种从Store Buffer获取数据的机制就能解决上述问题。</p>
+</blockquote>
+<h3 id="sotre-buffer-在多cpu中的问题"><a href="#sotre-buffer-在多cpu中的问题" class="headerlink" title="sotre buffer 在多cpu中的问题"></a>sotre buffer 在多cpu中的问题</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">void cpu0(void) &#123;</span><br><span class="line">    a = 1;</span><br><span class="line">    b = 1;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">void cpu1(void) &#123;</span><br><span class="line">    while (b == 0) contine;</span><br><span class="line">    assert(a == 1);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">// cpu0 包含 b的cache line</span><br><span class="line">// cpu1 包含 a的cache line</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>没有编译器优化和cpu优化，即均<code>按顺序执行</code></p>
+</blockquote>
+<ol>
+<li>cpu0 执行 a = 1, a不在cache line, 存入store buffer</li>
+<li>cpu0 执行 b = 1, b在cache line, 直接替换</li>
+<li>cpu1 执行 while (b == 0), b不在 cache line 发送 Read Invalidate</li>
+<li>cpu0 接收到 cpu1发送的Read b Invalidate，将b=1发送给cpu1</li>
+<li>cpu1 接收到 b=1 存入cache line</li>
+<li>cpu1 结束while死循环</li>
+<li>cpu1 执行a==1 fail</li>
+<li>cpu0 将store buffer内的a=1写入cache line,并发送Read Invalidate给cpu1, 此时已晚啦。</li>
+</ol>
+<p><img src="https://klutzoder-blog.oss-cn-beijing.aliyuncs.com/blog/linux/media-cache/15727005038294.jpg" width="600" alt title></p>
+<h3 id="写屏障-smp-wmb"><a href="#写屏障-smp-wmb" class="headerlink" title="写屏障 smp_wmb"></a>写屏障 smp_wmb</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">void cpu0(void) &#123;</span><br><span class="line">    a = 1;</span><br><span class="line">    smp_wmb()</span><br><span class="line">    b = 1;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">void cpu1(void) &#123;</span><br><span class="line">    while (b == 0) contine;</span><br><span class="line">    assert(a == 1);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">// cpu0 包含 b的cache line</span><br><span class="line">// cpu1 包含 a的cache line</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p><code>smp_mb()将导致cpu flush its store buffer</code></p>
+</blockquote>
+<ol>
+<li>cpu0 执行 a = 1, 在缓存中，置于store buffer</li>
+<li><code>cpu0 执行 smp_mp(), 将stpre buffer数据刷到 cache line，同时发送给cpu1 Read InValidate</code></li>
+<li>cpu1 接收到Read InValidate并返回ack </li>
+<li>cpu0 执行 b = 1, b在cache line, 直接替换</li>
+<li>cpu1 执行b==1，读取cpu0的b存入cache line</li>
+<li>cpu1 结束while死循环</li>
+<li>cpu1 执行a==1, 此时a无效，读取cpu0的a缓存</li>
+</ol>
+<p><img src="https://klutzoder-blog.oss-cn-beijing.aliyuncs.com/blog/linux/media-cache/15727005338677.jpg" width="600" alt title></p>
+<blockquote>
+<p>现在还有一个问题，无效状态确认必须等到其他cpu都完成后才能返回，16个CPU的话相当于每次都需要等到其他15个CPU将相应位置位无效后才返回继续执行。<br>有没有方法减少这样的同步？？加入<code>Invalidate Queue</code></p>
+</blockquote>
+<h2 id="Invalidate-Queue"><a href="#Invalidate-Queue" class="headerlink" title="Invalidate Queue"></a>Invalidate Queue</h2><h3 id="Invalidate-Queue引入"><a href="#Invalidate-Queue引入" class="headerlink" title="Invalidate Queue引入"></a>Invalidate Queue引入</h3><p><img src="https://klutzoder-blog.oss-cn-beijing.aliyuncs.com/blog/linux/media-cache/15727005667008.jpg" width="300" alt title></p>
+<blockquote>
+<p>引入无效队列，可以把收到的无效通知置于此，立即返回。</p>
+</blockquote>
+<h3 id="Invalidate-Queue-在多cpu中的问题"><a href="#Invalidate-Queue-在多cpu中的问题" class="headerlink" title="Invalidate Queue 在多cpu中的问题"></a>Invalidate Queue 在多cpu中的问题</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">void cpu0(void) &#123;</span><br><span class="line">    a = 1;</span><br><span class="line">    smp_wmb()</span><br><span class="line">    b = 1;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">void cpu1(void) &#123;</span><br><span class="line">    while (b == 0) contine;</span><br><span class="line">    assert(a == 1);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">// cpu0 包含 b的cache line</span><br><span class="line">// cpu1 包含 a的cache line</span><br></pre></td></tr></table></figure>
+<p><img src="https://klutzoder-blog.oss-cn-beijing.aliyuncs.com/blog/linux/media-cache/15727005909427.jpg" width="600" alt title></p>
+<h3 id="读屏障-smp-rmb"><a href="#读屏障-smp-rmb" class="headerlink" title="读屏障 smp_rmb"></a>读屏障 smp_rmb</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">void cpu0(void) &#123;</span><br><span class="line">    a = 1;</span><br><span class="line">    smp_wmb();</span><br><span class="line">    b = 1;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">void cpu1(void) &#123;</span><br><span class="line">    while (b == 0) contine;</span><br><span class="line">    smp_rmb();</span><br><span class="line">    assert(a == 1);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">// cpu0 包含 b的cache line</span><br><span class="line">// cpu1 包含 a的cache line</span><br></pre></td></tr></table></figure>
+<p><img src="https://klutzoder-blog.oss-cn-beijing.aliyuncs.com/blog/linux/media-cache/15727007447223.jpg" width="600" alt title></p>
+<h2 id="lock与屏障相关"><a href="#lock与屏障相关" class="headerlink" title="lock与屏障相关"></a>lock与屏障相关</h2><p><img src="https://klutzoder-blog.oss-cn-beijing.aliyuncs.com/blog/linux/media-cache/15727007800762.jpg" width="600" alt title></p>
+<p><a href="https://zhuanlan.zhihu.com/p/33626920" target="_blank" rel="noopener">为什么我们需要内存屏障？</a></p>
+<p><a href="https://www.jianshu.com/p/64240319ed60" target="_blank" rel="noopener">一文解决内存屏障</a></p>
+<p>至此，从cache-&gt;cache line-&gt;cache coherency-&gt;memory consistency-&gt;memory barrier</p>
+<p>lock到底起到什么作用，在cache line中有数据的时候，并非<code>锁总线</code>, 而是通过添加内存屏障保证内存一致性，有些解释认为lock起到<code>锁定缓存</code>。</p>
+<p>在x86架构中，lock前缀作为一个特殊的信号，执行了如下几个过程:</p>
+<ol>
+<li>对总线和cache line上锁</li>
+<li>强制lock信号之前的指令，都在之前被执行，并invalidate queue。</li>
+<li>执行lock后的指令。</li>
+<li>释放对总线和cache line上的锁</li>
+<li>强制所有lock信号后的指令，都在之后执行，并同步store buffer。</li>
+</ol>
+<blockquote>
+<p>因此lock信号虽然不是内存屏障，但具有mfence(全屏障)的语义，与内存屏障相比，lock信号要额外对总线和cache line上锁，成本更高</p>
+</blockquote>
+<h2 id="Java-voliate相关"><a href="#Java-voliate相关" class="headerlink" title="Java voliate相关"></a>Java voliate相关</h2><p><img src="https://klutzoder-blog.oss-cn-beijing.aliyuncs.com/blog/linux/media-cache/15727008118796.jpg" width="300" alt title></p>
+<h3 id="voliate-汇编代码"><a href="#voliate-汇编代码" class="headerlink" title="voliate 汇编代码"></a>voliate 汇编代码</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">pac kage design;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">VolatileTest</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">volatile</span> <span class="keyword">int</span> a = <span class="number">10</span>;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">        a++;</span><br><span class="line">        <span class="comment">// 0x00000001176dff3b: mov    0x68(%r10),%r11d</span></span><br><span class="line">        <span class="comment">// 0x00000001176dff3f: inc    %r11d</span></span><br><span class="line">        <span class="comment">// 0x00000001176dff42: mov    %r11d,0x68(%r10)</span></span><br><span class="line">        <span class="comment">// 0x00000001176dff46: lock addl $0x0,(%rsp)</span></span><br><span class="line">        System.out.println(<span class="string">"Hello world!"</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ol>
+<li><p>编译<br>javac design/VolatileTest</p>
+</li>
+<li><p>字节码反汇编<br>javap -c -l design.VolatileTest </p>
+</li>
+<li><p>机器码反编译<br>java -XX:+UnlockDiagnosticVMOptions -XX:+PrintAssembly -Xcomp design.VolatileTest &gt; test.asm</p>
+</li>
+</ol>
+<h3 id="voliate-原理"><a href="#voliate-原理" class="headerlink" title="voliate 原理"></a>voliate 原理</h3><blockquote>
+<p>如果不保证，仍以x86架构为例，JVM对volatile变量的处理如下：</p>
+</blockquote>
+<ol>
+<li>在写volatile变量v之后，插入一个<code>sfence</code>。这样，sfence之前的所有store（包括写v）不会被重排序到sfence之后，sfence之后的所有store不会被重排序到sfence之前，禁用跨sfence的store重排序；且sfence之前修改的值都会被写回缓存，并标记其他CPU中的缓存失效。</li>
+<li>在读volatile变量v之前，插入一个<code>lfence</code>。这样，lfence之后的load（包括读v）不会被重排序到lfence之前，lfence之前的load不会被重排序到lfence之后，禁用跨lfence的load重排序；且lfence之后，会首先刷新无效缓存，从而得到最新的修改值，与sfence配合保证内存可见性。</li>
+</ol>
+<blockquote>
+<p>内存屏障解决了多个问题：<code>1.编译器优化</code>，<code>2.cpu优化</code>，<code>3.缓存相关优化</code>，以此保证<code>内存一致性</code>。</p>
+</blockquote>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Linux/" rel="tag"># Linux</a>
+          
+            <a href="/tags/Memory/" rel="tag"># Memory</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/Leetcode/leetcode/leetcode-516/" rel="next" title="leetcode 516">
+                <i class="fa fa-chevron-left"></i> leetcode 516
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/Algorithm/algorithm/dfs-bfs/" rel="prev" title="BFS(Breadth First Search) 与 DFS (Depth First Search)">
+                BFS(Breadth First Search) 与 DFS (Depth First Search) <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            Overview
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">klutzoder</p>
+              <p class="site-description motion-element" itemprop="description">I'm no body!</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">27</span>
+                  <span class="site-state-item-name">posts</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">5</span>
+                  <span class="site-state-item-name">categories</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">21</span>
+                  <span class="site-state-item-name">tags</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+            <div class="feed-link motion-element">
+              <a href="/atom.xml" rel="alternate">
+                <i class="fa fa-rss"></i>
+                RSS
+              </a>
+            </div>
+          
+
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#问题来源"><span class="nav-number">1.</span> <span class="nav-text">问题来源</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#lock"><span class="nav-number">1.1.</span> <span class="nav-text">lock</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#spinlock"><span class="nav-number">1.2.</span> <span class="nav-text">spinlock</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#行遍历与列遍历"><span class="nav-number">1.3.</span> <span class="nav-text">行遍历与列遍历</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#多线程执行时的低效"><span class="nav-number">1.4.</span> <span class="nav-text">多线程执行时的低效</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#内存屏障"><span class="nav-number">1.5.</span> <span class="nav-text">内存屏障</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#cache-对齐"><span class="nav-number">1.6.</span> <span class="nav-text">cache 对齐</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#CPU架构图"><span class="nav-number">2.</span> <span class="nav-text">CPU架构图</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#x86微处理器经典架构"><span class="nav-number">2.1.</span> <span class="nav-text">x86微处理器经典架构</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#CPU存储架构"><span class="nav-number">2.2.</span> <span class="nav-text">CPU存储架构</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Cache-line-相关"><span class="nav-number">3.</span> <span class="nav-text">Cache line 相关</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#全关联-full-associative"><span class="nav-number">3.1.</span> <span class="nav-text">全关联(full-associative)</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#直接映射-direct-mapping"><span class="nav-number">3.2.</span> <span class="nav-text">直接映射(direct-mapping)</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#多路组相联-set-associative"><span class="nav-number">3.3.</span> <span class="nav-text">多路组相联(set-associative)</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#实例"><span class="nav-number">3.4.</span> <span class="nav-text">实例</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#为什么Set段设置在低位"><span class="nav-number">3.5.</span> <span class="nav-text">为什么Set段设置在低位</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Cache-coherence"><span class="nav-number">4.</span> <span class="nav-text">Cache coherence</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#snoopy-cache-amp-snooping-based-coherence"><span class="nav-number">4.1.</span> <span class="nav-text">snoopy cache &amp; snooping based coherence</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#A-Simple-Protocol-Valid-InValid-VI"><span class="nav-number">4.2.</span> <span class="nav-text">A Simple Protocol: Valid/InValid(VI)</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#MSI-Modified-Shared-Invalid"><span class="nav-number">4.3.</span> <span class="nav-text">MSI(Modified-Shared-Invalid)</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#MESI-Modified-Exclusive-Shared-Invalid"><span class="nav-number">4.4.</span> <span class="nav-text">MESI(Modified-Exclusive-Shared-Invalid)</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#MOESI-MESIF"><span class="nav-number">4.5.</span> <span class="nav-text">MOESI, MESIF</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Cache-line-回写与替换"><span class="nav-number">5.</span> <span class="nav-text">Cache line 回写与替换</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#cache-line-回写"><span class="nav-number">5.1.</span> <span class="nav-text">cache line 回写</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#cache-line-替换"><span class="nav-number">5.2.</span> <span class="nav-text">cache line 替换</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#memory-consistency"><span class="nav-number">6.</span> <span class="nav-text">memory consistency</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#内存一致性模型的概念"><span class="nav-number">6.1.</span> <span class="nav-text">内存一致性模型的概念</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#缓存一致性的优化"><span class="nav-number">6.2.</span> <span class="nav-text">缓存一致性的优化</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#store-buffer"><span class="nav-number">6.3.</span> <span class="nav-text">store buffer</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#store-buffer引入"><span class="nav-number">6.3.1.</span> <span class="nav-text">store buffer引入</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#store-buffer-改进"><span class="nav-number">6.3.2.</span> <span class="nav-text">store buffer 改进</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#sotre-buffer-在多cpu中的问题"><span class="nav-number">6.3.3.</span> <span class="nav-text">sotre buffer 在多cpu中的问题</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#写屏障-smp-wmb"><span class="nav-number">6.3.4.</span> <span class="nav-text">写屏障 smp_wmb</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Invalidate-Queue"><span class="nav-number">6.4.</span> <span class="nav-text">Invalidate Queue</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Invalidate-Queue引入"><span class="nav-number">6.4.1.</span> <span class="nav-text">Invalidate Queue引入</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Invalidate-Queue-在多cpu中的问题"><span class="nav-number">6.4.2.</span> <span class="nav-text">Invalidate Queue 在多cpu中的问题</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#读屏障-smp-rmb"><span class="nav-number">6.4.3.</span> <span class="nav-text">读屏障 smp_rmb</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#lock与屏障相关"><span class="nav-number">6.5.</span> <span class="nav-text">lock与屏障相关</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Java-voliate相关"><span class="nav-number">6.6.</span> <span class="nav-text">Java voliate相关</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#voliate-汇编代码"><span class="nav-number">6.6.1.</span> <span class="nav-text">voliate 汇编代码</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#voliate-原理"><span class="nav-number">6.6.2.</span> <span class="nav-text">voliate 原理</span></a></li></ol></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">klutzoder</span>
+
+  
+</div>
+
+
+  <div class="powered-by">Powered by <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a></div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">Theme &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Muse</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

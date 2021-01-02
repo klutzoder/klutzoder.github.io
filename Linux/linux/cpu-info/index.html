@@ -1,0 +1,963 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="chinese">
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Linux,">
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="Klutzoder'Blog" type="application/atom+xml">
+
+
+
+
+
+
+<meta name="description" content="深入浅出计算机组成原理[TOC] 本博客主要用于整理深入浅出计算机组成原理学到的相关知识，本人深觉笔记的重要性，读书百遍其义自现，不如认真将精华记录。 入门篇 计算机组成，向下可以学习数字电路，向上可以学习编译原理、操作系统、计算机网络。  冯·诺依曼体系结构，也叫存储程序计算机，一个是”可编程”计算机，一个是”存储”计算机。主要由 CPU（控制器，运算器）、存储器、输入输出设备组成。 图灵机相较">
+<meta name="keywords" content="Linux">
+<meta property="og:type" content="article">
+<meta property="og:title" content="深入浅出计算机组成原理">
+<meta property="og:url" content="http://www.klutzoder.com/Linux/linux/cpu-info/index.html">
+<meta property="og:site_name" content="Klutzoder&#39;Blog">
+<meta property="og:description" content="深入浅出计算机组成原理[TOC] 本博客主要用于整理深入浅出计算机组成原理学到的相关知识，本人深觉笔记的重要性，读书百遍其义自现，不如认真将精华记录。 入门篇 计算机组成，向下可以学习数字电路，向上可以学习编译原理、操作系统、计算机网络。  冯·诺依曼体系结构，也叫存储程序计算机，一个是”可编程”计算机，一个是”存储”计算机。主要由 CPU（控制器，运算器）、存储器、输入输出设备组成。 图灵机相较">
+<meta property="og:locale" content="chinese">
+<meta property="og:image" content="https://klutzoder-blog.oss-cn-beijing.aliyuncs.com/2020/02/15814844212144.jpg?x-oss-process=image/auto-orient,1/quality,q_90/watermark,text_a2x1dHpvZGVy,color_0c0c0c,size_20,g_se,x_10,y_10">
+<meta property="og:image" content="https://klutzoder-blog.oss-cn-beijing.aliyuncs.com/2020/02/15814844450657.jpg?x-oss-process=image/auto-orient,1/quality,q_90/watermark,text_a2x1dHpvZGVy,color_0c0c0c,size_20,g_se,x_10,y_10">
+<meta property="og:image" content="https://klutzoder-blog.oss-cn-beijing.aliyuncs.com/2020/02/15814844562275.jpg?x-oss-process=image/auto-orient,1/quality,q_90/watermark,text_a2x1dHpvZGVy,color_0c0c0c,size_20,g_se,x_10,y_10">
+<meta property="og:image" content="https://klutzoder-blog.oss-cn-beijing.aliyuncs.com/2020/02/15814844733697.jpg?x-oss-process=image/auto-orient,1/quality,q_90/watermark,text_a2x1dHpvZGVy,color_0c0c0c,size_20,g_se,x_10,y_10">
+<meta property="og:image" content="https://klutzoder-blog.oss-cn-beijing.aliyuncs.com/2020/02/15814844835676.jpg?x-oss-process=image/auto-orient,1/quality,q_90/watermark,text_a2x1dHpvZGVy,color_0c0c0c,size_20,g_se,x_10,y_10">
+<meta property="og:image" content="https://klutzoder-blog.oss-cn-beijing.aliyuncs.com/2020/02/15814844938312.jpg?x-oss-process=image/auto-orient,1/quality,q_90/watermark,text_a2x1dHpvZGVy,color_0c0c0c,size_20,g_se,x_10,y_10">
+<meta property="og:image" content="https://klutzoder-blog.oss-cn-beijing.aliyuncs.com/2020/02/15814845021649.jpg?x-oss-process=image/auto-orient,1/quality,q_90/watermark,text_a2x1dHpvZGVy,color_0c0c0c,size_20,g_se,x_10,y_10">
+<meta property="og:image" content="https://klutzoder-blog.oss-cn-beijing.aliyuncs.com/2020/02/15814845084692.jpg?x-oss-process=image/auto-orient,1/quality,q_90/watermark,text_a2x1dHpvZGVy,color_0c0c0c,size_20,g_se,x_10,y_10">
+<meta property="og:image" content="https://klutzoder-blog.oss-cn-beijing.aliyuncs.com/2020/02/15814845155899.jpg?x-oss-process=image/auto-orient,1/quality,q_90/watermark,text_a2x1dHpvZGVy,color_0c0c0c,size_20,g_se,x_10,y_10">
+<meta property="og:image" content="https://klutzoder-blog.oss-cn-beijing.aliyuncs.com/2020/02/15814845225247.jpg?x-oss-process=image/auto-orient,1/quality,q_90/watermark,text_a2x1dHpvZGVy,color_0c0c0c,size_20,g_se,x_10,y_10">
+<meta property="og:image" content="https://klutzoder-blog.oss-cn-beijing.aliyuncs.com/2020/02/15814845328165.jpg?x-oss-process=image/auto-orient,1/quality,q_90/watermark,text_a2x1dHpvZGVy,color_0c0c0c,size_20,g_se,x_10,y_10">
+<meta property="og:image" content="https://klutzoder-blog.oss-cn-beijing.aliyuncs.com/2020/02/15814845399817.jpg?x-oss-process=image/auto-orient,1/quality,q_90/watermark,text_a2x1dHpvZGVy,color_0c0c0c,size_20,g_se,x_10,y_10">
+<meta property="og:image" content="https://klutzoder-blog.oss-cn-beijing.aliyuncs.com/2020/02/15814845478677.jpg?x-oss-process=image/auto-orient,1/quality,q_90/watermark,text_a2x1dHpvZGVy,color_0c0c0c,size_20,g_se,x_10,y_10">
+<meta property="og:image" content="https://klutzoder-blog.oss-cn-beijing.aliyuncs.com/2020/02/15814845552430.jpg?x-oss-process=image/auto-orient,1/quality,q_90/watermark,text_a2x1dHpvZGVy,color_0c0c0c,size_20,g_se,x_10,y_10">
+<meta property="og:image" content="https://klutzoder-blog.oss-cn-beijing.aliyuncs.com/2020/02/15814845618406.jpg?x-oss-process=image/auto-orient,1/quality,q_90/watermark,text_a2x1dHpvZGVy,color_0c0c0c,size_20,g_se,x_10,y_10">
+<meta property="og:image" content="https://klutzoder-blog.oss-cn-beijing.aliyuncs.com/2020/02/15814845678821.jpg?x-oss-process=image/auto-orient,1/quality,q_90/watermark,text_a2x1dHpvZGVy,color_0c0c0c,size_20,g_se,x_10,y_10">
+<meta property="og:image" content="https://klutzoder-blog.oss-cn-beijing.aliyuncs.com/2020/02/15814845755135.jpg?x-oss-process=image/auto-orient,1/quality,q_90/watermark,text_a2x1dHpvZGVy,color_0c0c0c,size_20,g_se,x_10,y_10">
+<meta property="og:image" content="https://klutzoder-blog.oss-cn-beijing.aliyuncs.com/2020/02/15814845824716.jpg?x-oss-process=image/auto-orient,1/quality,q_90/watermark,text_a2x1dHpvZGVy,color_0c0c0c,size_20,g_se,x_10,y_10">
+<meta property="og:image" content="https://klutzoder-blog.oss-cn-beijing.aliyuncs.com/2020/02/15814845886116.jpg?x-oss-process=image/auto-orient,1/quality,q_90/watermark,text_a2x1dHpvZGVy,color_0c0c0c,size_20,g_se,x_10,y_10">
+<meta property="og:image" content="https://klutzoder-blog.oss-cn-beijing.aliyuncs.com/2020/02/15814845950370.jpg?x-oss-process=image/auto-orient,1/quality,q_90/watermark,text_a2x1dHpvZGVy,color_0c0c0c,size_20,g_se,x_10,y_10">
+<meta property="og:image" content="https://klutzoder-blog.oss-cn-beijing.aliyuncs.com/2020/02/15814846042755.jpg?x-oss-process=image/auto-orient,1/quality,q_90/watermark,text_a2x1dHpvZGVy,color_0c0c0c,size_20,g_se,x_10,y_10">
+<meta property="og:image" content="https://klutzoder-blog.oss-cn-beijing.aliyuncs.com/2020/02/15814846297310.jpg?x-oss-process=image/auto-orient,1/quality,q_90/watermark,text_a2x1dHpvZGVy,color_0c0c0c,size_20,g_se,x_10,y_10">
+<meta property="og:image" content="https://klutzoder-blog.oss-cn-beijing.aliyuncs.com/2020/02/15814846387747.jpg?x-oss-process=image/auto-orient,1/quality,q_90/watermark,text_a2x1dHpvZGVy,color_0c0c0c,size_20,g_se,x_10,y_10">
+<meta property="og:image" content="https://klutzoder-blog.oss-cn-beijing.aliyuncs.com/2020/02/15814846460437.jpg?x-oss-process=image/auto-orient,1/quality,q_90/watermark,text_a2x1dHpvZGVy,color_0c0c0c,size_20,g_se,x_10,y_10">
+<meta property="og:image" content="https://klutzoder-blog.oss-cn-beijing.aliyuncs.com/2020/02/15814846537063.jpg?x-oss-process=image/auto-orient,1/quality,q_90/watermark,text_a2x1dHpvZGVy,color_0c0c0c,size_20,g_se,x_10,y_10">
+<meta property="og:image" content="https://klutzoder-blog.oss-cn-beijing.aliyuncs.com/2020/02/15814846729075.jpg?x-oss-process=image/auto-orient,1/quality,q_90/watermark,text_a2x1dHpvZGVy,color_0c0c0c,size_20,g_se,x_10,y_10">
+<meta property="og:image" content="https://klutzoder-blog.oss-cn-beijing.aliyuncs.com/2020/02/15814846817196.jpg?x-oss-process=image/auto-orient,1/quality,q_90/watermark,text_a2x1dHpvZGVy,color_0c0c0c,size_20,g_se,x_10,y_10">
+<meta property="og:image" content="https://klutzoder-blog.oss-cn-beijing.aliyuncs.com/2020/02/15814846880185.jpg?x-oss-process=image/auto-orient,1/quality,q_90/watermark,text_a2x1dHpvZGVy,color_0c0c0c,size_20,g_se,x_10,y_10">
+<meta property="og:image" content="https://klutzoder-blog.oss-cn-beijing.aliyuncs.com/2020/02/15814846975031.jpg?x-oss-process=image/auto-orient,1/quality,q_90/watermark,text_a2x1dHpvZGVy,color_0c0c0c,size_20,g_se,x_10,y_10">
+<meta property="og:image" content="https://klutzoder-blog.oss-cn-beijing.aliyuncs.com/2020/02/15814847056201.jpg?x-oss-process=image/auto-orient,1/quality,q_90/watermark,text_a2x1dHpvZGVy,color_0c0c0c,size_20,g_se,x_10,y_10">
+<meta property="og:image" content="https://klutzoder-blog.oss-cn-beijing.aliyuncs.com/2020/02/15814847153200.jpg?x-oss-process=image/auto-orient,1/quality,q_90/watermark,text_a2x1dHpvZGVy,color_0c0c0c,size_20,g_se,x_10,y_10">
+<meta property="og:image" content="https://klutzoder-blog.oss-cn-beijing.aliyuncs.com/2020/02/15814847211068.jpg?x-oss-process=image/auto-orient,1/quality,q_90/watermark,text_a2x1dHpvZGVy,color_0c0c0c,size_20,g_se,x_10,y_10">
+<meta property="og:image" content="https://klutzoder-blog.oss-cn-beijing.aliyuncs.com/2020/02/15814847277981.jpg?x-oss-process=image/auto-orient,1/quality,q_90/watermark,text_a2x1dHpvZGVy,color_0c0c0c,size_20,g_se,x_10,y_10">
+<meta property="og:image" content="https://klutzoder-blog.oss-cn-beijing.aliyuncs.com/2020/02/15814847359425.jpg?x-oss-process=image/auto-orient,1/quality,q_90/watermark,text_a2x1dHpvZGVy,color_0c0c0c,size_20,g_se,x_10,y_10">
+<meta property="og:image" content="https://klutzoder-blog.oss-cn-beijing.aliyuncs.com/2020/02/15814847428345.jpg?x-oss-process=image/auto-orient,1/quality,q_90/watermark,text_a2x1dHpvZGVy,color_0c0c0c,size_20,g_se,x_10,y_10">
+<meta property="og:image" content="https://klutzoder-blog.oss-cn-beijing.aliyuncs.com/2020/02/15814847608828.jpg?x-oss-process=image/auto-orient,1/quality,q_90/watermark,text_a2x1dHpvZGVy,color_0c0c0c,size_20,g_se,x_10,y_10">
+<meta property="og:image" content="https://klutzoder-blog.oss-cn-beijing.aliyuncs.com/2020/02/15814847689242.jpg?x-oss-process=image/auto-orient,1/quality,q_90/watermark,text_a2x1dHpvZGVy,color_0c0c0c,size_20,g_se,x_10,y_10">
+<meta property="og:image" content="https://klutzoder-blog.oss-cn-beijing.aliyuncs.com/2020/02/15814847756606.jpg?x-oss-process=image/auto-orient,1/quality,q_90/watermark,text_a2x1dHpvZGVy,color_0c0c0c,size_20,g_se,x_10,y_10">
+<meta property="og:image" content="https://klutzoder-blog.oss-cn-beijing.aliyuncs.com/2020/02/15814847823982.jpg?x-oss-process=image/auto-orient,1/quality,q_90/watermark,text_a2x1dHpvZGVy,color_0c0c0c,size_20,g_se,x_10,y_10">
+<meta property="og:image" content="https://klutzoder-blog.oss-cn-beijing.aliyuncs.com/2020/02/15814847884363.jpg?x-oss-process=image/auto-orient,1/quality,q_90/watermark,text_a2x1dHpvZGVy,color_0c0c0c,size_20,g_se,x_10,y_10">
+<meta property="og:image" content="https://klutzoder-blog.oss-cn-beijing.aliyuncs.com/2020/02/15814847976324.jpg?x-oss-process=image/auto-orient,1/quality,q_90/watermark,text_a2x1dHpvZGVy,color_0c0c0c,size_20,g_se,x_10,y_10">
+<meta property="og:image" content="https://klutzoder-blog.oss-cn-beijing.aliyuncs.com/2020/02/15814848043068.jpg?x-oss-process=image/auto-orient,1/quality,q_90/watermark,text_a2x1dHpvZGVy,color_0c0c0c,size_20,g_se,x_10,y_10">
+<meta property="og:image" content="https://klutzoder-blog.oss-cn-beijing.aliyuncs.com/2020/02/15814848336767.jpg?x-oss-process=image/auto-orient,1/quality,q_90/watermark,text_a2x1dHpvZGVy,color_0c0c0c,size_20,g_se,x_10,y_10">
+<meta property="og:image" content="https://klutzoder-blog.oss-cn-beijing.aliyuncs.com/2020/02/15814848409710.jpg?x-oss-process=image/auto-orient,1/quality,q_90/watermark,text_a2x1dHpvZGVy,color_0c0c0c,size_20,g_se,x_10,y_10">
+<meta property="og:image" content="https://klutzoder-blog.oss-cn-beijing.aliyuncs.com/2020/02/15814848702919.jpg?x-oss-process=image/auto-orient,1/quality,q_90/watermark,text_a2x1dHpvZGVy,color_0c0c0c,size_20,g_se,x_10,y_10">
+<meta property="og:image" content="https://klutzoder-blog.oss-cn-beijing.aliyuncs.com/2020/02/15814848799771.jpg?x-oss-process=image/auto-orient,1/quality,q_90/watermark,text_a2x1dHpvZGVy,color_0c0c0c,size_20,g_se,x_10,y_10">
+<meta property="og:image" content="https://klutzoder-blog.oss-cn-beijing.aliyuncs.com/2020/02/15814848911771.jpg?x-oss-process=image/auto-orient,1/quality,q_90/watermark,text_a2x1dHpvZGVy,color_0c0c0c,size_20,g_se,x_10,y_10">
+<meta property="og:image" content="https://klutzoder-blog.oss-cn-beijing.aliyuncs.com/2020/02/15814848974110.jpg?x-oss-process=image/auto-orient,1/quality,q_90/watermark,text_a2x1dHpvZGVy,color_0c0c0c,size_20,g_se,x_10,y_10">
+<meta property="og:image" content="https://klutzoder-blog.oss-cn-beijing.aliyuncs.com/2020/02/15814849059454.jpg?x-oss-process=image/auto-orient,1/quality,q_90/watermark,text_a2x1dHpvZGVy,color_0c0c0c,size_20,g_se,x_10,y_10">
+<meta property="og:image" content="https://klutzoder-blog.oss-cn-beijing.aliyuncs.com/2020/02/15814849119225.jpg?x-oss-process=image/auto-orient,1/quality,q_90/watermark,text_a2x1dHpvZGVy,color_0c0c0c,size_20,g_se,x_10,y_10">
+<meta property="og:image" content="https://klutzoder-blog.oss-cn-beijing.aliyuncs.com/2020/02/15814849189316.jpg?x-oss-process=image/auto-orient,1/quality,q_90/watermark,text_a2x1dHpvZGVy,color_0c0c0c,size_20,g_se,x_10,y_10">
+<meta property="og:image" content="https://klutzoder-blog.oss-cn-beijing.aliyuncs.com/2020/02/15814849260712.jpg?x-oss-process=image/auto-orient,1/quality,q_90/watermark,text_a2x1dHpvZGVy,color_0c0c0c,size_20,g_se,x_10,y_10">
+<meta property="og:image" content="https://klutzoder-blog.oss-cn-beijing.aliyuncs.com/2020/02/15814849424056.jpg?x-oss-process=image/auto-orient,1/quality,q_90/watermark,text_a2x1dHpvZGVy,color_0c0c0c,size_20,g_se,x_10,y_10">
+<meta property="og:image" content="https://klutzoder-blog.oss-cn-beijing.aliyuncs.com/2020/02/15814849486998.jpg?x-oss-process=image/auto-orient,1/quality,q_90/watermark,text_a2x1dHpvZGVy,color_0c0c0c,size_20,g_se,x_10,y_10">
+<meta property="og:image" content="https://klutzoder-blog.oss-cn-beijing.aliyuncs.com/2020/02/15814849626602.jpg?x-oss-process=image/auto-orient,1/quality,q_90/watermark,text_a2x1dHpvZGVy,color_0c0c0c,size_20,g_se,x_10,y_10">
+<meta property="og:image" content="https://klutzoder-blog.oss-cn-beijing.aliyuncs.com/2020/02/15814849811769.jpg?x-oss-process=image/auto-orient,1/quality,q_90/watermark,text_a2x1dHpvZGVy,color_0c0c0c,size_20,g_se,x_10,y_10">
+<meta property="og:updated_time" content="2020-12-31T08:44:36.375Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="深入浅出计算机组成原理">
+<meta name="twitter:description" content="深入浅出计算机组成原理[TOC] 本博客主要用于整理深入浅出计算机组成原理学到的相关知识，本人深觉笔记的重要性，读书百遍其义自现，不如认真将精华记录。 入门篇 计算机组成，向下可以学习数字电路，向上可以学习编译原理、操作系统、计算机网络。  冯·诺依曼体系结构，也叫存储程序计算机，一个是”可编程”计算机，一个是”存储”计算机。主要由 CPU（控制器，运算器）、存储器、输入输出设备组成。 图灵机相较">
+<meta name="twitter:image" content="https://klutzoder-blog.oss-cn-beijing.aliyuncs.com/2020/02/15814844212144.jpg?x-oss-process=image/auto-orient,1/quality,q_90/watermark,text_a2x1dHpvZGVy,color_0c0c0c,size_20,g_se,x_10,y_10">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: 'Author'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://www.klutzoder.com/Linux/linux/cpu-info/">
+
+
+
+
+
+  <title>深入浅出计算机组成原理 | Klutzoder'Blog</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="chinese">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Klutzoder'Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            Home
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            Archives
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://www.klutzoder.com/Linux/linux/cpu-info/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="klutzoder">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Klutzoder'Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">深入浅出计算机组成原理</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2020-01-08T19:24:57+08:00">
+                2020-01-08
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Linux/" itemprop="url" rel="index">
+                    <span itemprop="name">Linux</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="深入浅出计算机组成原理"><a href="#深入浅出计算机组成原理" class="headerlink" title="深入浅出计算机组成原理"></a>深入浅出计算机组成原理</h1><p>[TOC]</p>
+<p>本博客主要用于整理<a href="https://time.geekbang.org/column/article/91427" target="_blank" rel="noopener">深入浅出计算机组成原理</a>学到的相关知识，本人深觉笔记的重要性，<strong>读书百遍其义自现，不如认真将精华记录</strong>。</p>
+<h2 id="入门篇"><a href="#入门篇" class="headerlink" title="入门篇"></a>入门篇</h2><p><img src="https://klutzoder-blog.oss-cn-beijing.aliyuncs.com/2020/02/15814844212144.jpg?x-oss-process=image/auto-orient,1/quality,q_90/watermark,text_a2x1dHpvZGVy,color_0c0c0c,size_20,g_se,x_10,y_10" width="400" alt title></p>
+<p>计算机组成，向下可以学习数字电路，向上可以学习编译原理、操作系统、计算机网络。</p>
+<p><img src="https://klutzoder-blog.oss-cn-beijing.aliyuncs.com/2020/02/15814844450657.jpg?x-oss-process=image/auto-orient,1/quality,q_90/watermark,text_a2x1dHpvZGVy,color_0c0c0c,size_20,g_se,x_10,y_10" width="400" alt title></p>
+<p>冯·诺依曼体系结构，也叫存储程序计算机，一个是”可编程”计算机，一个是”存储”计算机。主要由 CPU（控制器，运算器）、存储器、输入输出设备组成。</p>
+<p>图灵机相较于冯·诺依曼机两者差别在于，图灵机侧重于计算抽象，冯·诺依曼机侧重于硬件抽象。</p>
+<p><img src="https://klutzoder-blog.oss-cn-beijing.aliyuncs.com/2020/02/15814844562275.jpg?x-oss-process=image/auto-orient,1/quality,q_90/watermark,text_a2x1dHpvZGVy,color_0c0c0c,size_20,g_se,x_10,y_10" width="400" alt title></p>
+<h2 id="性能与功耗"><a href="#性能与功耗" class="headerlink" title="性能与功耗"></a>性能与功耗</h2><h3 id="性能"><a href="#性能" class="headerlink" title="性能"></a>性能</h3><p>响应时间（执行时间），“跑得快”。<br>吞吐率（带宽），“搬的多”。</p>
+<p>性能指标由以下公式决定：</p>
+<script type="math/tex; mode=display">CPU Time = InstructionNum * CPI(Cycles Per Instruction) * Clock Cycle Time</script><ol>
+<li>InstructionNum，程序指令数，由编译器以及程序员决定。</li>
+<li>CPI，Cycles Per Instruction，使用 Pipeline，超流水线、SIMD 等技术使一条指令需要的 CPU Cycle 尽可能少。<strong>对 CPI 优化是计算机体系结构最重要一环</strong>。</li>
+<li>Clock Cycle Time，由计算机主频决定。</li>
+</ol>
+<h3 id="功耗"><a href="#功耗" class="headerlink" title="功耗"></a>功耗</h3><p>我们的 CPU，一般都被叫作超大规模集成电路（Very-Large-Scale Integration，VLSI）</p>
+<p><img src="https://klutzoder-blog.oss-cn-beijing.aliyuncs.com/2020/02/15814844733697.jpg?x-oss-process=image/auto-orient,1/quality,q_90/watermark,text_a2x1dHpvZGVy,color_0c0c0c,size_20,g_se,x_10,y_10" width="400" alt title></p>
+<p>由于功耗墙问题，通过提升主频实现性能提升越来越难，因此通过引入多核 CPU 设计的方案通过提升“吞吐率”而非“响应时间”来提升性能。<br>即<strong>通过并行提升性能</strong>。</p>
+<p>阿姆达尔定律（Amdahl’s Law）：</p>
+<p><img src="https://klutzoder-blog.oss-cn-beijing.aliyuncs.com/2020/02/15814844835676.jpg?x-oss-process=image/auto-orient,1/quality,q_90/watermark,text_a2x1dHpvZGVy,color_0c0c0c,size_20,g_se,x_10,y_10" width="400" alt title></p>
+<p>由于阿姆达尔定律的存在，优化后的执行时间也是有上限的，主要是不受影响的执行时间无法继续优化。</p>
+<p><img src="https://klutzoder-blog.oss-cn-beijing.aliyuncs.com/2020/02/15814844938312.jpg?x-oss-process=image/auto-orient,1/quality,q_90/watermark,text_a2x1dHpvZGVy,color_0c0c0c,size_20,g_se,x_10,y_10" width="400" alt title></p>
+<h3 id="提升性能方法"><a href="#提升性能方法" class="headerlink" title="提升性能方法"></a>提升性能方法</h3><ol>
+<li>摩尔定律，提升主频。</li>
+<li>并行计算，提升吞吐率。</li>
+<li>加大大概率事件。</li>
+<li>流水线提高性能，降低 CPI。</li>
+<li>预测提升性能，分支与保险、局部性原理。</li>
+</ol>
+<h2 id="指令与计算"><a href="#指令与计算" class="headerlink" title="指令与计算"></a>指令与计算</h2><h3 id="指令"><a href="#指令" class="headerlink" title="指令"></a>指令</h3><p><img src="https://klutzoder-blog.oss-cn-beijing.aliyuncs.com/2020/02/15814845021649.jpg?x-oss-process=image/auto-orient,1/quality,q_90/watermark,text_a2x1dHpvZGVy,color_0c0c0c,size_20,g_se,x_10,y_10" width="400" alt title></p>
+<p>不同的 CPU 有不同的指令集，以 MIPS 指令集为例。</p>
+<p><img src="https://klutzoder-blog.oss-cn-beijing.aliyuncs.com/2020/02/15814845084692.jpg?x-oss-process=image/auto-orient,1/quality,q_90/watermark,text_a2x1dHpvZGVy,color_0c0c0c,size_20,g_se,x_10,y_10" width="400" alt title></p>
+<p>MIPS 指令是一个32位整数，高6位叫操作码，剩下26位有 R、I、J 三种格式。</p>
+<p>内联函数能够减少，函数调用过程中，压栈出栈的操作。</p>
+<p><img src="https://klutzoder-blog.oss-cn-beijing.aliyuncs.com/2020/02/15814845155899.jpg?x-oss-process=image/auto-orient,1/quality,q_90/watermark,text_a2x1dHpvZGVy,color_0c0c0c,size_20,g_se,x_10,y_10" width="400" alt title></p>
+<p>为什么程序无法同时在Linux和Windows下运行？</p>
+<p><img src="https://klutzoder-blog.oss-cn-beijing.aliyuncs.com/2020/02/15814845225247.jpg?x-oss-process=image/auto-orient,1/quality,q_90/watermark,text_a2x1dHpvZGVy,color_0c0c0c,size_20,g_se,x_10,y_10" width="400" alt title></p>
+<p>链接器会扫描所有的目标文件，把符号表所有信息收集构成全局符号表，再根据重定位表，把所有不确定要跳转地址的代码，根据符号表地址进行修正，最后把所有目标文件对应段进行合并，形成最终的可执行代码。</p>
+<p><img src="https://klutzoder-blog.oss-cn-beijing.aliyuncs.com/2020/02/15814845328165.jpg?x-oss-process=image/auto-orient,1/quality,q_90/watermark,text_a2x1dHpvZGVy,color_0c0c0c,size_20,g_se,x_10,y_10" width="400" alt title></p>
+<p>程序装载采用内存分页的方式，<code>getconf PAGE_SIZE</code> 默认为4k。</p>
+<p><img src="https://klutzoder-blog.oss-cn-beijing.aliyuncs.com/2020/02/15814845399817.jpg?x-oss-process=image/auto-orient,1/quality,q_90/watermark,text_a2x1dHpvZGVy,color_0c0c0c,size_20,g_se,x_10,y_10" width="400" alt title></p>
+<p>若全部采用静态链接，标准库需要不停地拷贝很多份。</p>
+<p><img src="https://klutzoder-blog.oss-cn-beijing.aliyuncs.com/2020/02/15814845478677.jpg?x-oss-process=image/auto-orient,1/quality,q_90/watermark,text_a2x1dHpvZGVy,color_0c0c0c,size_20,g_se,x_10,y_10" width="400" alt title></p>
+<p>此时，选择采用动态链接的方式，内存中只保存一份，虚拟内存地址与之进行映射。</p>
+<p><img src="https://klutzoder-blog.oss-cn-beijing.aliyuncs.com/2020/02/15814845552430.jpg?x-oss-process=image/auto-orient,1/quality,q_90/watermark,text_a2x1dHpvZGVy,color_0c0c0c,size_20,g_se,x_10,y_10" width="400" alt title></p>
+<p>通过查找 PLT 与 GOT（Global Offset Table） 找到动态库地址。</p>
+<h3 id="计算"><a href="#计算" class="headerlink" title="计算"></a>计算</h3><p><img src="https://klutzoder-blog.oss-cn-beijing.aliyuncs.com/2020/02/15814845618406.jpg?x-oss-process=image/auto-orient,1/quality,q_90/watermark,text_a2x1dHpvZGVy,color_0c0c0c,size_20,g_se,x_10,y_10" width="400" alt title></p>
+<p><img src="https://klutzoder-blog.oss-cn-beijing.aliyuncs.com/2020/02/15814845678821.jpg?x-oss-process=image/auto-orient,1/quality,q_90/watermark,text_a2x1dHpvZGVy,color_0c0c0c,size_20,g_se,x_10,y_10" width="400" alt title></p>
+<p><img src="https://klutzoder-blog.oss-cn-beijing.aliyuncs.com/2020/02/15814845755135.jpg?x-oss-process=image/auto-orient,1/quality,q_90/watermark,text_a2x1dHpvZGVy,color_0c0c0c,size_20,g_se,x_10,y_10" width="400" alt title></p>
+<p>乘法可以用加法进行代替。</p>
+<p><img src="https://klutzoder-blog.oss-cn-beijing.aliyuncs.com/2020/02/15814845824716.jpg?x-oss-process=image/auto-orient,1/quality,q_90/watermark,text_a2x1dHpvZGVy,color_0c0c0c,size_20,g_se,x_10,y_10" width="400" alt title></p>
+<p><img src="https://klutzoder-blog.oss-cn-beijing.aliyuncs.com/2020/02/15814845886116.jpg?x-oss-process=image/auto-orient,1/quality,q_90/watermark,text_a2x1dHpvZGVy,color_0c0c0c,size_20,g_se,x_10,y_10" width="400" alt title></p>
+<p><img src="https://klutzoder-blog.oss-cn-beijing.aliyuncs.com/2020/02/15814845950370.jpg?x-oss-process=image/auto-orient,1/quality,q_90/watermark,text_a2x1dHpvZGVy,color_0c0c0c,size_20,g_se,x_10,y_10" width="400" alt title></p>
+<p>电路在物理上是并行的，因此可以加速。</p>
+<h2 id="处理器"><a href="#处理器" class="headerlink" title="处理器"></a>处理器</h2><h3 id="数据通路"><a href="#数据通路" class="headerlink" title="数据通路"></a>数据通路</h3><p><img src="https://klutzoder-blog.oss-cn-beijing.aliyuncs.com/2020/02/15814846042755.jpg?x-oss-process=image/auto-orient,1/quality,q_90/watermark,text_a2x1dHpvZGVy,color_0c0c0c,size_20,g_se,x_10,y_10" width="400" alt title></p>
+<p><img src="https://klutzoder-blog.oss-cn-beijing.aliyuncs.com/2020/02/15814846297310.jpg?x-oss-process=image/auto-orient,1/quality,q_90/watermark,text_a2x1dHpvZGVy,color_0c0c0c,size_20,g_se,x_10,y_10" width="400" alt title></p>
+<p>CPU 指令周期可以分为 Fetch、Decode、Execute。<br>数据通路连接<strong>操作元件（ALU）</strong>和<strong>存储元件（寄存器）</strong>，完成数据存储、处理、传输的处理器单元。</p>
+<p><img src="https://klutzoder-blog.oss-cn-beijing.aliyuncs.com/2020/02/15814846387747.jpg?x-oss-process=image/auto-orient,1/quality,q_90/watermark,text_a2x1dHpvZGVy,color_0c0c0c,size_20,g_se,x_10,y_10" width="400" alt title></p>
+<p>通过反向器实现时钟信号。</p>
+<p><img src="https://klutzoder-blog.oss-cn-beijing.aliyuncs.com/2020/02/15814846460437.jpg?x-oss-process=image/auto-orient,1/quality,q_90/watermark,text_a2x1dHpvZGVy,color_0c0c0c,size_20,g_se,x_10,y_10" width="400" alt title></p>
+<p>通过 D 触发器实现寄存器。</p>
+<p><img src="https://klutzoder-blog.oss-cn-beijing.aliyuncs.com/2020/02/15814846537063.jpg?x-oss-process=image/auto-orient,1/quality,q_90/watermark,text_a2x1dHpvZGVy,color_0c0c0c,size_20,g_se,x_10,y_10" width="400" alt title></p>
+<p>PC 寄存器。</p>
+<p><img src="https://klutzoder-blog.oss-cn-beijing.aliyuncs.com/2020/02/15814846729075.jpg?x-oss-process=image/auto-orient,1/quality,q_90/watermark,text_a2x1dHpvZGVy,color_0c0c0c,size_20,g_se,x_10,y_10" width="400" alt title></p>
+<h3 id="CPU-优化"><a href="#CPU-优化" class="headerlink" title="CPU 优化"></a>CPU 优化</h3><h4 id="流水线"><a href="#流水线" class="headerlink" title="流水线"></a>流水线</h4><p><img src="https://klutzoder-blog.oss-cn-beijing.aliyuncs.com/2020/02/15814846817196.jpg?x-oss-process=image/auto-orient,1/quality,q_90/watermark,text_a2x1dHpvZGVy,color_0c0c0c,size_20,g_se,x_10,y_10" width="400" alt title></p>
+<p>首先考虑的是单指令周期的处理器，由于不同指令所需时钟周期不同，因此都需要等满一个时钟周期，产生大量浪费，同时时钟⏰频率也很难提升。</p>
+<p><img src="https://klutzoder-blog.oss-cn-beijing.aliyuncs.com/2020/02/15814846880185.jpg?x-oss-process=image/auto-orient,1/quality,q_90/watermark,text_a2x1dHpvZGVy,color_0c0c0c,size_20,g_se,x_10,y_10" width="400" alt title></p>
+<p>通过将指令，按照不同的小步骤拆分，即形成流水线工作，我们不需要确保最复杂的那条指令在时钟周期里执行完成，而只要保障一个最复杂的<strong>流水线级</strong>的操作，在一个时钟周期内完成即可。</p>
+<p>虽然，没有提升“延时”，但是提升了“吞吐量”。5条流水线，即提升5倍。像我们现代的 ARM 或者 Intel 的 CPU，流水线级数已经到了14级。</p>
+<blockquote>
+<p>超长流水线瓶颈，增加流水线深度，其实是有性能成本，在读写流水线寄存器时，会有开销。同时还会带来<strong>结构冒险、控制冒险等其他依赖问题</strong>。<br>为了应付各类冒险问题，采用<strong>乱序执行、分支预测</strong>等解决方案。<br>流水线越长，这一类冒险问题就更难解决。</p>
+</blockquote>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">int</span> a = <span class="number">10</span> + <span class="number">5</span>; <span class="comment">// 指令 1</span></span><br><span class="line"><span class="keyword">int</span> b = a * <span class="number">2</span>; <span class="comment">// 指令 2</span></span><br><span class="line"><span class="keyword">float</span> c = b * <span class="number">1.0f</span>; <span class="comment">// 指令 3</span></span><br><span class="line"><span class="keyword">int</span> x = <span class="number">10</span> + <span class="number">5</span>; <span class="comment">// 指令 4</span></span><br><span class="line"><span class="keyword">int</span> y = a * <span class="number">2</span>; <span class="comment">// 指令 5</span></span><br><span class="line"><span class="keyword">float</span> z = b * <span class="number">1.0f</span>; <span class="comment">// 指令 6</span></span><br><span class="line"><span class="keyword">int</span> o = <span class="number">10</span> + <span class="number">5</span>; <span class="comment">// 指令 7</span></span><br><span class="line"><span class="keyword">int</span> p = a * <span class="number">2</span>; <span class="comment">// 指令 8</span></span><br><span class="line"><span class="keyword">float</span> q = b * <span class="number">1.0f</span>; <span class="comment">// 指令 9</span></span><br><span class="line"><span class="comment">// 由于1，2，3有依赖关系，可以先执行1，4，7</span></span><br></pre></td></tr></table></figure>
+<h4 id="冒险与预测"><a href="#冒险与预测" class="headerlink" title="冒险与预测"></a>冒险与预测</h4><blockquote>
+<p>流水线设计必须解决三大冒险，分别是<strong>结构冒险</strong>, <strong>数据冒险</strong>, <strong>控制冒险</strong>。</p>
+</blockquote>
+<h5 id="结构冒险"><a href="#结构冒险" class="headerlink" title="结构冒险"></a>结构冒险</h5><p><img src="https://klutzoder-blog.oss-cn-beijing.aliyuncs.com/2020/02/15814846975031.jpg?x-oss-process=image/auto-orient,1/quality,q_90/watermark,text_a2x1dHpvZGVy,color_0c0c0c,size_20,g_se,x_10,y_10" width="400" alt title></p>
+<p>访存与取指令都需要操作程序内存，但是我们只有一个地址译码器，会产生资源冲突，为了解决该冲突，将内存分为两部分，一个用于存放指令，一个用于存放数据。<br>把内存拆成两部分的解决方案，被称为<strong>哈佛架构</strong>，我们使用的<strong>冯·诺依曼体系结构</strong>又叫<strong>普林斯顿架构</strong>，该体系结构没有拆分内存，而是在高速缓存部分分成<strong>指令缓存</strong>和<strong>数据缓存</strong>。</p>
+<p><img src="https://klutzoder-blog.oss-cn-beijing.aliyuncs.com/2020/02/15814847056201.jpg?x-oss-process=image/auto-orient,1/quality,q_90/watermark,text_a2x1dHpvZGVy,color_0c0c0c,size_20,g_se,x_10,y_10" width="400" alt title></p>
+<h5 id="数据冒险"><a href="#数据冒险" class="headerlink" title="数据冒险"></a>数据冒险</h5><ol>
+<li>先写后读，数据依赖</li>
+</ol>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">  <span class="keyword">int</span> a = <span class="number">1</span>;</span><br><span class="line">  <span class="keyword">int</span> b = <span class="number">2</span>;</span><br><span class="line">  <span class="comment">// 先写1 再读1</span></span><br><span class="line">  a = a + <span class="number">2</span>;</span><br><span class="line">  b = a + <span class="number">3</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ol>
+<li>先读后写，反依赖</li>
+</ol>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">  <span class="keyword">int</span> a = <span class="number">1</span>;</span><br><span class="line">  <span class="keyword">int</span> b = <span class="number">2</span>;</span><br><span class="line">  a = b + a;</span><br><span class="line">  <span class="comment">// 若下面早于上面完成</span></span><br><span class="line">  b = a + b;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ol>
+<li>写后再写，输出依赖</li>
+</ol>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">  <span class="keyword">int</span> a = <span class="number">1</span>;</span><br><span class="line">  <span class="comment">// 先写1 再写1</span></span><br><span class="line">  a = <span class="number">2</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>利用 nop 解决</p>
+</blockquote>
+<p><img src="https://klutzoder-blog.oss-cn-beijing.aliyuncs.com/2020/02/15814847153200.jpg?x-oss-process=image/auto-orient,1/quality,q_90/watermark,text_a2x1dHpvZGVy,color_0c0c0c,size_20,g_se,x_10,y_10" width="400" alt title></p>
+<blockquote>
+<p>操作数前推（操作数转发），减少 nop</p>
+</blockquote>
+<p><img src="https://klutzoder-blog.oss-cn-beijing.aliyuncs.com/2020/02/15814847211068.jpg?x-oss-process=image/auto-orient,1/quality,q_90/watermark,text_a2x1dHpvZGVy,color_0c0c0c,size_20,g_se,x_10,y_10" width="400" alt title></p>
+<blockquote>
+<p>由于不同指令不存在依赖关系，可以通过乱序执行，将没有依赖关系的指令提前，减少 nop 时间。乱序执行，有点类似于 <strong>线程池</strong>。</p>
+</blockquote>
+<p><img src="https://klutzoder-blog.oss-cn-beijing.aliyuncs.com/2020/02/15814847277981.jpg?x-oss-process=image/auto-orient,1/quality,q_90/watermark,text_a2x1dHpvZGVy,color_0c0c0c,size_20,g_se,x_10,y_10" width="400" alt title></p>
+<h5 id="控制冒险"><a href="#控制冒险" class="headerlink" title="控制冒险"></a>控制冒险</h5><blockquote>
+<p>以上假设都是基于顺序执行进行的，取指令 和 指令译码不会遇到任何停顿。当遇到 jmp 等跳转指令时，为了保证争取，不得不等待延迟。</p>
+</blockquote>
+<ol>
+<li>分支预测，便是假装分支不发生，即<strong>静态预测</strong>成功率在50%，当发现错误时，就将不要的数据丢弃。</li>
+</ol>
+<p><img src="https://klutzoder-blog.oss-cn-beijing.aliyuncs.com/2020/02/15814847359425.jpg?x-oss-process=image/auto-orient,1/quality,q_90/watermark,text_a2x1dHpvZGVy,color_0c0c0c,size_20,g_se,x_10,y_10" width="400" alt title></p>
+<ol>
+<li>动态分支预测，即今天下雨，就猜明天也下雨。即用1比特保存当前预测结果，并用该结果作为下一次分支比较。还可以用2比特预测，叫<strong>双模态预测</strong>，状态机如下。</li>
+</ol>
+<p><img src="https://klutzoder-blog.oss-cn-beijing.aliyuncs.com/2020/02/15814847428345.jpg?x-oss-process=image/auto-orient,1/quality,q_90/watermark,text_a2x1dHpvZGVy,color_0c0c0c,size_20,g_se,x_10,y_10" width="400" alt title></p>
+<blockquote>
+<p>注意在不改变代码基础上，将循环少的放外面。</p>
+</blockquote>
+<p><img src="https://klutzoder-blog.oss-cn-beijing.aliyuncs.com/2020/02/15814847608828.jpg?x-oss-process=image/auto-orient,1/quality,q_90/watermark,text_a2x1dHpvZGVy,color_0c0c0c,size_20,g_se,x_10,y_10" width="400" alt title></p>
+<h4 id="Superscalar和VLIW使CPU吞吐率超过1"><a href="#Superscalar和VLIW使CPU吞吐率超过1" class="headerlink" title="Superscalar和VLIW使CPU吞吐率超过1"></a>Superscalar和VLIW使CPU吞吐率超过1</h4><ol>
+<li>多发射与超标量</li>
+</ol>
+<p>由于取指令一次只能提取一条，CPU吞吐率只能限定在1。</p>
+<p><img src="https://klutzoder-blog.oss-cn-beijing.aliyuncs.com/2020/02/15814847689242.jpg?x-oss-process=image/auto-orient,1/quality,q_90/watermark,text_a2x1dHpvZGVy,color_0c0c0c,size_20,g_se,x_10,y_10" width="400" alt title></p>
+<p>通过指令多发射设计，可以得到超标量，即并行执行多条指令。</p>
+<p><img src="https://klutzoder-blog.oss-cn-beijing.aliyuncs.com/2020/02/15814847756606.jpg?x-oss-process=image/auto-orient,1/quality,q_90/watermark,text_a2x1dHpvZGVy,color_0c0c0c,size_20,g_se,x_10,y_10" width="400" alt title></p>
+<ol>
+<li>VLIW（Very Long Instruction Word）</li>
+</ol>
+<p><img src="https://klutzoder-blog.oss-cn-beijing.aliyuncs.com/2020/02/15814847823982.jpg?x-oss-process=image/auto-orient,1/quality,q_90/watermark,text_a2x1dHpvZGVy,color_0c0c0c,size_20,g_se,x_10,y_10" width="400" alt title></p>
+<p><img src="https://klutzoder-blog.oss-cn-beijing.aliyuncs.com/2020/02/15814847884363.jpg?x-oss-process=image/auto-orient,1/quality,q_90/watermark,text_a2x1dHpvZGVy,color_0c0c0c,size_20,g_se,x_10,y_10" width="400" alt title></p>
+<p>VLIW 无法兼容，最后失败了。</p>
+<h4 id="超线程"><a href="#超线程" class="headerlink" title="超线程"></a>超线程</h4><p>超长流水线，意味着在流水线中指令越多，相互依赖关系越多，不得不面临冒险。2002 年底，Intel 在的 3.06GHz 主频的 Pentium 4 CPU上，第一次引入了超线程技术。<br>超线程技术，就是在CPU中同时执行多个程序的指令。</p>
+<p><img src="https://klutzoder-blog.oss-cn-beijing.aliyuncs.com/2020/02/15814847976324.jpg?x-oss-process=image/auto-orient,1/quality,q_90/watermark,text_a2x1dHpvZGVy,color_0c0c0c,size_20,g_se,x_10,y_10" width="400" alt title></p>
+<p>增加一份PC寄存器、指令寄存器、条件码寄存器。</p>
+<h4 id="SIMD-加速矩阵乘法"><a href="#SIMD-加速矩阵乘法" class="headerlink" title="SIMD, 加速矩阵乘法"></a>SIMD, 加速矩阵乘法</h4><p>SIMD，Single Instruction Multiple Data。<br>SIMD 在获取数据和执行指令时，都做到了并行，一方面，再从内存读取数据的时候，SIMD是一次性读取多个数据，在SSE指令集中，CPU添加了8个16Bytes的寄存器，一个寄存器一次性可以加载4个整数。</p>
+<p>Numpy，使用 SIMD 技术。</p>
+<p>基于 SIMD 的向量计算指令，被称为 MMX（Matrix Math eXtensions） 指令集，即矩阵数学扩展。</p>
+<p><img src="https://klutzoder-blog.oss-cn-beijing.aliyuncs.com/2020/02/15814848043068.jpg?x-oss-process=image/auto-orient,1/quality,q_90/watermark,text_a2x1dHpvZGVy,color_0c0c0c,size_20,g_se,x_10,y_10" width="400" alt title></p>
+<h3 id="异常和中断"><a href="#异常和中断" class="headerlink" title="异常和中断"></a>异常和中断</h3><h3 id="CISC和RISC"><a href="#CISC和RISC" class="headerlink" title="CISC和RISC"></a>CISC和RISC</h3><p><img src="https://klutzoder-blog.oss-cn-beijing.aliyuncs.com/2020/02/15814848336767.jpg?x-oss-process=image/auto-orient,1/quality,q_90/watermark,text_a2x1dHpvZGVy,color_0c0c0c,size_20,g_se,x_10,y_10" width="400" alt title></p>
+<p><img src="https://klutzoder-blog.oss-cn-beijing.aliyuncs.com/2020/02/15814848409710.jpg?x-oss-process=image/auto-orient,1/quality,q_90/watermark,text_a2x1dHpvZGVy,color_0c0c0c,size_20,g_se,x_10,y_10" width="400" alt title></p>
+<h3 id="GPU"><a href="#GPU" class="headerlink" title="GPU"></a>GPU</h3><p>MMX + SIMD =&gt; GPU</p>
+<p><img src="https://klutzoder-blog.oss-cn-beijing.aliyuncs.com/2020/02/15814848702919.jpg?x-oss-process=image/auto-orient,1/quality,q_90/watermark,text_a2x1dHpvZGVy,color_0c0c0c,size_20,g_se,x_10,y_10" width="400" alt title></p>
+<p><img src="https://klutzoder-blog.oss-cn-beijing.aliyuncs.com/2020/02/15814848799771.jpg?x-oss-process=image/auto-orient,1/quality,q_90/watermark,text_a2x1dHpvZGVy,color_0c0c0c,size_20,g_se,x_10,y_10" width="400" alt title></p>
+<p>SIMT, Single Instruction Multiple Threads。</p>
+<p><img src="https://klutzoder-blog.oss-cn-beijing.aliyuncs.com/2020/02/15814848911771.jpg?x-oss-process=image/auto-orient,1/quality,q_90/watermark,text_a2x1dHpvZGVy,color_0c0c0c,size_20,g_se,x_10,y_10" width="400" alt title></p>
+<p>GPU, 超线程。</p>
+<p><img src="https://klutzoder-blog.oss-cn-beijing.aliyuncs.com/2020/02/15814848974110.jpg?x-oss-process=image/auto-orient,1/quality,q_90/watermark,text_a2x1dHpvZGVy,color_0c0c0c,size_20,g_se,x_10,y_10" width="400" alt title></p>
+<h3 id="FPGA和ASIC"><a href="#FPGA和ASIC" class="headerlink" title="FPGA和ASIC"></a>FPGA和ASIC</h3><p>FPGA，现场可编程门阵列（Field-Programmable Gate Array）。</p>
+<p>ASIC，（Application-Specific Integrated Circuit），专用集成电路。</p>
+<h2 id="存储与IO"><a href="#存储与IO" class="headerlink" title="存储与IO"></a>存储与IO</h2><p>CPU Cache 使用 SRAM（Static Random-Access Memory）的芯片，只要处于通电，数据可以持续保存。<br>在CPU中有L1、L2、L3三层缓存。L1分为指令缓存和数据缓存。</p>
+<p>内存采用 DRAM（Dynamic Random Access Memory），需要不断地“刷新”。</p>
+<p><img src="https://klutzoder-blog.oss-cn-beijing.aliyuncs.com/2020/02/15814849059454.jpg?x-oss-process=image/auto-orient,1/quality,q_90/watermark,text_a2x1dHpvZGVy,color_0c0c0c,size_20,g_se,x_10,y_10" width="400" alt title></p>
+<p><img src="https://klutzoder-blog.oss-cn-beijing.aliyuncs.com/2020/02/15814849119225.jpg?x-oss-process=image/auto-orient,1/quality,q_90/watermark,text_a2x1dHpvZGVy,color_0c0c0c,size_20,g_se,x_10,y_10" width="400" alt title></p>
+<blockquote>
+<p>局部性原理：时间局部性和空间局部性。<br>时间局部性：如果一个数据被访问了，它在短时间内还会被再次访问。<br>空间局部性：如果一个数据被访问了，相邻数据也会很快被访问。</p>
+</blockquote>
+<h3 id="高速缓存L1、L2、L3"><a href="#高速缓存L1、L2、L3" class="headerlink" title="高速缓存L1、L2、L3"></a>高速缓存L1、L2、L3</h3><p><img src="https://klutzoder-blog.oss-cn-beijing.aliyuncs.com/2020/02/15814849189316.jpg?x-oss-process=image/auto-orient,1/quality,q_90/watermark,text_a2x1dHpvZGVy,color_0c0c0c,size_20,g_se,x_10,y_10" width="400" alt title></p>
+<p>由于CPU与内存性能差距越来越大，因此需要缓存。</p>
+<ol>
+<li>直接映射</li>
+<li>全关联</li>
+<li>组关联</li>
+</ol>
+<p><img src="https://klutzoder-blog.oss-cn-beijing.aliyuncs.com/2020/02/15814849260712.jpg?x-oss-process=image/auto-orient,1/quality,q_90/watermark,text_a2x1dHpvZGVy,color_0c0c0c,size_20,g_se,x_10,y_10" width="400" alt title></p>
+<blockquote>
+<p>MESI 协议保持多核CPU缓存一致。</p>
+</blockquote>
+<h3 id="内存"><a href="#内存" class="headerlink" title="内存"></a>内存</h3><p>利用虚拟内存技术，采用多级页表。</p>
+<p><img src="https://klutzoder-blog.oss-cn-beijing.aliyuncs.com/2020/02/15814849424056.jpg?x-oss-process=image/auto-orient,1/quality,q_90/watermark,text_a2x1dHpvZGVy,color_0c0c0c,size_20,g_se,x_10,y_10" width="400" alt title></p>
+<p>利用 TLB 进行加速。</p>
+<p><img src="https://klutzoder-blog.oss-cn-beijing.aliyuncs.com/2020/02/15814849486998.jpg?x-oss-process=image/auto-orient,1/quality,q_90/watermark,text_a2x1dHpvZGVy,color_0c0c0c,size_20,g_se,x_10,y_10" width="400" alt title></p>
+<h3 id="总线"><a href="#总线" class="headerlink" title="总线"></a>总线</h3><p><img src="https://klutzoder-blog.oss-cn-beijing.aliyuncs.com/2020/02/15814849626602.jpg?x-oss-process=image/auto-orient,1/quality,q_90/watermark,text_a2x1dHpvZGVy,color_0c0c0c,size_20,g_se,x_10,y_10" width="400" alt title></p>
+<p><img src="https://klutzoder-blog.oss-cn-beijing.aliyuncs.com/2020/02/15814849811769.jpg?x-oss-process=image/auto-orient,1/quality,q_90/watermark,text_a2x1dHpvZGVy,color_0c0c0c,size_20,g_se,x_10,y_10" width="400" alt title></p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">iotop</span><br><span class="line">iostat</span><br></pre></td></tr></table></figure>
+<h2 id="参考书籍"><a href="#参考书籍" class="headerlink" title="参考书籍"></a>参考书籍</h2><ol>
+<li>《计算机是怎样跑起来的》</li>
+<li>《程序是怎样跑起来的</li>
+<li><a href="https://www.coursera.org/learn/jisuanji-zucheng" target="_blank" rel="noopener">《Computer Organization》</a></li>
+<li>《计算机组成与设计：硬件 / 软件接口》</li>
+<li>《深入理解计算机系统》</li>
+<li><a href="https://www.bilibili.com/video/av24540152/" target="_blank" rel="noopener">《深入理解计算机系统bilibili》</a></li>
+<li><a href="https://www.youtube.com/playlist?list=PLmBgoRqEQCWy58EIwLSWwMPfkwLOLRM5R" target="_blank" rel="noopener">《深入理解计算机系统YouTube》</a></li>
+<li>《计算机组成：结构化方法》</li>
+<li>《计算机体系结构：量化研究方法》</li>
+<li>《编码：隐匿在计算机软硬件背后的语言》</li>
+<li>《程序员的自我修养：链接、装载和库》</li>
+<li><a href="http://www.lighterra.com/papers/modernmicroprocessors/" target="_blank" rel="noopener">Modern Microprocessors</a></li>
+<li><a href="http://norvig.com/21-days.html#answers" target="_blank" rel="noopener">Teach Yourself Programming in Ten Years</a></li>
+<li><a href="https://static.googleusercontent.com/media/research.google.com/zh-CN//people/jeff/Stanford-DL-Nov-2010.pdf" target="_blank" rel="noopener">Building Software Systems at Google and<br>Lessons Learned</a></li>
+<li><a href="https://people.freebsd.org/~lstewart/articles/cpumemory.pdf" target="_blank" rel="noopener">What Every Programmer Should Know About Memory</a></li>
+</ol>
+<h2 id="参考论文"><a href="#参考论文" class="headerlink" title="参考论文"></a>参考论文</h2><p><a href="https://klutzoder-blog.oss-cn-beijing.aliyuncs.com/paper/hwViewForSwHackers.pdf" target="_blank" rel="noopener">hwViewForSwHackers.pdf</a><br><a href="https://klutzoder-blog.oss-cn-beijing.aliyuncs.com/paper/Available-Instruction-Level-Parallelism-for-Superscalar-and-Superpipelined-Machines.pdf" target="_blank" rel="noopener">Available-Instruction-Level-Parallelism-for-Superscalar-and-Superpipelined-Machines.pdf</a></p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Linux/" rel="tag"># Linux</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/Algorithm/algorithm/travelling-salesman-problem/" rel="next" title="travelling salesman problem">
+                <i class="fa fa-chevron-left"></i> travelling salesman problem
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/LinuxKernel4-0-arm32/linuxkernel4.0/before-start-kernel/" rel="prev" title="一 Before start kernel">
+                一 Before start kernel <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            Overview
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">klutzoder</p>
+              <p class="site-description motion-element" itemprop="description">I'm no body!</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">27</span>
+                  <span class="site-state-item-name">posts</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">5</span>
+                  <span class="site-state-item-name">categories</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">21</span>
+                  <span class="site-state-item-name">tags</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+            <div class="feed-link motion-element">
+              <a href="/atom.xml" rel="alternate">
+                <i class="fa fa-rss"></i>
+                RSS
+              </a>
+            </div>
+          
+
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#深入浅出计算机组成原理"><span class="nav-number">1.</span> <span class="nav-text">深入浅出计算机组成原理</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#入门篇"><span class="nav-number">1.1.</span> <span class="nav-text">入门篇</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#性能与功耗"><span class="nav-number">1.2.</span> <span class="nav-text">性能与功耗</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#性能"><span class="nav-number">1.2.1.</span> <span class="nav-text">性能</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#功耗"><span class="nav-number">1.2.2.</span> <span class="nav-text">功耗</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#提升性能方法"><span class="nav-number">1.2.3.</span> <span class="nav-text">提升性能方法</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#指令与计算"><span class="nav-number">1.3.</span> <span class="nav-text">指令与计算</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#指令"><span class="nav-number">1.3.1.</span> <span class="nav-text">指令</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#计算"><span class="nav-number">1.3.2.</span> <span class="nav-text">计算</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#处理器"><span class="nav-number">1.4.</span> <span class="nav-text">处理器</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#数据通路"><span class="nav-number">1.4.1.</span> <span class="nav-text">数据通路</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#CPU-优化"><span class="nav-number">1.4.2.</span> <span class="nav-text">CPU 优化</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#流水线"><span class="nav-number">1.4.2.1.</span> <span class="nav-text">流水线</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#冒险与预测"><span class="nav-number">1.4.2.2.</span> <span class="nav-text">冒险与预测</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#结构冒险"><span class="nav-number">1.4.2.2.1.</span> <span class="nav-text">结构冒险</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#数据冒险"><span class="nav-number">1.4.2.2.2.</span> <span class="nav-text">数据冒险</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#控制冒险"><span class="nav-number">1.4.2.2.3.</span> <span class="nav-text">控制冒险</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Superscalar和VLIW使CPU吞吐率超过1"><span class="nav-number">1.4.2.3.</span> <span class="nav-text">Superscalar和VLIW使CPU吞吐率超过1</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#超线程"><span class="nav-number">1.4.2.4.</span> <span class="nav-text">超线程</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#SIMD-加速矩阵乘法"><span class="nav-number">1.4.2.5.</span> <span class="nav-text">SIMD, 加速矩阵乘法</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#异常和中断"><span class="nav-number">1.4.3.</span> <span class="nav-text">异常和中断</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#CISC和RISC"><span class="nav-number">1.4.4.</span> <span class="nav-text">CISC和RISC</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#GPU"><span class="nav-number">1.4.5.</span> <span class="nav-text">GPU</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#FPGA和ASIC"><span class="nav-number">1.4.6.</span> <span class="nav-text">FPGA和ASIC</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#存储与IO"><span class="nav-number">1.5.</span> <span class="nav-text">存储与IO</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#高速缓存L1、L2、L3"><span class="nav-number">1.5.1.</span> <span class="nav-text">高速缓存L1、L2、L3</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#内存"><span class="nav-number">1.5.2.</span> <span class="nav-text">内存</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#总线"><span class="nav-number">1.5.3.</span> <span class="nav-text">总线</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#参考书籍"><span class="nav-number">1.6.</span> <span class="nav-text">参考书籍</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#参考论文"><span class="nav-number">1.7.</span> <span class="nav-text">参考论文</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">klutzoder</span>
+
+  
+</div>
+
+
+  <div class="powered-by">Powered by <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a></div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">Theme &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Muse</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

@@ -1,0 +1,733 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="chinese">
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Divid and conquer,">
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="Klutzoder'Blog" type="application/atom+xml">
+
+
+
+
+
+
+<meta name="description" content="分治(Divide and Conquer)Divide and Conquer Algorithm | Introduction   一个典型的分治分为三步：  Divide: 将原问题分解为相同类型的子问题  Conquer: 递归地解决这些子问题  Combine: 组合子问题的解作为原问题的解    最常见的分治算法包括：   Binary Search  QuickSort  Merge">
+<meta name="keywords" content="Divid and conquer">
+<meta property="og:type" content="article">
+<meta property="og:title" content="分治(Divid And Conquer)">
+<meta property="og:url" content="http://www.klutzoder.com/Algorithm/algorithm/divid-and-conquer/index.html">
+<meta property="og:site_name" content="Klutzoder&#39;Blog">
+<meta property="og:description" content="分治(Divide and Conquer)Divide and Conquer Algorithm | Introduction   一个典型的分治分为三步：  Divide: 将原问题分解为相同类型的子问题  Conquer: 递归地解决这些子问题  Combine: 组合子问题的解作为原问题的解    最常见的分治算法包括：   Binary Search  QuickSort  Merge">
+<meta property="og:locale" content="chinese">
+<meta property="og:updated_time" content="2020-12-31T08:44:36.338Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="分治(Divid And Conquer)">
+<meta name="twitter:description" content="分治(Divide and Conquer)Divide and Conquer Algorithm | Introduction   一个典型的分治分为三步：  Divide: 将原问题分解为相同类型的子问题  Conquer: 递归地解决这些子问题  Combine: 组合子问题的解作为原问题的解    最常见的分治算法包括：   Binary Search  QuickSort  Merge">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: 'Author'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://www.klutzoder.com/Algorithm/algorithm/divid-and-conquer/">
+
+
+
+
+
+  <title>分治(Divid And Conquer) | Klutzoder'Blog</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="chinese">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Klutzoder'Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            Home
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            Archives
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://www.klutzoder.com/Algorithm/algorithm/divid-and-conquer/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="klutzoder">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Klutzoder'Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">分治(Divid And Conquer)</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2019-06-18T22:39:51+08:00">
+                2019-06-18
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Algorithm/" itemprop="url" rel="index">
+                    <span itemprop="name">Algorithm</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="分治-Divide-and-Conquer"><a href="#分治-Divide-and-Conquer" class="headerlink" title="分治(Divide and Conquer)"></a>分治(Divide and Conquer)</h1><p><a href="https://www.geeksforgeeks.org/divide-and-conquer-algorithm-introduction/" target="_blank" rel="noopener">Divide and Conquer Algorithm | Introduction</a> </p>
+<blockquote>
+<p>一个典型的分治分为三步：</p>
+<ol>
+<li>Divide: 将原问题分解为相同类型的子问题 </li>
+<li>Conquer: 递归地解决这些子问题 </li>
+<li>Combine: 组合子问题的解作为原问题的解 </li>
+</ol>
+</blockquote>
+<p>最常见的分治算法包括： </p>
+<ol>
+<li>Binary Search </li>
+<li>QuickSort </li>
+<li>MergeSort </li>
+<li>Closest Pair of Points </li>
+</ol>
+<h2 id="1-Binary-Search"><a href="#1-Binary-Search" class="headerlink" title="1. Binary Search"></a>1. Binary Search</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">BinarySearch</span> </span>&#123; </span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">search</span><span class="params">(<span class="keyword">int</span>[] nums, <span class="keyword">int</span> target)</span> </span>&#123; </span><br><span class="line">        <span class="keyword">int</span> left = <span class="number">0</span>; </span><br><span class="line">        <span class="keyword">int</span> right = nums.length - <span class="number">1</span>; </span><br><span class="line"></span><br><span class="line">        <span class="keyword">while</span> (left &lt;= right) &#123; </span><br><span class="line">            <span class="keyword">int</span> mid = left + ((right - left) &gt;&gt; <span class="number">1</span>); </span><br><span class="line">            <span class="keyword">if</span> (nums[mid] == target) <span class="keyword">return</span> mid; </span><br><span class="line">            <span class="keyword">else</span> <span class="keyword">if</span> (nums[mid] &gt; target) &#123; </span><br><span class="line">                right = mid - <span class="number">1</span>; </span><br><span class="line">            &#125; <span class="keyword">else</span> &#123; </span><br><span class="line">                left = mid + <span class="number">1</span>; </span><br><span class="line">            &#125; </span><br><span class="line">        &#125; </span><br><span class="line">        <span class="keyword">return</span> -<span class="number">1</span>; </span><br><span class="line">    &#125; </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ol>
+<li>我们的循环条件中包含了 left == right的情况，则我们必须在每次循环中改变 left 和 right的指向，以防止进入死循环 </li>
+</ol>
+<h2 id="2-QuickSort"><a href="#2-QuickSort" class="headerlink" title="2. QuickSort"></a>2. QuickSort</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">quickSort</span><span class="params">(<span class="keyword">int</span> arr[], <span class="keyword">int</span> low, <span class="keyword">int</span> high)</span> </span>&#123; </span><br><span class="line">    <span class="keyword">if</span> (low &lt; high) &#123; </span><br><span class="line">        <span class="keyword">int</span> pi = partition(arr, low, high); </span><br><span class="line">        quickSort(arr, low, pi-<span class="number">1</span>); </span><br><span class="line">        quickSort(arr, pi+<span class="number">1</span>, high); </span><br><span class="line">    &#125; </span><br><span class="line"></span><br><span class="line">&#125; </span><br><span class="line"></span><br><span class="line"><span class="comment">// 顺序遍历法 </span></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">partition</span><span class="params">(<span class="keyword">int</span> arr[], <span class="keyword">int</span> low, <span class="keyword">int</span> high)</span> </span>&#123; </span><br><span class="line">    <span class="keyword">int</span> pivot = arr[high]; </span><br><span class="line">    <span class="keyword">int</span> i = low - <span class="number">1</span>; </span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> j = low; j &lt; high; j++) &#123; </span><br><span class="line">        <span class="keyword">if</span> (arr[j] &lt;= pivot) &#123; </span><br><span class="line">            i++; </span><br><span class="line">            swap(arr, i, j); </span><br><span class="line">        &#125; </span><br><span class="line">    &#125; </span><br><span class="line"></span><br><span class="line">    swap(arr, i+<span class="number">1</span>, highg); </span><br><span class="line">    <span class="keyword">return</span> i+<span class="number">1</span>; </span><br><span class="line">&#125; </span><br><span class="line"></span><br><span class="line"><span class="comment">// 填坑法 </span></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">partition</span><span class="params">(<span class="keyword">int</span> arr[], <span class="keyword">int</span> low, <span class="keyword">int</span> high)</span> </span>&#123; </span><br><span class="line">    <span class="keyword">int</span> pivot = arr[low]; </span><br><span class="line">    <span class="keyword">while</span> (low &lt; high) &#123; </span><br><span class="line">        <span class="keyword">while</span> (low &lt; high &amp;&amp; arr[high] &gt;= pivot) high--;   </span><br><span class="line">        arr[low] = arr[high]; </span><br><span class="line">        <span class="keyword">while</span> (low &lt; high &amp;&amp; arr[low] &lt;= pivot) low++; </span><br><span class="line">        arr[high] = arr[low]; </span><br><span class="line">    &#125; </span><br><span class="line">    arr[low] = pivot; </span><br><span class="line">    <span class="keyword">return</span> low; </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="3-MergeSort"><a href="#3-MergeSort" class="headerlink" title="3. MergeSort"></a>3. MergeSort</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">mergeSort</span><span class="params">(<span class="keyword">int</span> arr[], <span class="keyword">int</span> low, <span class="keyword">int</span> high)</span> </span>&#123; </span><br><span class="line">    <span class="keyword">if</span> (low &lt; high) &#123; </span><br><span class="line">        <span class="keyword">int</span> mid = low + (high - low) / <span class="number">2</span>; </span><br><span class="line">        mergeSort(arr, low, mid); </span><br><span class="line">        mergeSort(arr, mid+<span class="number">1</span>, high); </span><br><span class="line">        merge(arr, low, mid, high); </span><br><span class="line">    &#125; </span><br><span class="line">&#125; </span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">merge</span><span class="params">(<span class="keyword">int</span> arr[], <span class="keyword">int</span> low, <span class="keyword">int</span> mid, <span class="keyword">int</span> high)</span> </span>&#123; </span><br><span class="line">    <span class="keyword">int</span> len1 = mid - low + <span class="number">1</span>; </span><br><span class="line">    <span class="keyword">int</span> len2 = high - mid; </span><br><span class="line"></span><br><span class="line">    <span class="keyword">int</span>[] arr1 = copy2Temp(arr, low, len1); </span><br><span class="line">    <span class="keyword">int</span>[] arr2 = copy2Temp(arr, mid+<span class="number">1</span>, len2); </span><br><span class="line">    <span class="comment">// merge the temp arrays </span></span><br><span class="line">    <span class="keyword">int</span> i = <span class="number">0</span>, j = <span class="number">0</span>; </span><br><span class="line">    <span class="keyword">while</span> (i &lt; len1 &amp;&amp; j &lt; len2) &#123; </span><br><span class="line">        <span class="keyword">if</span> (arr1[i] &lt;= arr2[j]) &#123; </span><br><span class="line">            arr[low++] = arr1[i++]; </span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;  </span><br><span class="line">             arr[low++] = arr2[j++]; </span><br><span class="line">        &#125; </span><br><span class="line">    &#125; </span><br><span class="line">    <span class="keyword">while</span> (i &lt; len1) arr[low++] = arr1[i++]; </span><br><span class="line">    <span class="keyword">while</span> (j &lt; len2) arr[low++] = arr2[j++]; </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="4-Closest-Pair-of-Points"><a href="#4-Closest-Pair-of-Points" class="headerlink" title="4. Closest Pair of Points"></a>4. Closest Pair of Points</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">double</span> <span class="title">dist</span><span class="params">(Point point1, Point point2)</span> </span>&#123; </span><br><span class="line">    <span class="keyword">int</span> xdist = point1.x - point2.x; </span><br><span class="line">    <span class="keyword">int</span> ydist = point1.y - point2.y; </span><br><span class="line">    <span class="keyword">return</span> Math.sqrt(xdist * xdist + ydist * ydist); </span><br><span class="line">&#125; </span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">double</span> <span class="title">bruteForce</span><span class="params">(Point[] points, <span class="keyword">int</span> low, <span class="keyword">int</span> high)</span> </span>&#123; </span><br><span class="line">    <span class="keyword">double</span> min = Double.MAX_VALUE; </span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = low; i &lt; high; i++) &#123; </span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> j = i + <span class="number">1</span>; j &lt; high; j++) &#123; </span><br><span class="line">            min = Math.min(min, dist(points[i], points[j])); </span><br><span class="line">        &#125; </span><br><span class="line">    &#125; </span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> min; </span><br><span class="line">&#125; </span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">double</span> <span class="title">stripClosest</span><span class="params">(Point[] strip, <span class="keyword">int</span> len, <span class="keyword">double</span> d)</span> </span>&#123; </span><br><span class="line">    <span class="keyword">double</span> min = d; </span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; len; i++) </span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> j = i + <span class="number">1</span>; j &lt; len &amp;&amp; Math.abs(strip[j].y - strip[i].y) &lt; d; j++) </span><br><span class="line">            min = Math.min(min, dist(strip[i], strip[j])); </span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> min; </span><br><span class="line">&#125; </span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">double</span> <span class="title">closest</span><span class="params">(Point[] points)</span> </span>&#123; </span><br><span class="line">    <span class="comment">// 排序根据x轴排序 </span></span><br><span class="line">    Arrays.sort(points, <span class="keyword">new</span> Comparator&lt;Point&gt;() &#123; </span><br><span class="line">        <span class="meta">@Override</span> </span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">compare</span><span class="params">(Point o1, Point o2)</span> </span>&#123; </span><br><span class="line">            <span class="keyword">return</span> o1.x - o2.x; </span><br><span class="line">        &#125; </span><br><span class="line">    &#125;); </span><br><span class="line">    <span class="keyword">return</span> closest(points, <span class="number">0</span>, points.length); </span><br><span class="line">&#125; </span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">double</span> <span class="title">closest</span><span class="params">(Point[] points, <span class="keyword">int</span> low, <span class="keyword">int</span> high)</span> </span>&#123; </span><br><span class="line">    <span class="keyword">if</span> (high - low &lt;= <span class="number">3</span>) &#123; </span><br><span class="line">        <span class="keyword">return</span> bruteForce(points, low, high); </span><br><span class="line">    &#125; </span><br><span class="line"></span><br><span class="line">    <span class="comment">// 按x轴一分为二 </span></span><br><span class="line">    <span class="keyword">int</span> mid = low + (high - low) / <span class="number">2</span>; </span><br><span class="line">    <span class="keyword">double</span> d1 = closest(points, low, mid); </span><br><span class="line">    <span class="keyword">double</span> d2 = closest(points, mid + <span class="number">1</span>, high); </span><br><span class="line">    <span class="keyword">double</span> d = Math.min(d1, d2); </span><br><span class="line">  </span><br><span class="line">    <span class="comment">// 中间地带谁最小 </span></span><br><span class="line">    Point[] strip = <span class="keyword">new</span> Point[high - low]; </span><br><span class="line">    <span class="keyword">int</span> j = <span class="number">0</span>; </span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = low; i &lt; high; i++) </span><br><span class="line">      <span class="keyword">if</span> (Math.abs(points[i].x - points[mid].x) &lt; d) </span><br><span class="line">          strip[j++] = points[i]; </span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> Math.min(d, stripClosest(strip, j, d)); </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Divid-and-conquer/" rel="tag"># Divid and conquer</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/Leetcode/leetcode/leetcode-516/" rel="prev" title="leetcode 516">
+                leetcode 516 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            Overview
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">klutzoder</p>
+              <p class="site-description motion-element" itemprop="description">I'm no body!</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">27</span>
+                  <span class="site-state-item-name">posts</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">5</span>
+                  <span class="site-state-item-name">categories</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">21</span>
+                  <span class="site-state-item-name">tags</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+            <div class="feed-link motion-element">
+              <a href="/atom.xml" rel="alternate">
+                <i class="fa fa-rss"></i>
+                RSS
+              </a>
+            </div>
+          
+
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#分治-Divide-and-Conquer"><span class="nav-number">1.</span> <span class="nav-text">分治(Divide and Conquer)</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#1-Binary-Search"><span class="nav-number">1.1.</span> <span class="nav-text">1. Binary Search</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-QuickSort"><span class="nav-number">1.2.</span> <span class="nav-text">2. QuickSort</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-MergeSort"><span class="nav-number">1.3.</span> <span class="nav-text">3. MergeSort</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#4-Closest-Pair-of-Points"><span class="nav-number">1.4.</span> <span class="nav-text">4. Closest Pair of Points</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">klutzoder</span>
+
+  
+</div>
+
+
+  <div class="powered-by">Powered by <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a></div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">Theme &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Muse</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

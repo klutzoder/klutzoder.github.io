@@ -1,0 +1,831 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="chinese">
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Linux,CPU,">
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="Klutzoder'Blog" type="application/atom+xml">
+
+
+
+
+
+
+<meta name="description" content="本文主要介绍 CPU 如何一步一步进行优化，最终成为当前这样的体系架构。本文知识主要来源于 深入浅出计算机组成原理 、计算机体系结构（量化研究方法） 、计算机组成与设计硬件/软件接口。  CPU 性能与功耗性能 响应时间（执行时间），表示程序运行所需要的时间，体现了 CPU 运行速度。 吞吐率（带宽），表示程序运行能够处理的数据，体现了 CPU 处理数据的能力。  响应时间可以由以下公式决定：">
+<meta name="keywords" content="Linux,CPU">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Computer CPU">
+<meta property="og:url" content="http://www.klutzoder.com/Linux/linux/computer-cpu/index.html">
+<meta property="og:site_name" content="Klutzoder&#39;Blog">
+<meta property="og:description" content="本文主要介绍 CPU 如何一步一步进行优化，最终成为当前这样的体系架构。本文知识主要来源于 深入浅出计算机组成原理 、计算机体系结构（量化研究方法） 、计算机组成与设计硬件/软件接口。  CPU 性能与功耗性能 响应时间（执行时间），表示程序运行所需要的时间，体现了 CPU 运行速度。 吞吐率（带宽），表示程序运行能够处理的数据，体现了 CPU 处理数据的能力。  响应时间可以由以下公式决定：">
+<meta property="og:locale" content="chinese">
+<meta property="og:image" content="https://klutzoder-blog.oss-cn-beijing.aliyuncs.com/blog/linux/media-cpu/15728507499351.jpg">
+<meta property="og:image" content="https://klutzoder-blog.oss-cn-beijing.aliyuncs.com/blog/linux/media-cpu/15728508178762.jpg">
+<meta property="og:image" content="https://klutzoder-blog.oss-cn-beijing.aliyuncs.com/blog/linux/media-cpu/15728512154282.jpg">
+<meta property="og:image" content="https://klutzoder-blog.oss-cn-beijing.aliyuncs.com/blog/linux/media-cpu/15728514408821.jpg">
+<meta property="og:image" content="https://klutzoder-blog.oss-cn-beijing.aliyuncs.com/blog/linux/media-cpu/15728518021525.jpg">
+<meta property="og:image" content="https://klutzoder-blog.oss-cn-beijing.aliyuncs.com/blog/linux/media-cpu/15728519505058.jpg">
+<meta property="og:image" content="https://klutzoder-blog.oss-cn-beijing.aliyuncs.com/blog/linux/media-cpu/15728523442480.jpg">
+<meta property="og:image" content="https://klutzoder-blog.oss-cn-beijing.aliyuncs.com/blog/linux/media-cpu/15728524636993.jpg">
+<meta property="og:image" content="https://klutzoder-blog.oss-cn-beijing.aliyuncs.com/blog/linux/media-cpu/15728579747159.jpg">
+<meta property="og:image" content="https://klutzoder-blog.oss-cn-beijing.aliyuncs.com/blog/linux/media-cpu/15728583136389.jpg">
+<meta property="og:image" content="https://klutzoder-blog.oss-cn-beijing.aliyuncs.com/blog/linux/media-cpu/15728584085043.jpg">
+<meta property="og:image" content="https://klutzoder-blog.oss-cn-beijing.aliyuncs.com/blog/linux/media-cpu/15728597977989.jpg">
+<meta property="og:image" content="https://klutzoder-blog.oss-cn-beijing.aliyuncs.com/blog/linux/media-cpu/15728598026707.jpg">
+<meta property="og:image" content="https://klutzoder-blog.oss-cn-beijing.aliyuncs.com/blog/linux/media-cpu/15728599785703.jpg">
+<meta property="og:image" content="https://klutzoder-blog.oss-cn-beijing.aliyuncs.com/blog/linux/media-cpu/15728599874568.jpg">
+<meta property="og:image" content="https://klutzoder-blog.oss-cn-beijing.aliyuncs.com/blog/linux/media-cpu/15728604457643.jpg">
+<meta property="og:image" content="https://klutzoder-blog.oss-cn-beijing.aliyuncs.com/blog/linux/media-cpu/15728604706569.jpg">
+<meta property="og:updated_time" content="2020-12-31T08:44:36.375Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Computer CPU">
+<meta name="twitter:description" content="本文主要介绍 CPU 如何一步一步进行优化，最终成为当前这样的体系架构。本文知识主要来源于 深入浅出计算机组成原理 、计算机体系结构（量化研究方法） 、计算机组成与设计硬件/软件接口。  CPU 性能与功耗性能 响应时间（执行时间），表示程序运行所需要的时间，体现了 CPU 运行速度。 吞吐率（带宽），表示程序运行能够处理的数据，体现了 CPU 处理数据的能力。  响应时间可以由以下公式决定：">
+<meta name="twitter:image" content="https://klutzoder-blog.oss-cn-beijing.aliyuncs.com/blog/linux/media-cpu/15728507499351.jpg">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: 'Author'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://www.klutzoder.com/Linux/linux/computer-cpu/">
+
+
+
+
+
+  <title>Computer CPU | Klutzoder'Blog</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="chinese">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Klutzoder'Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            Home
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            Archives
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://www.klutzoder.com/Linux/linux/computer-cpu/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="klutzoder">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Klutzoder'Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">Computer CPU</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2019-11-02T21:57:04+08:00">
+                2019-11-02
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Linux/" itemprop="url" rel="index">
+                    <span itemprop="name">Linux</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <blockquote>
+<p>本文主要介绍 CPU 如何一步一步进行优化，最终成为当前这样的体系架构。<br>本文知识主要来源于 <a href="https://time.geekbang.org/column/article/91427" target="_blank" rel="noopener">深入浅出计算机组成原理</a> 、<code>计算机体系结构（量化研究方法）</code> 、<code>计算机组成与设计硬件/软件接口</code>。</p>
+</blockquote>
+<h1 id="CPU-性能与功耗"><a href="#CPU-性能与功耗" class="headerlink" title="CPU 性能与功耗"></a>CPU 性能与功耗</h1><h2 id="性能"><a href="#性能" class="headerlink" title="性能"></a>性能</h2><ol>
+<li>响应时间（执行时间），表示程序运行所需要的时间，体现了 CPU 运行速度。</li>
+<li>吞吐率（带宽），表示程序运行能够处理的数据，体现了 CPU 处理数据的能力。</li>
+</ol>
+<p><code>响应时间</code>可以由以下公式决定：</p>
+<script type="math/tex; mode=display">
+CPU时间 = 指令数 \times  CPI \times  时钟频率</script><ul>
+<li>指令数：Instruction Num，由编译器以及程序员决定。</li>
+<li>CPI(Cycles Per Instruction)：每个指令周期，通过 PipeLine、超流水线 等技术使得一条指令所需 CPU Cycle 尽可能地低。<em>对 CPI 的优化是计算机体系结构中最重要的一环</em>。</li>
+<li>时钟频率：Clock Cycle Time，由计算机主频决定。</li>
+</ul>
+<p><code>吞掉量</code>通过超标量(Superscalar)、超线程、SIMD 等技术在不改变<code>响应时间</code>基础上，使得系统在相同时间内能够处理更多的数据。</p>
+<h2 id="功耗"><a href="#功耗" class="headerlink" title="功耗"></a>功耗</h2><p>我们的 CPU，一般被被叫做超大规模集成电路(Very Large Scale Integration, VLSI)，CPU 实际是由大量的集成电路组成。<code>功耗</code>公式如下:</p>
+<script type="math/tex; mode=display">
+功耗  \approx 1/2 \times 负载电容 \times 电压^{2} \times 晶体管数量</script><p>提高 CPU 主频则需要加大电压、增加晶体管，这将导致功耗不断上升，所有元器件均有熔点，因此我们不能不断地增大功耗。这就是<code>功耗墙</code>的来源。</p>
+<p>既然，我们无法通过不断增加频率来提高 CPU 的“响应时间”，因此有人就提出了提高“吞吐率”使 CPU 在相同时间内能够处理更多的数据，即<code>通过并行提升性能</code>。</p>
+<p>但是程序的并行度也不是能够一直提升的，这就涉及到 <a href="https://en.wikipedia.org/wiki/Amdahl%27s_law" target="_blank" rel="noopener">Amdahl’s Law</a>，即优化后的执行时间也是有上限的，该部分主要受无法并行化的代码所花费时间的影响。</p>
+<script type="math/tex; mode=display">
+优化后的执行时间 = 受优化影响的执行时间/加倍速度 + 不受影响的执行时间</script><p><img src="https://klutzoder-blog.oss-cn-beijing.aliyuncs.com/blog/linux/media-cpu/15728507499351.jpg" width="400" alt title></p>
+<p><img src="https://klutzoder-blog.oss-cn-beijing.aliyuncs.com/blog/linux/media-cpu/15728508178762.jpg" width="400" alt title></p>
+<h2 id="优化手段"><a href="#优化手段" class="headerlink" title="优化手段"></a>优化手段</h2><h1 id="CPU-的优化"><a href="#CPU-的优化" class="headerlink" title="CPU 的优化"></a>CPU 的优化</h1><h2 id="单指令周期-CPU"><a href="#单指令周期-CPU" class="headerlink" title="单指令周期 CPU"></a>单指令周期 CPU</h2><p>对于 CPU 而言，每次都需要处理一条指令，该部分指令由时钟频率驱动，一个 Cycle 即执行一条指令。由于不同指令所需实际执行时间不同，浮点数乘法所消耗的时间一定大于简单的移动指令。<br>因此单指令周期的 CPU，都需要等待满一个时钟周期，浪费了等待时间，同时限制了时钟频率的提升。</p>
+<p><img src="https://klutzoder-blog.oss-cn-beijing.aliyuncs.com/blog/linux/media-cpu/15728512154282.jpg" width="400" alt title></p>
+<h2 id="PipeLine"><a href="#PipeLine" class="headerlink" title="PipeLine"></a>PipeLine</h2><p>为了提高 CPU 的时钟频率，通过将指令按照不同的小步骤进行拆分，即形成了<code>流水线</code>工作。</p>
+<p>此时不再需要确保最复杂的那条指令在一个时钟周期内完成，而只需要保证最复杂的<code>流水线级</code>的操作在一个时钟周期内完成即可。</p>
+<p><img src="https://klutzoder-blog.oss-cn-beijing.aliyuncs.com/blog/linux/media-cpu/15728514408821.jpg" width="400" alt title></p>
+<p>通过 PipeLine 处理后，可以大大提升 CPU 主频，提升运行速度。现代的 ARM 或者 Intel 的 CPU，流水线级数可以到14级。</p>
+<blockquote>
+<p>超长流水线瓶颈，增加流水线深度，其实是有性能成本，在读写流水线寄存器时，会有开销。同时还会带来<strong>结构冒险、数据冒险、控制冒险等其他依赖问题</strong>。<br>为了应付各类冒险问题，采用<strong>乱序执行、分支预测</strong>等解决方案。<br>流水线越长，这一类冒险问题就更难解决。</p>
+</blockquote>
+<h3 id="结构冒险"><a href="#结构冒险" class="headerlink" title="结构冒险"></a>结构冒险</h3><p>所谓结构冒险，就是在访问内存和取指令的时候，都需要操作程序内存，但是我们只有<em>一个地址译码器</em>，此时便会产生资源冲突。</p>
+<p><img src="https://klutzoder-blog.oss-cn-beijing.aliyuncs.com/blog/linux/media-cpu/15728518021525.jpg" width="400" alt title></p>
+<p>为了解决该冲突，可以将内存分为两部分，一个用于存放<code>指令</code>，另一个存放<code>数据</code>。</p>
+<p>把内存拆成两部分的解决方案，被称为<strong>哈佛架构</strong>，我们使用的<strong>冯·诺依曼体系结构</strong>又叫<strong>普林斯顿架构</strong>，该体系结构没有拆分内存，而是在高速缓存部分分成<strong>指令缓存</strong>和<strong>数据缓存</strong>。</p>
+<p><img src="https://klutzoder-blog.oss-cn-beijing.aliyuncs.com/blog/linux/media-cpu/15728519505058.jpg" width="400" alt title></p>
+<h3 id="数据冒险"><a href="#数据冒险" class="headerlink" title="数据冒险"></a>数据冒险</h3><ul>
+<li><p>先写后读，数据依赖</p>
+  <figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">int</span> a = <span class="number">1</span>;</span><br><span class="line">    <span class="keyword">int</span> b = <span class="number">2</span>;</span><br><span class="line">    <span class="comment">// 先写1 再读1</span></span><br><span class="line">    a = a + <span class="number">2</span>;</span><br><span class="line">    b = a + <span class="number">3</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>先读后写，反依赖</p>
+  <figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">int</span> a = <span class="number">1</span>;</span><br><span class="line">    <span class="keyword">int</span> b = <span class="number">2</span>;</span><br><span class="line">    a = b + a;</span><br><span class="line">    <span class="comment">// 若下面早于上面完成</span></span><br><span class="line">    b = a + b;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>写后再读，输出依赖</p>
+  <figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">int</span> a = <span class="number">1</span>;</span><br><span class="line">    <span class="comment">// 先写1 再写1</span></span><br><span class="line">    a = <span class="number">2</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<ol>
+<li><p>使用 nop 保证有数据依赖的执行在上一条执行后继续。<br> <img src="https://klutzoder-blog.oss-cn-beijing.aliyuncs.com/blog/linux/media-cpu/15728523442480.jpg" width="400" alt title></p>
+</li>
+<li><p>操作数转发，将前一条指令执行结果直接作为后一条指令的输入。减少 nop。<br> <img src="https://klutzoder-blog.oss-cn-beijing.aliyuncs.com/blog/linux/media-cpu/15728524636993.jpg" width="400" alt title></p>
+</li>
+<li><p>由于不同指令不存在依赖关系，可以通过乱序执行，将没有依赖关系的指令提前，减少 nop 时间。乱序执行，有点类似于 <strong>线程池</strong>。<br> <img src="https://klutzoder-blog.oss-cn-beijing.aliyuncs.com/blog/linux/media-cpu/15728579747159.jpg" width="300" alt title></p>
+</li>
+</ol>
+<h3 id="控制冒险"><a href="#控制冒险" class="headerlink" title="控制冒险"></a>控制冒险</h3><p>以上假设都是基于代码都是顺序执行的，<code>取指令</code> 和 <code>指令译码</code> 不会遇到任何停顿，当遇到跳转指令时，为了保证争取，不得不等待造成延迟。</p>
+<p>当有判断或跳转时，便于要分支预测的来提高运行效率，否则就需要通过 nop 直至此时判断完成。</p>
+<ol>
+<li><p>分支预测，便是假装分支不发生，即<strong>静态预测</strong>成功率在50%，当发现错误时，就将不要的数据丢弃。<br> <img src="https://klutzoder-blog.oss-cn-beijing.aliyuncs.com/blog/linux/media-cpu/15728583136389.jpg" width="400" alt title></p>
+</li>
+<li><p>动态分支预测，即今天下雨，就猜明天也下雨。即用1比特保存当前预测结果，并用该结果作为下一次分支比较。还可以用2比特预测，叫<strong>双模态预测</strong>。</p>
+</li>
+</ol>
+<blockquote>
+<p>注意在不改变代码基础上，将循环少的放在外面。</p>
+</blockquote>
+<p><img src="https://klutzoder-blog.oss-cn-beijing.aliyuncs.com/blog/linux/media-cpu/15728584085043.jpg" width="400" alt title></p>
+<h2 id="Superscalar-和-VLIW使得-CPU-吞吐率大于1"><a href="#Superscalar-和-VLIW使得-CPU-吞吐率大于1" class="headerlink" title="Superscalar 和 VLIW使得 CPU 吞吐率大于1"></a>Superscalar 和 VLIW使得 CPU 吞吐率大于1</h2><h3 id="Superscalar"><a href="#Superscalar" class="headerlink" title="Superscalar"></a>Superscalar</h3><p>超标量(Superscalar)，即多发射的结构，是在原有 PipeLine 基础上，通过增加多条流水线，达到一次取多条指令执行。如此并能使得 CPU 吞吐率高于 1。</p>
+<p>此时需要增加的只有两个部分：修改取指令一次多个；增加多个译码器。译码完成的代码即可分发器被分发到各个执行 ALU 单元。</p>
+<p>通过指令多发射设计，可以得到超标量，即并行执行多条指令。</p>
+<p> <img src="https://klutzoder-blog.oss-cn-beijing.aliyuncs.com/blog/linux/media-cpu/15728597977989.jpg" width="400" alt title></p>
+<p> <img src="https://klutzoder-blog.oss-cn-beijing.aliyuncs.com/blog/linux/media-cpu/15728598026707.jpg" width="400" alt title></p>
+<h3 id="VLIW"><a href="#VLIW" class="headerlink" title="VLIW"></a>VLIW</h3><p>VLIW(Very Long Instruction Word)，通过将指令打包，使得一次执行时能够执行多条指令，从而提升吞吐率。</p>
+<blockquote>
+<p>但是该方法由于无法向前兼容，最后导致失败。</p>
+</blockquote>
+<p><img src="https://klutzoder-blog.oss-cn-beijing.aliyuncs.com/blog/linux/media-cpu/15728599785703.jpg" width="400" alt title></p>
+<p><img src="https://klutzoder-blog.oss-cn-beijing.aliyuncs.com/blog/linux/media-cpu/15728599874568.jpg" width="400" alt title></p>
+<h2 id="超线程"><a href="#超线程" class="headerlink" title="超线程"></a>超线程</h2><p>超长流水线，意味着在流水线中指令越多，相互依赖关系越多，不得不面临冒险。2002 年底，Intel 在的 3.06GHz 主频的 Pentium 4 CPU上，第一次引入了超线程技术。<br>超线程技术，就是在CPU中同时执行多个程序的指令。<br>增加一份PC寄存器、指令寄存器、条件码寄存器。</p>
+<p><img src="https://klutzoder-blog.oss-cn-beijing.aliyuncs.com/blog/linux/media-cpu/15728604457643.jpg" width="400" alt title></p>
+<h2 id="SIMD"><a href="#SIMD" class="headerlink" title="SIMD"></a>SIMD</h2><p>SIMD，Single Instruction Multiple Data。<br>SIMD 在获取数据和执行指令时，都做到了并行，一方面，再从内存读取数据的时候，SIMD是一次性读取多个数据，在SSE指令集中，CPU添加了8个16Bytes的寄存器，一个寄存器一次性可以加载4个整数。</p>
+<p>Numpy，使用 SIMD 技术。</p>
+<p>基于 SIMD 的向量计算指令，被称为 MMX（Matrix Math eXtensions） 指令集，即矩阵数学扩展。</p>
+<p><img src="https://klutzoder-blog.oss-cn-beijing.aliyuncs.com/blog/linux/media-cpu/15728604706569.jpg" width="400" alt title></p>
+<h1 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h1><ol>
+<li><p>单指令周期 CPU 需要保证最耗时的指令在一个时钟周期内完成，限制主频发展。因此改进成 PipeLine。</p>
+</li>
+<li><p>PipeLine 可以分为 <code>IF、ID、EX、MEM、WB</code>， 只需要保证最复杂的<code>流水线级</code>的操作在一个时钟周期内完成即可，极大提升了主频发展。<br>但是 PipeLine 会导致 <code>结构冒险、数据冒险、控制冒险</code> 等。<br>结构冒险，通过 <code>D-L1 Cache、I-L1 Cache</code> 防止冲突。<br>数据冒险，通过增加 <code>nop、数据转发、乱序执行</code> 等手段防止冒险出现。<br>控制冒险，通过 <code>分支预测</code> 防止。</p>
+</li>
+<li><p>为了使 CPU 吞吐率高于 1，采用 Superscalar 和 VLIW 技术。<br>Superscalar 利用 IF 一次取多条指令，并由多个 ID 译码，并分发给 ALU，从而达到多条流水线同时执行的效率。<br>VLIW 将多个指令打包成一个指令，从而在执行时，同时执行多条，但是由于无法向前兼容最终淘汰。</p>
+</li>
+<li><p>Superscalar 导致多条流水线间的依赖关系过于复杂，不得不面临冒险。为减少冲突因此提出超线程手段，通过增加一份 <code>PC寄存器、指令寄存器、条件码寄存器</code> 使得一个 CPU 可以同时运行两个无关的线程代码。</p>
+</li>
+<li><p>SIMD，Single Instruction Multiple Data。通过一条指令操作多条数据，从而增加吞吐率，该技术也促使了 GPU 相关的发展。</p>
+</li>
+</ol>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Linux/" rel="tag"># Linux</a>
+          
+            <a href="/tags/CPU/" rel="tag"># CPU</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/Leetcode/leetcode/leetcode-The-Skyline-Problem-218/" rel="next" title="leetcode The Skyline Problem 218">
+                <i class="fa fa-chevron-left"></i> leetcode The Skyline Problem 218
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/Linux/linux/stack-and-pc/" rel="prev" title="Stack And PC">
+                Stack And PC <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            Overview
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">klutzoder</p>
+              <p class="site-description motion-element" itemprop="description">I'm no body!</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">27</span>
+                  <span class="site-state-item-name">posts</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">5</span>
+                  <span class="site-state-item-name">categories</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">21</span>
+                  <span class="site-state-item-name">tags</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+            <div class="feed-link motion-element">
+              <a href="/atom.xml" rel="alternate">
+                <i class="fa fa-rss"></i>
+                RSS
+              </a>
+            </div>
+          
+
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#CPU-性能与功耗"><span class="nav-number">1.</span> <span class="nav-text">CPU 性能与功耗</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#性能"><span class="nav-number">1.1.</span> <span class="nav-text">性能</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#功耗"><span class="nav-number">1.2.</span> <span class="nav-text">功耗</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#优化手段"><span class="nav-number">1.3.</span> <span class="nav-text">优化手段</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#CPU-的优化"><span class="nav-number">2.</span> <span class="nav-text">CPU 的优化</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#单指令周期-CPU"><span class="nav-number">2.1.</span> <span class="nav-text">单指令周期 CPU</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#PipeLine"><span class="nav-number">2.2.</span> <span class="nav-text">PipeLine</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#结构冒险"><span class="nav-number">2.2.1.</span> <span class="nav-text">结构冒险</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#数据冒险"><span class="nav-number">2.2.2.</span> <span class="nav-text">数据冒险</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#控制冒险"><span class="nav-number">2.2.3.</span> <span class="nav-text">控制冒险</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Superscalar-和-VLIW使得-CPU-吞吐率大于1"><span class="nav-number">2.3.</span> <span class="nav-text">Superscalar 和 VLIW使得 CPU 吞吐率大于1</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Superscalar"><span class="nav-number">2.3.1.</span> <span class="nav-text">Superscalar</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#VLIW"><span class="nav-number">2.3.2.</span> <span class="nav-text">VLIW</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#超线程"><span class="nav-number">2.4.</span> <span class="nav-text">超线程</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#SIMD"><span class="nav-number">2.5.</span> <span class="nav-text">SIMD</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#总结"><span class="nav-number">3.</span> <span class="nav-text">总结</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">klutzoder</span>
+
+  
+</div>
+
+
+  <div class="powered-by">Powered by <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a></div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">Theme &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Muse</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

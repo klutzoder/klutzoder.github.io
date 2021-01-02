@@ -1,0 +1,953 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="chinese">
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Linux,">
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="Klutzoder'Blog" type="application/atom+xml">
+
+
+
+
+
+
+<meta name="description" content="知识得来终觉浅，因此还是应该将收获的知识记录下来比较有用。本文主要在 X86 体系结构下，函数栈调用的过程以及 PC 变化过程，以此对 C/C++、Java 等高级语言中的函数有一个深刻的认识。本文使用 64 位编译器进行编译。主要讲函数栈调用及 PC 变化过程，其他基础知识仅提及而不深入讲解。  参考资料：  C程序的汇编 Introduction_to_x64_Assembly  基础知识寄">
+<meta name="keywords" content="Linux">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Stack And PC">
+<meta property="og:url" content="http://www.klutzoder.com/Linux/linux/stack-and-pc/index.html">
+<meta property="og:site_name" content="Klutzoder&#39;Blog">
+<meta property="og:description" content="知识得来终觉浅，因此还是应该将收获的知识记录下来比较有用。本文主要在 X86 体系结构下，函数栈调用的过程以及 PC 变化过程，以此对 C/C++、Java 等高级语言中的函数有一个深刻的认识。本文使用 64 位编译器进行编译。主要讲函数栈调用及 PC 变化过程，其他基础知识仅提及而不深入讲解。  参考资料：  C程序的汇编 Introduction_to_x64_Assembly  基础知识寄">
+<meta property="og:locale" content="chinese">
+<meta property="og:image" content="https://klutzoder-blog.oss-cn-beijing.aliyuncs.com/blog/linux/media-stack-and-pc/15727708191411.jpg">
+<meta property="og:image" content="https://klutzoder-blog.oss-cn-beijing.aliyuncs.com/blog/linux/media-stack-and-pc/15727700739966.jpg">
+<meta property="og:image" content="https://klutzoder-blog.oss-cn-beijing.aliyuncs.com/blog/linux/media-stack-and-pc/15727700466006.jpg">
+<meta property="og:image" content="https://klutzoder-blog.oss-cn-beijing.aliyuncs.com/blog/linux/media-stack-and-pc/15727722408396.jpg">
+<meta property="og:image" content="https://klutzoder-blog.oss-cn-beijing.aliyuncs.com/blog/linux/media-stack-and-pc/15727731848845.jpg">
+<meta property="og:image" content="https://klutzoder-blog.oss-cn-beijing.aliyuncs.com/blog/linux/media-stack-and-pc/15727730260019.jpg">
+<meta property="og:image" content="https://klutzoder-blog.oss-cn-beijing.aliyuncs.com/blog/linux/media-stack-and-pc/15727736800515.jpg">
+<meta property="og:image" content="https://klutzoder-blog.oss-cn-beijing.aliyuncs.com/blog/linux/media-stack-and-pc/15727736963729.jpg">
+<meta property="og:image" content="https://klutzoder-blog.oss-cn-beijing.aliyuncs.com/blog/linux/media-stack-and-pc/15727737126609.jpg">
+<meta property="og:image" content="https://klutzoder-blog.oss-cn-beijing.aliyuncs.com/blog/linux/media-stack-and-pc/15727737676013.jpg">
+<meta property="og:image" content="https://klutzoder-blog.oss-cn-beijing.aliyuncs.com/blog/linux/media-stack-and-pc/15727739632434.jpg">
+<meta property="og:image" content="https://klutzoder-blog.oss-cn-beijing.aliyuncs.com/blog/linux/media-stack-and-pc/15727747048766.jpg">
+<meta property="og:image" content="https://klutzoder-blog.oss-cn-beijing.aliyuncs.com/blog/linux/media-stack-and-pc/15727747316115.jpg">
+<meta property="og:image" content="https://klutzoder-blog.oss-cn-beijing.aliyuncs.com/blog/linux/media-stack-and-pc/15727750724409.jpg">
+<meta property="og:image" content="https://klutzoder-blog.oss-cn-beijing.aliyuncs.com/blog/linux/media-stack-and-pc/15727751660036.jpg">
+<meta property="og:image" content="https://klutzoder-blog.oss-cn-beijing.aliyuncs.com/blog/linux/media-stack-and-pc/15727754090560.jpg">
+<meta property="og:image" content="https://klutzoder-blog.oss-cn-beijing.aliyuncs.com/blog/linux/media-stack-and-pc/15727756659616.jpg">
+<meta property="og:image" content="https://klutzoder-blog.oss-cn-beijing.aliyuncs.com/blog/linux/media-stack-and-pc/15727759037491.jpg">
+<meta property="og:image" content="https://klutzoder-blog.oss-cn-beijing.aliyuncs.com/blog/linux/media-stack-and-pc/15727759536263.jpg">
+<meta property="og:image" content="https://klutzoder-blog.oss-cn-beijing.aliyuncs.com/blog/linux/media-stack-and-pc/15727762610279.jpg">
+<meta property="og:image" content="https://klutzoder-blog.oss-cn-beijing.aliyuncs.com/blog/linux/media-stack-and-pc/15727762661166.jpg">
+<meta property="og:image" content="https://klutzoder-blog.oss-cn-beijing.aliyuncs.com/blog/linux/media-stack-and-pc/15727767223708.jpg">
+<meta property="og:image" content="https://klutzoder-blog.oss-cn-beijing.aliyuncs.com/blog/linux/media-stack-and-pc/15727770628739.jpg">
+<meta property="og:image" content="https://klutzoder-blog.oss-cn-beijing.aliyuncs.com/blog/linux/media-stack-and-pc/15727776222080.jpg">
+<meta property="og:image" content="https://klutzoder-blog.oss-cn-beijing.aliyuncs.com/blog/linux/media-stack-and-pc/15727788240846.jpg">
+<meta property="og:image" content="https://klutzoder-blog.oss-cn-beijing.aliyuncs.com/blog/linux/media-stack-and-pc/15727788811916.jpg">
+<meta property="og:updated_time" content="2020-12-31T08:44:36.525Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Stack And PC">
+<meta name="twitter:description" content="知识得来终觉浅，因此还是应该将收获的知识记录下来比较有用。本文主要在 X86 体系结构下，函数栈调用的过程以及 PC 变化过程，以此对 C/C++、Java 等高级语言中的函数有一个深刻的认识。本文使用 64 位编译器进行编译。主要讲函数栈调用及 PC 变化过程，其他基础知识仅提及而不深入讲解。  参考资料：  C程序的汇编 Introduction_to_x64_Assembly  基础知识寄">
+<meta name="twitter:image" content="https://klutzoder-blog.oss-cn-beijing.aliyuncs.com/blog/linux/media-stack-and-pc/15727708191411.jpg">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: 'Author'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://www.klutzoder.com/Linux/linux/stack-and-pc/">
+
+
+
+
+
+  <title>Stack And PC | Klutzoder'Blog</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="chinese">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Klutzoder'Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            Home
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            Archives
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://www.klutzoder.com/Linux/linux/stack-and-pc/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="klutzoder">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Klutzoder'Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">Stack And PC</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2019-11-03T15:10:23+08:00">
+                2019-11-03
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Linux/" itemprop="url" rel="index">
+                    <span itemprop="name">Linux</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <blockquote>
+<p>知识得来终觉浅，因此还是应该将收获的知识记录下来比较有用。<br>本文主要在 X86 体系结构下，函数栈调用的过程以及 PC 变化过程，以此对 C/C++、Java 等高级语言中的函数有一个深刻的认识。<br>本文使用 64 位编译器进行编译。主要讲函数栈调用及 PC 变化过程，其他基础知识仅提及而不深入讲解。</p>
+</blockquote>
+<p>参考资料：</p>
+<ol>
+<li><a href="https://heamon7.gitbooks.io/cscw2-newly-to-assembly/content/" target="_blank" rel="noopener">C程序的汇编</a></li>
+<li><a href="https://software.intel.com/sites/default/files/m/d/4/1/d/8/Introduction_to_x64_Assembly.pdf" target="_blank" rel="noopener">Introduction_to_x64_Assembly</a></li>
+</ol>
+<h1 id="基础知识"><a href="#基础知识" class="headerlink" title="基础知识"></a>基础知识</h1><h2 id="寄存器介绍"><a href="#寄存器介绍" class="headerlink" title="寄存器介绍"></a>寄存器介绍</h2><p>X64 提供了 16 个通用寄存器，分别为 <code>%rax，%rbx，%rcx，%rdx，%rsi，%rdi，%rbp，%rsp，%r8，%r9，%r10，%r11，%r12，%r13，%r14，%r15</code>。<br>在 C 语言调用时输入参数前6位依次使用 <code>rdi, rsi, rdx, rcx, r8, r9</code> 寄存器，后面的参数压栈使用。<br>在 C 语言中返回结果一律记在 <code>rax</code> 中进行返回。</p>
+<blockquote>
+<p>caller register: <code>rax, rcx, rdx, r8, r9, r10, r11</code><br>callee register: <code>rbx, rbp, rdi, rsi, rsp, r12, r13, r14</code></p>
+</blockquote>
+<p>关键寄存器说明，以下三个指针在程序运行过程中起着关键的作用。</p>
+<div class="table-container">
+<table>
+<thead>
+<tr>
+<th>寄存器</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>rbp</td>
+<td>基指针</td>
+</tr>
+<tr>
+<td>rsp</td>
+<td>栈指针</td>
+</tr>
+<tr>
+<td>rip</td>
+<td>程序计数器</td>
+</tr>
+</tbody>
+</table>
+</div>
+<h2 id="GDB-基础命令"><a href="#GDB-基础命令" class="headerlink" title="GDB 基础命令"></a>GDB 基础命令</h2><p>以下只给出部分实验中需要使用到的命令，具体命令可查看相应的手册。</p>
+<div class="table-container">
+<table>
+<thead>
+<tr>
+<th>命令</th>
+<th>作用</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>i r a</td>
+<td>info register all，查看所有寄存器中数据</td>
+</tr>
+<tr>
+<td>i r rax</td>
+<td>info register rax， 查看指定寄存器数据</td>
+</tr>
+<tr>
+<td>n</td>
+<td>next 执行下一条指令，函数直接执行而不进入</td>
+</tr>
+<tr>
+<td>s</td>
+<td>step 进入函数内部调试</td>
+</tr>
+<tr>
+<td>b func/34</td>
+<td>breakpoint 断点</td>
+</tr>
+<tr>
+<td>r</td>
+<td>run 运行</td>
+</tr>
+<tr>
+<td>disas</td>
+<td>disassem 反汇编，将机器码转为汇编便于阅读</td>
+</tr>
+<tr>
+<td>si，ni</td>
+<td>针对汇编</td>
+</tr>
+</tbody>
+</table>
+</div>
+<h2 id="GCC"><a href="#GCC" class="headerlink" title="GCC"></a>GCC</h2><ol>
+<li><p>编译，将 C 语言编译为汇编代码。</p>
+ <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">gcc -S add.c -o add.s</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>链接</p>
+ <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">gcc -g add.c -o add</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>相关参数</p>
+<ul>
+<li>-o：指定生成的输出文件；</li>
+<li>-E：仅执行编译预处理；</li>
+<li>-S：将C代码转换为汇编代码；</li>
+<li>-Wall：显示警告信息；</li>
+<li>-c：仅执行编译操作，不进行连接操作。</li>
+<li>-g：表示在生成的目标文件中带调试信息</li>
+</ul>
+</li>
+</ol>
+<h2 id="Linux-X64-内存空间结构"><a href="#Linux-X64-内存空间结构" class="headerlink" title="Linux X64 内存空间结构"></a>Linux X64 内存空间结构</h2><p>在 X64 系统架构中，只使用 48 根地址线，虚拟内存空间划分时将 <code>0xFFFF0000~00000000——0xFFFFFFFF~FFFFFFFF</code> 划分给内核使用，<code>0x00000000~00000000——0x0000FFFF~FFFFFFFF</code> 划分给进程使用。</p>
+<p>进程分布图如下所示：</p>
+<p><img src="https://klutzoder-blog.oss-cn-beijing.aliyuncs.com/blog/linux/media-stack-and-pc/15727708191411.jpg" width="600" alt title></p>
+<h1 id="实验准备"><a href="#实验准备" class="headerlink" title="实验准备"></a>实验准备</h1><blockquote>
+<p>实验均在 Linux 系统中进行</p>
+</blockquote>
+<h2 id="C-代码"><a href="#C-代码" class="headerlink" title="C 代码"></a>C 代码</h2><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// add.c</span></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">sub</span><span class="params">(<span class="keyword">int</span> a, <span class="keyword">int</span> b)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> a-b;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">add</span><span class="params">(<span class="keyword">int</span> a, <span class="keyword">int</span> b)</span> </span>&#123;</span><br><span class="line">    a = sub(a, b);</span><br><span class="line">    <span class="keyword">return</span> a+b;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">(<span class="keyword">int</span> argc, <span class="keyword">char</span> *argv[])</span> </span>&#123;</span><br><span class="line">    <span class="keyword">int</span> a, b, res;</span><br><span class="line">    a = <span class="number">3</span>;</span><br><span class="line">    b = <span class="number">2</span>;</span><br><span class="line">    res = add(a,b);</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="汇编代码"><a href="#汇编代码" class="headerlink" title="汇编代码"></a>汇编代码</h2><p>通过调用 <code>gcc -S add.c -o add.s</code> 可获得相应的汇编代码如下所示。</p>
+<blockquote>
+<p>去除无关对齐代码后！！！自己编译后的代码有很多的对齐代码。</p>
+</blockquote>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br></pre></td><td class="code"><pre><span class="line">.file <span class="string">"add.c"</span></span><br><span class="line">.text</span><br><span class="line">.globl sub</span><br><span class="line">.type sub, @function</span><br><span class="line">sub:</span><br><span class="line">    pushq %rbp</span><br><span class="line">    movq %rsp, %rbp</span><br><span class="line">    movl %edi, <span class="number">-4</span>(%rbp)</span><br><span class="line">    movl %esi, <span class="number">-8</span>(%rbp)</span><br><span class="line">    movl <span class="number">-4</span>(%rbp), %eax</span><br><span class="line">    subl <span class="number">-8</span>(%rbp), %eax</span><br><span class="line">    popq %rbp</span><br><span class="line">    ret</span><br><span class="line"></span><br><span class="line">.globl add</span><br><span class="line">.type add, @function</span><br><span class="line">add:</span><br><span class="line">    pushq %rbp</span><br><span class="line">    movq %rsp, %rbp</span><br><span class="line">    subq $<span class="number">8</span>, %rsp</span><br><span class="line">    movl %edi, <span class="number">-4</span>(%rbp)</span><br><span class="line">    movl %esi, <span class="number">-8</span>(%rbp)</span><br><span class="line">    movl <span class="number">-8</span>(%rbp), %edx</span><br><span class="line">    movl <span class="number">-4</span>(%rbp), %eax</span><br><span class="line">    movl %edx, %esi</span><br><span class="line">    movl %eax, %edi</span><br><span class="line">    call sub</span><br><span class="line">    movl %eax, <span class="number">-4</span>(%rbp)</span><br><span class="line">    movl <span class="number">-4</span>(%rbp), %edx</span><br><span class="line">    movl <span class="number">-8</span>(%rbp), %eax</span><br><span class="line">    addl %edx, %eax</span><br><span class="line">    leave</span><br><span class="line">    ret</span><br><span class="line"></span><br><span class="line">.globl main</span><br><span class="line">.type main, @function</span><br><span class="line">main:</span><br><span class="line">    pushq %rbp</span><br><span class="line">    movq %rsp, %rbp</span><br><span class="line">    subq $<span class="number">32</span>, %rsp</span><br><span class="line">    movl %edi, <span class="number">-20</span>(%rbp)</span><br><span class="line">    movq $rsi, <span class="number">-32</span>(%rbp)</span><br><span class="line">    movl $<span class="number">3</span>, <span class="number">-12</span>(%rbp)</span><br><span class="line">    movl $<span class="number">2</span>, <span class="number">-8</span>(%rbp)</span><br><span class="line">    movl <span class="number">-8</span>(%rbp), %edx</span><br><span class="line">    movl <span class="number">-12</span>(%rbp), %eax</span><br><span class="line">    movl %edx, %esi</span><br><span class="line">    movl %eax, %edi</span><br><span class="line">    call add</span><br><span class="line">    movl %eax, <span class="number">-4</span>(%rbp)</span><br><span class="line">    movl $<span class="number">0</span>, %eax</span><br><span class="line">    leav</span><br><span class="line">    ret</span><br></pre></td></tr></table></figure>
+<h2 id="C-与汇编联合编译"><a href="#C-与汇编联合编译" class="headerlink" title="C 与汇编联合编译"></a>C 与汇编联合编译</h2><blockquote>
+<p>实验所需要的三个文件在下面提供下载，可直接点击下载，并在同一个文件夹中。以便实验室用。</p>
+</blockquote>
+<p><a href="https://klutzoder-blog.oss-cn-beijing.aliyuncs.com/blog/linux/media-stack-and-pc/main.c" target="_blank" rel="noopener">main.c 点击下载</a></p>
+<p><a href="https://klutzoder-blog.oss-cn-beijing.aliyuncs.com/blog/linux/media-stack-and-pc/add.s" target="_blank" rel="noopener">add.s 点击下载</a></p>
+<p><a href="https://klutzoder-blog.oss-cn-beijing.aliyuncs.com/blog/linux/media-stack-and-pc/makefile" target="_blank" rel="noopener">makefile 点击下载</a></p>
+<h1 id="实验开始"><a href="#实验开始" class="headerlink" title="实验开始"></a>实验开始</h1><ol>
+<li>下载 main.c, add.s, makefile 到同一文件夹中。</li>
+<li>执行 <code>make</code> 命令完成代码编译链接，生产 test 执行文件。ps: <code>make clean</code> 用于清理。</li>
+</ol>
+<h2 id="运行到-add-函数调用前"><a href="#运行到-add-函数调用前" class="headerlink" title="运行到 add 函数调用前"></a>运行到 add 函数调用前</h2><ol>
+<li>gdb --tui ./test</li>
+<li>b main</li>
+<li>r</li>
+<li>b 16</li>
+<li>c</li>
+<li>disas 查看当前运行到的汇编位置，并用 ni 执行一条汇编，一点点执行，直到运行到 <code>0x000000000040054d &lt;+39&gt;: callq 0x400582 &lt;add&gt;</code></li>
+</ol>
+<p>此时查看堆栈寄存器 <code>rbp, rsp</code> 数据以及 程序计数器(pc)寄存器 <code>rip</code> 数据。</p>
+<ul>
+<li><p>查看 rbp, <code>i r rbp</code></p>
+<p> <img src="https://klutzoder-blog.oss-cn-beijing.aliyuncs.com/blog/linux/media-stack-and-pc/15727700739966.jpg" width="600" alt title></p>
+</li>
+<li><p>查看 rsp, <code>i r rsp</code><br>  <img src="https://klutzoder-blog.oss-cn-beijing.aliyuncs.com/blog/linux/media-stack-and-pc/15727700466006.jpg" width="600" alt title></p>
+</li>
+<li><p>查看 rip, <code>i r rip</code><br>   <img src="https://klutzoder-blog.oss-cn-beijing.aliyuncs.com/blog/linux/media-stack-and-pc/15727722408396.jpg" width="600" alt title></p>
+</li>
+<li><p>查看当前上下文汇编代码, <code>disas</code></p>
+  <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">Dump of assembler code for function main:</span><br><span class="line">        0x0000000000400526 &lt;+0&gt;:     push   %rbp</span><br><span class="line">        0x0000000000400527 &lt;+1&gt;:     mov    %rsp,%rbp</span><br><span class="line">        0x000000000040052a &lt;+4&gt;:     sub    $0x20,%rsp</span><br><span class="line">        0x000000000040052e &lt;+8&gt;:     mov    %edi,-0x14(%rbp)</span><br><span class="line">        0x0000000000400531 &lt;+11&gt;:    mov    %rsi,-0x20(%rbp)</span><br><span class="line">        0x0000000000400535 &lt;+15&gt;:    movl   $0x3,-0xc(%rbp)</span><br><span class="line">        0x000000000040053c &lt;+22&gt;:    movl   $0x2,-0x8(%rbp)</span><br><span class="line">        0x0000000000400543 &lt;+29&gt;:    mov    -0x8(%rbp),%edx</span><br><span class="line">        0x0000000000400546 &lt;+32&gt;:    mov    -0xc(%rbp),%eax</span><br><span class="line">        0x0000000000400549 &lt;+35&gt;:    mov    %edx,%esi</span><br><span class="line">        0x000000000040054b &lt;+37&gt;:    mov    %eax,%edi</span><br><span class="line">    =&gt;  0x000000000040054d &lt;+39&gt;:    callq  0x400582 &lt;add&gt;</span><br><span class="line">        0x0000000000400552 &lt;+44&gt;:    mov    %eax,-0x4(%rbp)</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<p>从上面查到的几个信息中，我们可以看到 rbp=0x00007fffffffe460; rsp=0x00007fffffffe440; rip=0x000000000040054d<br>这与我们认知的程序的代码分布一致。栈由高地址空间0x0000FFFFFFFFFFFF 向下扩展，代码段由低地址空间向上排列。<br>在这里为何 rsp 比 rbp 小0x20，这与 <code>sub $0x20, %rsp</code> 这一指令相关，该指令通过计算当前栈帧所需栈大小从而预留使用空间，当然此时 0x20 是要大于实际所需要空间大小的。<br>通过计算实际 main 函数中，只有 a(int)、b(int)、res(int)、argc(int)、argv(char <em>)，int 使用 4 bytes，char </em> 使用 8 bytes，实际只需要 24 bytes即可，但此时却分配 32 bytes，这与<code>内存对齐</code>有关，如果对 Cache 相关知识有一定理解的话，应该能够明白是怎么回事。</p>
+<p>此时有必要将当前整个栈结构画出来，可以通过 <code>x/20x 0x00007fffffffe440</code> 查看相应的内存数据。</p>
+<p><img src="https://klutzoder-blog.oss-cn-beijing.aliyuncs.com/blog/linux/media-stack-and-pc/15727731848845.jpg" width="600" alt title></p>
+<p>画成栈图如下所示：</p>
+<p><img src="https://klutzoder-blog.oss-cn-beijing.aliyuncs.com/blog/linux/media-stack-and-pc/15727730260019.jpg" width="300" alt title></p>
+<ol>
+<li>当前 rip: 400543, 下一条pc是 400552。<code>要注意调用 call 函数后是如何压栈的！！！！！记住400552这条数据！！！！</code></li>
+<li>各个参数对应的内存位置在图中已标出，很明显能够发现有部分空余空间没事使用。验证之前提到的，为了内存对齐存在内存浪费。</li>
+</ol>
+<h2 id="调用-callq-add，进入-add-函数"><a href="#调用-callq-add，进入-add-函数" class="headerlink" title="调用 callq add，进入 add 函数"></a>调用 callq add，进入 add 函数</h2><ol>
+<li>s </li>
+</ol>
+<p>此时，我们重新看一下栈内存的数据，栈指针信息，以及 pc 信息。</p>
+<ul>
+<li><p>查看 rbp, <code>i r rbp</code><br>  <img src="https://klutzoder-blog.oss-cn-beijing.aliyuncs.com/blog/linux/media-stack-and-pc/15727736800515.jpg" width="600" alt title></p>
+</li>
+<li><p>查看 rsp, <code>i r rsp</code><br>  <img src="https://klutzoder-blog.oss-cn-beijing.aliyuncs.com/blog/linux/media-stack-and-pc/15727736963729.jpg" width="600" alt title></p>
+</li>
+<li><p>查看 rip, <code>i r rip</code><br>  <img src="https://klutzoder-blog.oss-cn-beijing.aliyuncs.com/blog/linux/media-stack-and-pc/15727737126609.jpg" width="600" alt title></p>
+</li>
+<li><p>查看栈内存数据, <code>x/20x 0x00007fffffffe430</code><br>  <img src="https://klutzoder-blog.oss-cn-beijing.aliyuncs.com/blog/linux/media-stack-and-pc/15727737676013.jpg" width="600" alt title></p>
+</li>
+</ul>
+<p>画成栈图如下所示：</p>
+<p><img src="https://klutzoder-blog.oss-cn-beijing.aliyuncs.com/blog/linux/media-stack-and-pc/15727739632434.jpg" width="300" alt title></p>
+<ol>
+<li>callq add, 相当于执行 pushq nextpc; jmp add</li>
+<li>callq add, 将下一条需要执行的 PC 压入栈中！！</li>
+</ol>
+<h2 id="add-栈帧初始化"><a href="#add-栈帧初始化" class="headerlink" title="add 栈帧初始化"></a>add 栈帧初始化</h2><p>所谓 add 栈帧初始化，就是将 rbp、rsp 进行整理，为 add 函数执行做准备。主要指令如下：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">pushq %rbp      <span class="comment">// 将rbp压栈</span></span><br><span class="line">movq %rsp, %rbp <span class="comment">// rsp 与 rbp 指向同一地址</span></span><br><span class="line">subq $<span class="number">8</span>, %rsp   <span class="comment">// 计算 add 所需内存空间</span></span><br></pre></td></tr></table></figure>
+<p><img src="https://klutzoder-blog.oss-cn-beijing.aliyuncs.com/blog/linux/media-stack-and-pc/15727747048766.jpg" width="600" alt title></p>
+<p>执行完以上三条指令后，新的栈图如下：</p>
+<p><img src="https://klutzoder-blog.oss-cn-beijing.aliyuncs.com/blog/linux/media-stack-and-pc/15727747316115.jpg" width="300" alt title></p>
+<h2 id="运行到-sub-函数运行前"><a href="#运行到-sub-函数运行前" class="headerlink" title="运行到 sub 函数运行前"></a>运行到 sub 函数运行前</h2><ol>
+<li>b 26</li>
+<li>c</li>
+</ol>
+<p><img src="https://klutzoder-blog.oss-cn-beijing.aliyuncs.com/blog/linux/media-stack-and-pc/15727750724409.jpg" width="600" alt title></p>
+<p>新的栈图如下：</p>
+<p><img src="https://klutzoder-blog.oss-cn-beijing.aliyuncs.com/blog/linux/media-stack-and-pc/15727751660036.jpg" width="300" alt title></p>
+<h2 id="调用-callq-sub-进入-sub-函数"><a href="#调用-callq-sub-进入-sub-函数" class="headerlink" title="调用 callq sub, 进入 sub 函数"></a>调用 callq sub, 进入 sub 函数</h2><ol>
+<li>s</li>
+</ol>
+<p><img src="https://klutzoder-blog.oss-cn-beijing.aliyuncs.com/blog/linux/media-stack-and-pc/15727754090560.jpg" width="600" alt title></p>
+<p>新的栈图如下：</p>
+<p><img src="https://klutzoder-blog.oss-cn-beijing.aliyuncs.com/blog/linux/media-stack-and-pc/15727756659616.jpg" width="300" alt title></p>
+<h2 id="sub-栈帧初始化"><a href="#sub-栈帧初始化" class="headerlink" title="sub 栈帧初始化"></a>sub 栈帧初始化</h2><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">pushq %rbp      <span class="comment">// 将rbp压栈</span></span><br><span class="line">movq %rsp, %rbp <span class="comment">// rsp 与 rbp 指向同一地址</span></span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>这里有一点要特别注意，在 add 中，我们会使用 <code>subq $8, %rsp</code> 初始化一个栈空间，但在这里没有进行这一操作，原因在于 add 函数中需要调用 sub 函数，而 sub 函数中不需要调用任何函数。</p>
+</blockquote>
+<p><img src="https://klutzoder-blog.oss-cn-beijing.aliyuncs.com/blog/linux/media-stack-and-pc/15727759037491.jpg" width="600" alt title></p>
+<p><img src="https://klutzoder-blog.oss-cn-beijing.aliyuncs.com/blog/linux/media-stack-and-pc/15727759536263.jpg" width="300" alt title></p>
+<h2 id="运行到-sub-popq-rbp-之前"><a href="#运行到-sub-popq-rbp-之前" class="headerlink" title="运行到 sub popq %rbp 之前"></a>运行到 sub popq %rbp 之前</h2><p><img src="https://klutzoder-blog.oss-cn-beijing.aliyuncs.com/blog/linux/media-stack-and-pc/15727762610279.jpg" width="600" alt title></p>
+<p><img src="https://klutzoder-blog.oss-cn-beijing.aliyuncs.com/blog/linux/media-stack-and-pc/15727762661166.jpg" width="300" alt title></p>
+<h2 id="popq-rbp"><a href="#popq-rbp" class="headerlink" title="(*) popq %rbp"></a>(*) popq %rbp</h2><p>由于当前 rsp, rbp 都指向 0x00007fff~ffffe418，此时调用 <code>popq %rbp</code> 相当于执行 以下两条指令</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">movq +8(%rsp), %rbp</span><br><span class="line">addq $8, %rsp</span><br></pre></td></tr></table></figure>
+<p><img src="https://klutzoder-blog.oss-cn-beijing.aliyuncs.com/blog/linux/media-stack-and-pc/15727767223708.jpg" width="300" alt title></p>
+<h2 id="ret-退出-sub-函数"><a href="#ret-退出-sub-函数" class="headerlink" title="(*) ret 退出 sub 函数"></a>(*) ret 退出 sub 函数</h2><p>ret 实际做的就是恢复 rip 指向原函数需要执行的代码。相当于</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">movq +8(%rsp), %rip</span><br><span class="line">addq $8, %rsp</span><br><span class="line">jmp %rip</span><br></pre></td></tr></table></figure>
+<p><img src="https://klutzoder-blog.oss-cn-beijing.aliyuncs.com/blog/linux/media-stack-and-pc/15727770628739.jpg" width="300" alt title></p>
+<p>此时 <code>rsp, rbp</code> 恢复到调用 sub 函数之前的状态。</p>
+<h2 id="leaveq"><a href="#leaveq" class="headerlink" title="(*) leaveq"></a>(*) leaveq</h2><p>leaveq 相当于以下两条指令<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">movq %rbp, %rsp</span><br><span class="line">popq %rbp</span><br></pre></td></tr></table></figure></p>
+<p>与上面<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">pushq %rbp</span><br><span class="line">movq %rsp, %rbp</span><br></pre></td></tr></table></figure></p>
+<p>对应。</p>
+<p><img src="https://klutzoder-blog.oss-cn-beijing.aliyuncs.com/blog/linux/media-stack-and-pc/15727776222080.jpg" width="300" alt title></p>
+<h2 id="ret-退出-add-函数"><a href="#ret-退出-add-函数" class="headerlink" title="(*) ret 退出 add 函数"></a>(*) ret 退出 add 函数</h2><p><img src="https://klutzoder-blog.oss-cn-beijing.aliyuncs.com/blog/linux/media-stack-and-pc/15727788240846.jpg" width="300" alt title></p>
+<h1 id="实验整体过程"><a href="#实验整体过程" class="headerlink" title="实验整体过程"></a>实验整体过程</h1><p><img src="https://klutzoder-blog.oss-cn-beijing.aliyuncs.com/blog/linux/media-stack-and-pc/15727788811916.jpg" alt title></p>
+<h1 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h1><p>可能以上的过程写的比较繁杂，但是如果细细看，并且能够将最后整个栈过程完整画出来的话，应该能够对函数调用有一个十分深刻的印象。<br>PS：如果需要的话，后期我可以录制一个视频，详细讲解下相关的知识，以做备份。</p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Linux/" rel="tag"># Linux</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/Linux/linux/computer-cpu/" rel="next" title="Computer CPU">
+                <i class="fa fa-chevron-left"></i> Computer CPU
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/Leetcode/leetcode/leetcode-Minimax/" rel="prev" title="leetcode Minimax (486, 877)">
+                leetcode Minimax (486, 877) <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            Overview
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">klutzoder</p>
+              <p class="site-description motion-element" itemprop="description">I'm no body!</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">27</span>
+                  <span class="site-state-item-name">posts</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">5</span>
+                  <span class="site-state-item-name">categories</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">21</span>
+                  <span class="site-state-item-name">tags</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+            <div class="feed-link motion-element">
+              <a href="/atom.xml" rel="alternate">
+                <i class="fa fa-rss"></i>
+                RSS
+              </a>
+            </div>
+          
+
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#基础知识"><span class="nav-number">1.</span> <span class="nav-text">基础知识</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#寄存器介绍"><span class="nav-number">1.1.</span> <span class="nav-text">寄存器介绍</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#GDB-基础命令"><span class="nav-number">1.2.</span> <span class="nav-text">GDB 基础命令</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#GCC"><span class="nav-number">1.3.</span> <span class="nav-text">GCC</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Linux-X64-内存空间结构"><span class="nav-number">1.4.</span> <span class="nav-text">Linux X64 内存空间结构</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#实验准备"><span class="nav-number">2.</span> <span class="nav-text">实验准备</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#C-代码"><span class="nav-number">2.1.</span> <span class="nav-text">C 代码</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#汇编代码"><span class="nav-number">2.2.</span> <span class="nav-text">汇编代码</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#C-与汇编联合编译"><span class="nav-number">2.3.</span> <span class="nav-text">C 与汇编联合编译</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#实验开始"><span class="nav-number">3.</span> <span class="nav-text">实验开始</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#运行到-add-函数调用前"><span class="nav-number">3.1.</span> <span class="nav-text">运行到 add 函数调用前</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#调用-callq-add，进入-add-函数"><span class="nav-number">3.2.</span> <span class="nav-text">调用 callq add，进入 add 函数</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#add-栈帧初始化"><span class="nav-number">3.3.</span> <span class="nav-text">add 栈帧初始化</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#运行到-sub-函数运行前"><span class="nav-number">3.4.</span> <span class="nav-text">运行到 sub 函数运行前</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#调用-callq-sub-进入-sub-函数"><span class="nav-number">3.5.</span> <span class="nav-text">调用 callq sub, 进入 sub 函数</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#sub-栈帧初始化"><span class="nav-number">3.6.</span> <span class="nav-text">sub 栈帧初始化</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#运行到-sub-popq-rbp-之前"><span class="nav-number">3.7.</span> <span class="nav-text">运行到 sub popq %rbp 之前</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#popq-rbp"><span class="nav-number">3.8.</span> <span class="nav-text">(*) popq %rbp</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#ret-退出-sub-函数"><span class="nav-number">3.9.</span> <span class="nav-text">(*) ret 退出 sub 函数</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#leaveq"><span class="nav-number">3.10.</span> <span class="nav-text">(*) leaveq</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#ret-退出-add-函数"><span class="nav-number">3.11.</span> <span class="nav-text">(*) ret 退出 add 函数</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#实验整体过程"><span class="nav-number">4.</span> <span class="nav-text">实验整体过程</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#总结"><span class="nav-number">5.</span> <span class="nav-text">总结</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">klutzoder</span>
+
+  
+</div>
+
+
+  <div class="powered-by">Powered by <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a></div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">Theme &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Muse</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
